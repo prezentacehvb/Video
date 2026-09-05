@@ -1,11 +1,11 @@
 
 <!DOCTYPE html>
-<html lang='cs'>
+<html lang="cs">
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HVB Video - Moderní Prezentace</title>
-    <link href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #8e24aa;
@@ -61,7 +61,7 @@
         }
 
         .subtitle {
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 1.1rem;
             font-weight: 300;
             letter-spacing: 1px;
@@ -78,7 +78,7 @@
         .instruction-box p {
             font-size: 0.95rem;
             line-height: 1.6;
-            color: rgba(255,255,255,0.9);
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .form-grid {
@@ -108,7 +108,7 @@
         }
 
         input {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
             padding: 14px 18px;
             border-radius: 12px;
@@ -121,11 +121,11 @@
         input:focus {
             outline: none;
             border-color: var(--primary);
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .upload-zone {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
             border: 2px dashed var(--glass-border);
             border-radius: 20px;
             padding: 40px;
@@ -156,12 +156,18 @@
             font-weight: 700;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 15px 30px rgba(142, 36, 170, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
         }
 
         footer {
@@ -174,49 +180,49 @@
     </style>
 </head>
 <body>
-    <div class='main-card'>
+    <div class="main-card">
         <header>
-            <div class='logo-text'>HVB VIDEO</div>
-            <div class='subtitle'>REALITNÍ PREZENTACE BEZ ZÁSAHU AI</div>
+            <div class="logo-text">HVB VIDEO</div>
+            <div class="subtitle">REALITNÍ PREZENTACE BEZ ZÁSAHU AI</div>
         </header>
 
-        <div class='instruction-box'>
+        <div class="instruction-box">
             <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie (optimálně 6 - 20 ks). Odkaz ke stažení hotového videa obdržíte na e-mail do 60 minut.</p>
         </div>
 
         <form id="videoForm" onsubmit="sendData(event)">
-            <div class='form-grid'>
-                <div class='input-group'>
+            <div class="form-grid">
+                <div class="input-group">
                     <label for="MAKLER_JMENO">Jméno makléře</label>
-                    <input type='text' id="MAKLER_JMENO" name="MAKLER_JMENO" placeholder='František Procházka' required>
+                    <input type="text" id="MAKLER_JMENO" name="MAKLER_JMENO" placeholder="František Procházka" required>
                 </div>
-                <div class='input-group'>
+                <div class="input-group">
                     <label for="MAKLER_EMAIL">E-mail pro doručení</label>
-                    <input type='email' id="MAKLER_EMAIL" name="MAKLER_EMAIL" placeholder='makler@hvbreal.cz' required>
+                    <input type="email" id="MAKLER_EMAIL" name="MAKLER_EMAIL" placeholder="makler@hvbreal.cz" required>
                 </div>
-                <div class='input-group'>
+                <div class="input-group">
                     <label for="TEXT_TOP">Název nemovitosti (Horní text)</label>
-                    <input type='text' id="TEXT_TOP" name="TEXT_TOP" placeholder='Prodej RD 5+kk 160 m², pozemek 359 m²' required>
+                    <input type="text" id="TEXT_TOP" name="TEXT_TOP" placeholder="Prodej RD 5+kk 160 m², pozemek 359 m²" required>
                 </div>
-                <div class='input-group'>
+                <div class="input-group">
                     <label for="MAKLER_TELEFON">Telefon</label>
-                    <input type='tel' id="MAKLER_TELEFON" name="MAKLER_TELEFON" placeholder='+420 123 456 789' required>
+                    <input type="tel" id="MAKLER_TELEFON" name="MAKLER_TELEFON" placeholder="+420 123 456 789" required>
                 </div>
-                <div class='input-group' style='grid-column: span 2;'>
+                <div class="input-group" style="grid-column: span 2;">
                     <label for="TEXT_BOTTOM">Lokalita (Spodní text)</label>
-                    <input type='text' id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder='Popovice - okr. Benešov' required>
+                    <input type="text" id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder="Popovice - okr. Benešov" required>
                 </div>
             </div>
 
-            <div class='upload-zone'>
-                <label style='margin-bottom: 20px; font-size: 1rem; opacity: 1;'>Vložte fotografie</label>
-                <input type='file' id="images" name="images" multiple accept='image/*' style='width: auto; background: none; border: none; padding: 0;' required>
-                <div class='warning-text'>
+            <div class="upload-zone">
+                <label style="margin-bottom: 20px; font-size: 1rem; opacity: 1;">Vložte fotografie</label>
+                <input type="file" id="images" name="images" multiple accept="image/*" style="width: auto; background: none; border: none; padding: 0;" required>
+                <div class="warning-text">
                     ⚠️ NEVKLÁDEJTE fotografie na výšku. Ideální formát: 4:3 nebo 16:9.
                 </div>
             </div>
 
-            <button type='submit' class='submit-btn'>VYTVOŘIT VIDEO</button>
+            <button type="submit" id="submitBtn" class="submit-btn">VYTVOŘIT VIDEO</button>
         </form>
 
         <footer>
@@ -225,23 +231,63 @@
     </div>
 
     <script>
+        const fileToBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve({
+                name: file.name,
+                type: file.type,
+                base64: reader.result.split(',')[1]
+            });
+            reader.onerror = error => reject(error);
+        });
+
         async function sendData(event) {
             event.preventDefault();
 
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Zpracovávám a nahrávám fotky...";
+
             const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDB8VvtsXjx02XjZ4cw7wBycmZehrDEVmExhTGMKzqpGaHn5qlKgms0DacNu4rJJC7-w/exec";
 
-            const form = document.getElementById('videoForm');
-            const formData = new FormData(form);
+            const fileInput = document.getElementById("images");
+            const files = Array.from(fileInput.files);
+
+            if (files.length === 0) {
+                alert("Vyberte prosím alespoň jednu fotografii.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "VYTVOŘIT VIDEO";
+                return;
+            }
 
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: formData
+                const convertedFiles = await Promise.all(files.map(file => fileToBase64(file)));
+
+                const payload = {
+                    MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
+                    MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL").value,
+                    MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
+                    TEXT_TOP: document.getElementById("TEXT_TOP").value,
+                    TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
+                    images: convertedFiles
+                };
+
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
                 });
-                alert('Data a fotografie byly úspěšně odeslány do systému HVB Video. Hotovo bude do 60 minut.');
+
+                alert("Data a fotografie byly úspěšně odeslány do systému HVB Video.");
+                document.getElementById("videoForm").reset();
             } catch (error) {
-                console.error('Chyba při odesílání:', error);
-                alert('Došlo k chybě při odesílání formuláře.');
+                console.error("Chyba při odesílání:", error);
+                alert("Došlo k chybě při zpracování nebo odesílání formuláře.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "VYTVOŘIT VIDEO";
             }
         }
     </script>
