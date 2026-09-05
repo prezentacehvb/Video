@@ -17,7 +17,7 @@ Skript sám pozná, jestli běží v Colabu (google.colab je dostupný) nebo
 headless. V headless režimu:
   - texty/jméno makléře atd. se berou z job.json (ne z @param polí níže)
   - fotky se stahují z URL v job.json, ne přes files.upload()
-  - logo a hudba se berou z assets/logo.png a assets/music.mp3 v repozitáři
+  - logo a hudba se berou z logo.png a music.mp3 (v kořeni repa) v repozitáři
     (žádný upload widget)
   - negeneruje a nenahrává index.html na GitHub, nemountuje Google Disk -
     to zůstává jen pro ruční běh v Colabu
@@ -154,21 +154,21 @@ if IS_COLAB:
 
 else:
     # Headless (GitHub Actions): logo a hudba se berou přímo z repozitáře,
-    # žádný upload widget. Commitni tyto soubory vedle video.py:
-    #   assets/logo.png
-    #   assets/music.mp3
-    globals()['LOGO_FILE'] = "assets/logo.png" if os.path.exists("assets/logo.png") else None
-    _music_src = "assets/music.mp3"
+    # žádný upload widget. Commitni tyto soubory vedle video.py (v kořeni repa):
+    #   logo.png
+    #   music.mp3
+    globals()['LOGO_FILE'] = "logo.png" if os.path.exists("logo.png") else None
+    _music_src = "music.mp3"
     if os.path.exists(_music_src):
         shutil.copy(_music_src, MUSIC_FILE)
         print(f"🎵 Aktivní hudba (headless): {_music_src}")
     else:
-        print("ℹ️ assets/music.mp3 nenalezen, video bude bez hudby.")
+        print("ℹ️ music.mp3 nenalezen, video bude bez hudby.")
 
     if globals()['LOGO_FILE']:
         print(f"🖼️ Aktivní logo (headless): {globals()['LOGO_FILE']}")
     else:
-        print("ℹ️ assets/logo.png nenalezen, video bude bez loga.")
+        print("ℹ️ logo.png nenalezen, video bude bez loga.")
 
 """## 1. Nastavení a Definice Funkcí"""
 
