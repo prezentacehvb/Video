@@ -1,0 +1,50 @@
+name: Render HVB Video
+
+on:
+  repository_dispatch:
+    types: [render_video]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: render-${{ github.event.client_payload.job_id }}
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-liberation
+
+      - name: Install Python dependencies
+        run: pip install -r render/requirements.txt
+
+      - name: Write job payload
+        run: echo '${{ toJson(github.event.client_payload) }}' > job.json
+
+      - name: Render video
+        run: python video.py job.json
+
+      - name: Publish release and notify broker
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python render/notify.py --status success --job job.json --result render_result.json
+
+      - name: Notify broker of failure
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python render/notify.py --status failed --job job.json

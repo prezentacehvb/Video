@@ -8,7 +8,38 @@ Original file is located at
 
 # 🛠 HLAVNÍ NASTAVENÍ: Texty a Hudba
 Zde nastavte texty pro video a nahrajte hudební podkres.
+
+---
+HEADLESS REŽIM (GitHub Actions):
+    python video.py job.json
+
+Skript sám pozná, jestli běží v Colabu (google.colab je dostupný) nebo
+headless. V headless režimu:
+  - texty/jméno makléře atd. se berou z job.json (ne z @param polí níže)
+  - fotky se stahují z URL v job.json, ne přes files.upload()
+  - logo a hudba se berou z assets/logo.png a assets/music.mp3 v repozitáři
+    (žádný upload widget)
+  - negeneruje a nenahrává index.html na GitHub, nemountuje Google Disk -
+    to zůstává jen pro ruční běh v Colabu
+  - na konci zapíše render_result.json pro navazující notify.py krok
 """
+
+import sys
+import json
+import os
+
+try:
+    import google.colab  # noqa: F401
+    IS_COLAB = True
+except ImportError:
+    IS_COLAB = False
+
+JOB_CONFIG = None
+if not IS_COLAB:
+    if len(sys.argv) < 2:
+        raise SystemExit("Headless běh vyžaduje cestu k job.json: python video.py job.json")
+    with open(sys.argv[1], "r", encoding="utf-8") as _f:
+        JOB_CONFIG = json.load(_f)
 
 # @title 📝 Konfigurace textu, hudby a loga
 
@@ -37,6 +68,16 @@ FONT_SIZE_MAKLER = 40 # @param {type:"number"}
 LINE_VARIANT = "LINE 2" # @param ["LINE 1", "LINE 2"]
 LINE_SPACING = 7 # @param {type:"number"}
 
+# Headless: přepsat výchozí @param hodnoty daty z job.json
+if JOB_CONFIG:
+    _cfg = JOB_CONFIG["config"]
+    TEXT_TOP = _cfg.get("TEXT_TOP", TEXT_TOP)
+    TEXT_BOTTOM = _cfg.get("TEXT_BOTTOM", TEXT_BOTTOM)
+    MAKLER_JMENO = _cfg.get("MAKLER_JMENO", MAKLER_JMENO)
+    MAKLER_EMAIL = _cfg.get("MAKLER_EMAIL", MAKLER_EMAIL)
+    MAKLER_TELEFON = _cfg.get("MAKLER_TELEFON", MAKLER_TELEFON)
+    RK_NAZEV = _cfg.get("RK_NAZEV", RK_NAZEV)
+
 GLOBAL_TEXT = f"{TEXT_TOP};{TEXT_BOTTOM}"
 
 # --- Nastavení hudby ---
@@ -47,76 +88,97 @@ AUDIO_FADE_OUT = 8 # @param {type:"number"}
 VIDEO_FADE_IN = 6 # @param {type:"number"}
 VIDEO_FADE_OUT = 6 # @param {type:"number"}
 
-from google.colab import files
 import shutil
-import os
 
 # Persistentní historie
 LOGO_CONFIG_PATH = "logo_config.txt"
-if 'music_history' not in globals(): globals()['music_history'] = []
-
-# Načtení loga ze souboru
-if os.path.exists(LOGO_CONFIG_PATH):
-    with open(LOGO_CONFIG_PATH, 'r') as f:
-        saved_logo = f.read().strip()
-        if os.path.exists(saved_logo):
-            globals()['LOGO_FILE'] = saved_logo
-
-if 'LOGO_FILE' not in globals(): globals()['LOGO_FILE'] = None
 MUSIC_FILE = "background_music.mp3"
 
-# @markdown ### 🖼️ LOGO A HUDBA
-VYBRANA_HUDBA = "hudba 1 (1).mp3" # @param {type:"string"}
-NAHRAT_NOVE_SOUBORY = False # @param {type:"boolean"}
+if IS_COLAB:
+    from google.colab import files
+    if 'music_history' not in globals(): globals()['music_history'] = []
 
-# Nahrávání se spustí pouze pokud je zaškrtnuto, nebo pokud chybí základní soubory
-if NAHRAT_NOVE_SOUBORY or (not globals()['LOGO_FILE'] and not globals()['music_history']):
-    print("📂 Režim nahrávání aktivován. Vyberte soubory...")
-    uploaded_assets = files.upload()
+    # Načtení loga ze souboru
+    if os.path.exists(LOGO_CONFIG_PATH):
+        with open(LOGO_CONFIG_PATH, 'r') as f:
+            saved_logo = f.read().strip()
+            if os.path.exists(saved_logo):
+                globals()['LOGO_FILE'] = saved_logo
 
-    for name, data in uploaded_assets.items():
-        with open(name, 'wb') as f:
-            f.write(data)
+    if 'LOGO_FILE' not in globals(): globals()['LOGO_FILE'] = None
 
-        ext = name.lower().split('.')[-1]
-        if ext in ['png', 'jpg', 'jpeg', 'webp', 'bmp']:
-            globals()['LOGO_FILE'] = name
-            with open(LOGO_CONFIG_PATH, 'w') as f:
-                f.write(name)
-            print(f"✅ Logo uloženo: {name}")
-        elif ext in ['mp3', 'wav']:
-            if name not in globals()['music_history']:
-                globals()['music_history'].append(name)
+    # @markdown ### 🖼️ LOGO A HUDBA
+    VYBRANA_HUDBA = "hudba 1 (1).mp3" # @param {type:"string"}
+    NAHRAT_NOVE_SOUBORY = False # @param {type:"boolean"}
+
+    # Nahrávání se spustí pouze pokud je zaškrtnuto, nebo pokud chybí základní soubory
+    if NAHRAT_NOVE_SOUBORY or (not globals()['LOGO_FILE'] and not globals()['music_history']):
+        print("📂 Režim nahrávání aktivován. Vyberte soubory...")
+        uploaded_assets = files.upload()
+
+        for name, data in uploaded_assets.items():
+            with open(name, 'wb') as f:
+                f.write(data)
+
+            ext = name.lower().split('.')[-1]
+            if ext in ['png', 'jpg', 'jpeg', 'webp', 'bmp']:
+                globals()['LOGO_FILE'] = name
+                with open(LOGO_CONFIG_PATH, 'w') as f:
+                    f.write(name)
+                print(f"✅ Logo uloženo: {name}")
+            elif ext in ['mp3', 'wav']:
+                if name not in globals()['music_history']:
+                    globals()['music_history'].append(name)
+    else:
+        print("⏭️ Používám uložené nastavení (pro změnu zaškrtněte 'NAHRAT_NOVE_SOUBORY').")
+
+    # Správa historie hudby
+    while len(globals()['music_history']) > 3:
+        oldest = globals()['music_history'].pop(0)
+        if os.path.exists(oldest) and oldest != VYBRANA_HUDBA and oldest != globals().get('LOGO_FILE'):
+            try: os.remove(oldest)
+            except: pass
+
+    # Finální nastavení aktivních souborů
+    active_music = VYBRANA_HUDBA if VYBRANA_HUDBA in globals()['music_history'] else (globals()['music_history'][-1] if globals()['music_history'] else None)
+    if active_music and os.path.exists(active_music):
+        shutil.copy(active_music, MUSIC_FILE)
+        print(f"🎵 Aktivní hudba: {active_music}")
+
+    if globals()['LOGO_FILE'] and os.path.exists(globals()['LOGO_FILE']):
+        print(f"🖼️ Aktivní logo: {globals()['LOGO_FILE']}")
+    else:
+        print("ℹ️ Žádné logo není nastaveno.")
+
+    print("\n✅ Konfigurace připravena.")
+
 else:
-    print("⏭️ Používám uložené nastavení (pro změnu zaškrtněte 'NAHRAT_NOVE_SOUBORY').")
+    # Headless (GitHub Actions): logo a hudba se berou přímo z repozitáře,
+    # žádný upload widget. Commitni tyto soubory vedle video.py:
+    #   assets/logo.png
+    #   assets/music.mp3
+    globals()['LOGO_FILE'] = "assets/logo.png" if os.path.exists("assets/logo.png") else None
+    _music_src = "assets/music.mp3"
+    if os.path.exists(_music_src):
+        shutil.copy(_music_src, MUSIC_FILE)
+        print(f"🎵 Aktivní hudba (headless): {_music_src}")
+    else:
+        print("ℹ️ assets/music.mp3 nenalezen, video bude bez hudby.")
 
-# Správa historie hudby
-while len(globals()['music_history']) > 3:
-    oldest = globals()['music_history'].pop(0)
-    if os.path.exists(oldest) and oldest != VYBRANA_HUDBA and oldest != globals().get('LOGO_FILE'):
-        try: os.remove(oldest)
-        except: pass
-
-# Finální nastavení aktivních souborů
-active_music = VYBRANA_HUDBA if VYBRANA_HUDBA in globals()['music_history'] else (globals()['music_history'][-1] if globals()['music_history'] else None)
-if active_music and os.path.exists(active_music):
-    shutil.copy(active_music, MUSIC_FILE)
-    print(f"🎵 Aktivní hudba: {active_music}")
-
-if globals()['LOGO_FILE'] and os.path.exists(globals()['LOGO_FILE']):
-    print(f"🖼️ Aktivní logo: {globals()['LOGO_FILE']}")
-else:
-    print("ℹ️ Žádné logo není nastaveno.")
-
-print("\n✅ Konfigurace připravena.")
+    if globals()['LOGO_FILE']:
+        print(f"🖼️ Aktivní logo (headless): {globals()['LOGO_FILE']}")
+    else:
+        print("ℹ️ assets/logo.png nenalezen, video bude bez loga.")
 
 """## 1. Nastavení a Definice Funkcí"""
 
 import os, shutil, random, zipfile, time, json, re, io, numpy as np, cv2, sys
 from PIL import Image, ImageDraw, ImageFont
 from moviepy.editor import ImageClip, VideoFileClip, concatenate_videoclips, AudioFileClip, afx
-from google.colab import files
 from proglog import ProgressBarLogger
+
+if IS_COLAB:
+    from google.colab import files
 
 # @title 🎬 Parametry pohybu a technické nastavení
 MIN_IMAGE_DURATION = 3 # @param {type:"number"}
@@ -269,23 +331,41 @@ for folder in [INPUT_DIR, ENHANCED_DIR]:
         shutil.rmtree(folder)
     os.makedirs(folder)
 
-# 2. Odstranění zbytků nahrávání z kořenového adresáře Colabu (/content/)
-# Toto zabrání automatickému přejmenovávání typu '01 (1).png'
-old_files = glob.glob("*.png") + glob.glob("*.jpg") + glob.glob("*.jpeg") + glob.glob("*.webp")
-for f in old_files:
-    try: os.remove(f)
-    except: pass
+if IS_COLAB:
+    # 2. Odstranění zbytků nahrávání z kořenového adresáře Colabu (/content/)
+    # Toto zabrání automatickému přejmenovávání typu '01 (1).png'
+    old_files = glob.glob("*.png") + glob.glob("*.jpg") + glob.glob("*.jpeg") + glob.glob("*.webp")
+    for f in old_files:
+        try: os.remove(f)
+        except: pass
 
-print("🧹 Systém vyčištěn. Vyberte nyní svých 11 fotografií k nahrání.")
+    print("🧹 Systém vyčištěn. Vyberte nyní svých 11 fotografií k nahrání.")
 
-uploaded = files.upload()
+    uploaded = files.upload()
 
-for name, data in uploaded.items():
-    # Uložíme pouze s originálním názvem do cílové složky
-    with open(os.path.join(INPUT_DIR, name), 'wb') as f:
-        f.write(data)
+    for name, data in uploaded.items():
+        # Uložíme pouze s originálním názvem do cílové složky
+        with open(os.path.join(INPUT_DIR, name), 'wb') as f:
+            f.write(data)
 
-print(f"\n✅ Hotovo: V systému je nyní přesně {len(uploaded)} unikátních souborů.")
+    print(f"\n✅ Hotovo: V systému je nyní přesně {len(uploaded)} unikátních souborů.")
+
+else:
+    # Headless: fotky se stahují z URL v job.json (Apps Script je uložil
+    # na Drive a nasdílel odkazy "anyone with link")
+    import requests
+    image_urls = JOB_CONFIG["image_urls"]
+    print(f"📥 Stahuji {len(image_urls)} fotek...")
+    for i, url in enumerate(image_urls):
+        r = requests.get(url, timeout=60)
+        r.raise_for_status()
+        ext = "jpg"
+        ctype = r.headers.get("Content-Type", "")
+        if "png" in ctype: ext = "png"
+        elif "webp" in ctype: ext = "webp"
+        with open(os.path.join(INPUT_DIR, f"foto_{i+1:03d}.{ext}"), "wb") as f:
+            f.write(r.content)
+    print(f"✅ Hotovo: staženo {len(image_urls)} fotek.")
 
 """## 3. Zpracování snímků (Krok 1 & 2)"""
 
@@ -376,11 +456,33 @@ if final_clips:
     print(f"🎬 Délka: {total_dur:.1f}s. Zahajuji export...")
     final_video.write_videofile(OUTPUT_FILE, fps=TARGET_FPS, codec="libx264", audio=True if os.path.exists(MUSIC_FILE) else False, threads=4, logger=SimplePercentageLogger())
 
-    print("\n\n--> Stahování...")
-    files.download(OUTPUT_FILE)
-    print("🟢 Hotovo!")
+    print("\n\n--> Hotovo!")
 
-html_content = """
+    if IS_COLAB:
+        print("--> Stahování...")
+        files.download(OUTPUT_FILE)
+        print("🟢 Hotovo!")
+    else:
+        # Headless: soubor necháváme na disku, GitHub Actions ho v dalším
+        # kroku (notify.py) zveřejní jako Release a pošle makléři e-mail
+        with open("render_result.json", "w", encoding="utf-8") as f:
+            json.dump({
+                "video_file": OUTPUT_FILE,
+                "job_id": JOB_CONFIG.get("job_id", ""),
+                "name": MAKLER_JMENO,
+                "email": MAKLER_EMAIL,
+                "phone": MAKLER_TELEFON,
+                "callback_url": JOB_CONFIG.get("callback_url", "")
+            }, f, ensure_ascii=False, indent=2)
+        print(f"🟢 render_result.json zapsán, video: {OUTPUT_FILE}")
+
+# --------------------------------------------------------------------------
+# Od tady dál: jen pro ruční běh v Colabu - generování a nasazení front-end
+# stránky (index.html) na GitHub Pages a připojení Google Disku.
+# GitHub Actions tuto část nespouští (IS_COLAB je False).
+# --------------------------------------------------------------------------
+if IS_COLAB:
+    html_content = """
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -677,85 +779,82 @@ html_content = """
 </html>
 """
 
-# Uložení HTML obsahu do souboru
-with open('index.html', 'w', encoding='utf-8') as f:
-    f.write(html_content)
+    # Uložení HTML obsahu do souboru
+    with open('index.html', 'w', encoding='utf-8') as f:
+        f.write(html_content)
 
-print("✅ Soubor index.html byl vytvořen.")
+    print("✅ Soubor index.html byl vytvořen.")
 
-# Nabídnutí souboru ke stažení
-from google.colab import files
-files.download('index.html')
+    # Nabídnutí souboru ke stažení
+    files.download('index.html')
 
-import requests
-import base64
-import os
-from google.colab import userdata
+    import requests
+    import base64
+    from google.colab import userdata
 
-# --- KONFIGURACE ---
-REPO_OWNER = "prezentacehvb"
-REPO_NAME = "Video"
-FILE_TO_UPLOAD = "index.html"
+    # --- KONFIGURACE ---
+    REPO_OWNER = "prezentacehvb"
+    REPO_NAME = "Video"
+    FILE_TO_UPLOAD = "index.html"
 
-try:
-    GITHUB_TOKEN = userdata.get('GITHUB_TOKEN')
-except userdata.SecretNotFoundError:
-    GITHUB_TOKEN = None
-    print("❌ CHYBA: GITHUB_TOKEN nebyl v Colab Secrets nalezen.")
-    print("👉 Klikněte na ikonu klíče (Secrets) vlevo, přidejte 'GITHUB_TOKEN' a povolte k němu přístup.")
+    try:
+        GITHUB_TOKEN = userdata.get('GITHUB_TOKEN')
+    except userdata.SecretNotFoundError:
+        GITHUB_TOKEN = None
+        print("❌ CHYBA: GITHUB_TOKEN nebyl v Colab Secrets nalezen.")
+        print("👉 Klikněte na ikonu klíče (Secrets) vlevo, přidejte 'GITHUB_TOKEN' a povolte k němu přístup.")
 
-if GITHUB_TOKEN:
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-
-    if not os.path.exists(FILE_TO_UPLOAD):
-        print(f"❌ Soubor {FILE_TO_UPLOAD} nebyl nalezen.")
-    else:
-        with open(FILE_TO_UPLOAD, "rb") as f:
-            content = base64.b64encode(f.read()).decode("utf-8")
-
-        upload_url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_TO_UPLOAD}"
-
-        get_file_res = requests.get(upload_url, headers=headers)
-        sha = get_file_res.json().get('sha') if get_file_res.status_code == 200 else None
-
-        upload_data = {
-            "message": "Upload index.html via Colab",
-            "content": content
+    if GITHUB_TOKEN:
+        headers = {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github.v3+json"
         }
-        if sha: upload_data["sha"] = sha
 
-        put_res = requests.put(upload_url, headers=headers, json=upload_data)
-
-        if put_res.status_code in [200, 201]:
-            print(f"🚀 Soubor nahrán do https://github.com/{REPO_OWNER}/{REPO_NAME}")
+        if not os.path.exists(FILE_TO_UPLOAD):
+            print(f"❌ Soubor {FILE_TO_UPLOAD} nebyl nalezen.")
         else:
-            print(f"❌ Chyba: {put_res.text}")
+            with open(FILE_TO_UPLOAD, "rb") as f:
+                content = base64.b64encode(f.read()).decode("utf-8")
 
-"""### 📂 Propojení s Google Diskem
-Tato část připojí váš Google Disk a vytvoří složku `VideoHVB`, pokud ještě neexistuje.
-"""
+            upload_url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{FILE_TO_UPLOAD}"
 
-from google.colab import drive
-import os
+            get_file_res = requests.get(upload_url, headers=headers)
+            sha = get_file_res.json().get('sha') if get_file_res.status_code == 200 else None
 
-# Připojení disku
-drive.mount('/content/drive')
+            upload_data = {
+                "message": "Upload index.html via Colab",
+                "content": content
+            }
+            if sha: upload_data["sha"] = sha
 
-# Cesta ke složce
-GD_FOLDER_PATH = '/content/drive/My Drive/VideoHVB'
+            put_res = requests.put(upload_url, headers=headers, json=upload_data)
 
-if not os.path.exists(GD_FOLDER_PATH):
-    os.makedirs(GD_FOLDER_PATH)
-    print(f"✅ Složka '{GD_FOLDER_PATH}' byla vytvořena.")
-else:
-    print(f"ℹ️ Složka '{GD_FOLDER_PATH}' již existuje.")
+            if put_res.status_code in [200, 201]:
+                print(f"🚀 Soubor nahrán do https://github.com/{REPO_OWNER}/{REPO_NAME}")
+            else:
+                print(f"❌ Chyba: {put_res.text}")
 
-"""### 💡 Jak zprovoznit ukládání dat
-1. Otevřete [Google Apps Script](https://script.google.com/).
-2. Vložte skript, který přijme data a uloží je do souboru v `VideoHVB`.
-3. Nasaďte (Deploy) ho jako **Web App** s přístupem pro 'Anyone'.
-4. URL adresu skriptu vložte do proměnné `SCRIPT_URL` v buňce s HTML níže.
-"""
+    """### 📂 Propojení s Google Diskem
+    Tato část připojí váš Google Disk a vytvoří složku `VideoHVB`, pokud ještě neexistuje.
+    """
+
+    from google.colab import drive
+
+    # Připojení disku
+    drive.mount('/content/drive')
+
+    # Cesta ke složce
+    GD_FOLDER_PATH = '/content/drive/My Drive/VideoHVB'
+
+    if not os.path.exists(GD_FOLDER_PATH):
+        os.makedirs(GD_FOLDER_PATH)
+        print(f"✅ Složka '{GD_FOLDER_PATH}' byla vytvořena.")
+    else:
+        print(f"ℹ️ Složka '{GD_FOLDER_PATH}' již existuje.")
+
+    """### 💡 Jak zprovoznit ukládání dat
+    1. Otevřete [Google Apps Script](https://script.google.com/).
+    2. Vložte skript, který přijme data a uloží je do souboru v `VideoHVB`.
+    3. Nasaďte (Deploy) ho jako **Web App** s přístupem pro 'Anyone'.
+    4. URL adresu skriptu vložte do proměnné `SCRIPT_URL` v buňce s HTML níže.
+    """
