@@ -184,33 +184,33 @@
             <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie (optimálně 6 - 20 ks). Odkaz ke stažení hotového videa obdržíte na e-mail do 60 minut.</p>
         </div>
 
-        <form onsubmit="alert('Data a fotografie byly odeslány do systému HVB Video. Hotovo bude do 60 minut.'); return false;">
+        <form id="videoForm" onsubmit="sendData(event)">
             <div class='form-grid'>
                 <div class='input-group'>
-                    <label>Jméno makléře</label>
-                    <input type='text' placeholder='František Procházka' required>
+                    <label for="MAKLER_JMENO">Jméno makléře</label>
+                    <input type='text' id="MAKLER_JMENO" name="MAKLER_JMENO" placeholder='František Procházka' required>
                 </div>
                 <div class='input-group'>
-                    <label>E-mail pro doručení</label>
-                    <input type='email' placeholder='makler@hvbreal.cz' required>
+                    <label for="MAKLER_EMAIL">E-mail pro doručení</label>
+                    <input type='email' id="MAKLER_EMAIL" name="MAKLER_EMAIL" placeholder='makler@hvbreal.cz' required>
                 </div>
                 <div class='input-group'>
-                    <label>Název nemovitosti</label>
-                    <input type='text' placeholder='Prodej bytu 3+kk' required>
+                    <label for="TEXT_TOP">Název nemovitosti (Horní text)</label>
+                    <input type='text' id="TEXT_TOP" name="TEXT_TOP" placeholder='Prodej RD 5+kk 160 m², pozemek 359 m²' required>
                 </div>
                 <div class='input-group'>
-                    <label>Telefon</label>
-                    <input type='tel' placeholder='+420 123 456 789' required>
+                    <label for="MAKLER_TELEFON">Telefon</label>
+                    <input type='tel' id="MAKLER_TELEFON" name="MAKLER_TELEFON" placeholder='+420 123 456 789' required>
                 </div>
                 <div class='input-group' style='grid-column: span 2;'>
-                    <label>Lokalita</label>
-                    <input type='text' placeholder='Praha 4 - Michle' required>
+                    <label for="TEXT_BOTTOM">Lokalita (Spodní text)</label>
+                    <input type='text' id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder='Popovice - okr. Benešov' required>
                 </div>
             </div>
 
             <div class='upload-zone'>
                 <label style='margin-bottom: 20px; font-size: 1rem; opacity: 1;'>Vložte fotografie</label>
-                <input type='file' multiple accept='image/*' style='width: auto; background: none; border: none; padding: 0;'>
+                <input type='file' id="images" name="images" multiple accept='image/*' style='width: auto; background: none; border: none; padding: 0;' required>
                 <div class='warning-text'>
                     ⚠️ NEVKLÁDEJTE fotografie na výšku. Ideální formát: 4:3 nebo 16:9.
                 </div>
@@ -223,5 +223,32 @@
             © 2024 HVB VIDEO | MODERNÍ REALITNÍ SYSTÉM
         </footer>
     </div>
+
+    <script>
+        async function sendData(event) {
+            event.preventDefault();
+
+            const SCRIPT_URL = "DOPLNIT_URL_GOOGLE_APPS_SCRIPTU";
+
+            if (SCRIPT_URL === "DOPLNIT_URL_GOOGLE_APPS_SCRIPTU") {
+                alert("Data byla připravena. Pro automatické ukládání je potřeba vložit SCRIPT_URL.");
+                return;
+            }
+
+            const form = document.getElementById('videoForm');
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                alert('Data a fotografie byly úspěšně odeslány do systému HVB Video. Hotovo bude do 60 minut.');
+            } catch (error) {
+                console.error('Chyba při odesílání:', error);
+                alert('Došlo k chybě při odesílání formuláře.');
+            }
+        }
+    </script>
 </body>
 </html>
