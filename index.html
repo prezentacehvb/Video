@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang='cs'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>HVB Video - Moderní Prezentace</title>
+    <link href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap' rel='stylesheet'>
+    <style>
+        :root {
+            --primary: #8e24aa;
+            --primary-light: #d1c4e9;
+            --accent: #ffffff;
+            --bg-dark: #0a0a0c;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #1a0b2e, var(--bg-dark));
+            color: var(--accent);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .main-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            width: 100%;
+            max-width: 850px;
+            padding: 60px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-text {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.6);
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .instruction-box {
+            background: rgba(142, 36, 170, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 40px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .instruction-box p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .main-card { padding: 30px; }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: var(--primary-light);
+            opacity: 0.8;
+        }
+
+        input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .upload-zone {
+            background: rgba(0,0,0,0.3);
+            border: 2px dashed var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: border-color 0.3s;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+        }
+
+        .warning-text {
+            color: #ffb74d;
+            font-size: 0.85rem;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), #4a148c);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(142, 36, 170, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.8rem;
+            opacity: 0.4;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <div class='main-card'>
+        <header>
+            <div class='logo-text'>HVB VIDEO</div>
+            <div class='subtitle'>REALITNÍ PREZENTACE BEZ ZÁSAHU AI</div>
+        </header>
+
+        <div class='instruction-box'>
+            <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie (optimálně 6 - 20 ks). Odkaz ke stažení hotového videa obdržíte na e-mail do 60 minut.</p>
+        </div>
+
+        <form onsubmit="alert('Data a fotografie byly odeslány do systému HVB Video. Hotovo bude do 60 minut.'); return false;">
+            <div class='form-grid'>
+                <div class='input-group'>
+                    <label>Jméno makléře</label>
+                    <input type='text' placeholder='František Procházka' required>
+                </div>
+                <div class='input-group'>
+                    <label>E-mail pro doručení</label>
+                    <input type='email' placeholder='makler@hvbreal.cz' required>
+                </div>
+                <div class='input-group'>
+                    <label>Název nemovitosti</label>
+                    <input type='text' placeholder='Prodej bytu 3+kk' required>
+                </div>
+                <div class='input-group'>
+                    <label>Telefon</label>
+                    <input type='tel' placeholder='+420 123 456 789' required>
+                </div>
+                <div class='input-group' style='grid-column: span 2;'>
+                    <label>Lokalita</label>
+                    <input type='text' placeholder='Praha 4 - Michle' required>
+                </div>
+            </div>
+
+            <div class='upload-zone'>
+                <label style='margin-bottom: 20px; font-size: 1rem; opacity: 1;'>Vložte fotografie</label>
+                <input type='file' multiple accept='image/*' style='width: auto; background: none; border: none; padding: 0;'>
+                <div class='warning-text'>
+                    ⚠️ NEVKLÁDEJTE fotografie na výšku. Ideální formát: 4:3 nebo 16:9.
+                </div>
+            </div>
+
+            <button type='submit' class='submit-btn'>VYTVOŘIT VIDEO</button>
+        </form>
+
+        <footer>
+            © 2024 HVB VIDEO | MODERNÍ REALITNÍ SYSTÉM
+        </footer>
+    </div>
+</body>
+</html>
