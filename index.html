@@ -187,8 +187,8 @@
     <div id="loginOverlay">
         <div class="login-card">
             <div class="logo-text" style="font-size: 2rem;">PŘIHLÁŠENÍ</div>
-            <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Zadejte svůj firemní e-mail pro přístup</p>
-            <input type="email" id="loginEmail" placeholder="makler@hvbreal.cz" style="width: 100%;">
+            <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Zadejte heslo</p>
+            <input type="email" id="loginEmail" placeholder="" style="width: 100%;">
             <button onclick="checkLogin()" class="submit-btn">VSTOUPIT</button>
             <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;">Přístup povolen pouze pro @hvbreal.cz</p>
         </div>
@@ -253,7 +253,7 @@
         function checkLogin() {
             const email = document.getElementById('loginEmail').value.toLowerCase();
             const errorMsg = document.getElementById('loginError');
-            
+
             if (email.endsWith('@hvbreal.cz')) {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.getElementById('mainCard').classList.remove('blurred');
