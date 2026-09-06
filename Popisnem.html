@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Návod: Vytvoření bota v Gemini pro vytvoření popisu do inzerce</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --code-bg: #f1f3f4;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--text-color);
+            font-size: 1.3rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+
+        .link-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: background-color 0.2s;
+        }
+
+        .link-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--bg-color);
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        tr:hover {
+            background-color: #f1f3f4;
+        }
+
+        .step-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: center;
+            width: 50px;
+        }
+
+        .prompt-box {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            font-family: inherit;
+            white-space: pre-wrap;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .copy-btn:hover {
+            background: var(--bg-color);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+            td:before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            td:nth-of-type(1):before { content: "Krok:"; }
+            td:nth-of-type(2):before { content: "Název:"; }
+            td:nth-of-type(3):before { content: "Popis:"; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Návod: Vytvoření bota v Gemini pro vytvoření popisu do inzerce</h1>
+    <p class="subtitle">Kompletní průvodce nastavením AI asistentky pro tvorbu popisu inzerované nemovitosti.</p>
+
+    <a href="https://gemini.google.com/app" target="_blank" class="link-button">Otevřít Gemini (gemini.google.com)</a>
+
+    <h2>1. Postup nastavení krok za krokem</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">Krok</th>
+                <th style="width: 30%;">Název kroku</th>
+                <th style="width: 60%;">Popis akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="step-number">1</td>
+                <td><strong>Otevřete rozhraní Gemini</strong></td>
+                <td>V prostředí Gemini klikněte v levém menu na záložku <strong>Roboti Gem</strong> a vyberte možnost <strong>Nový Gem</strong>.</td>
+            </tr>
+            <tr>
+                <td class="step-number">2</td>
+                <td><strong>Zadejte základní údaje</strong></td>
+                <td>Pojmenujte svého robota (např. <em>Popis nemovitosti</em>) a přidejte popis (např. <em>Tvorba popisů nemovitostí do inzerce</em>).</td>
+            </tr>
+            <tr>
+                <td class="step-number">3</td>
+                <td><strong>Vložte hlavní pokyny</strong></td>
+                <td>Do pole <strong>Pokyny (Instructions)</strong> zkopírujte kompletní konfigurační text uvedený v sekci níže a <strong>ULOŽTE</strong> robota.</td>
+            </tr>
+            <tr>
+                <td class="step-number">4</td>
+                <td><strong>Testujte a dolaďte</strong></td>
+                <td>V sekci Roboti Gem vyberte svého bota, klikněte na něho, po otevření vložte popis nemovitosti (vypsat nebo přiložit inzerci vlastníka v PDF) a spusťte výpočet. Výsledný soubor v pokynech botovi upravte do podoby, která Vám vytvoří dokument dle Vašich preferencí. Uložte do Wordu nebo Poski, případně upravte detaily.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Konfigurační text pro pole "Pokyny" (System Prompt) - příklad</h2>
+    <p>Tento text zkopírujte přímo do nastavení vašich Pokynů v rozhraní Gema:</p>
+
+    <div class="prompt-box" id="promptText"><button class="copy-btn" onclick="copyPrompt()">Zkopírovat text</button>Napiš profesionální a věcný inzerát na prodej nemovitosti [TYP NEMOVITOSTI, NAPŘ. BYTU 3+KK V OSTRAVĚ].
+
+Dodrž tato striktní pravidla:
+Formát: Piš v kompaktních odstavcích. Vyvaruj se jakýchkoliv odrážek, seznamů a odkazů.
+Inzerát bude vždy začínat nadpisem ve formátu:
+'Prodej (typ nemovitosti) plocha, pozemek plocha, obec, okres'.
+Například: 'Prodej bytu 80m2, pozemek 150m2, Sokoleč, okr. Nymburk'. Stejnou větou bude začínat i celá inzerce.
+Jazyk a styl: Nepoužívej slovo „což“ ani pasivní konstrukce, neopakuj v textu již použité údaje. Text musí být výhradně v aktivním rodě.
+Zakázané fráze: Zákaz klišé typu „prosluněný byt“, „oáza klidu“, „jedinečná příležitost“, „luxusní bydlení“, „vyhledávaná lokalita“, „skvělá investice“ nebo „veškerá občanská vybavenost v dosahu“.
+Obsah: Text musí být věcný a stručný. Místo obecných frází popiš konkrétní občanskou vybavenost (specifikuj např. školy, obchody, parky v okolí) a přesnou dopravní dostupnost (konkrétní vzdálenost nebo čas na MHD, vlak, dálnici).</div>
+
+    <h2>3. Doporučené další kroky</h2>
+    <ul>
+        <li><strong>Otestování na konkrétním případu:</strong> Vyzkoušejte vložit zadání a ověřte přesnost i strukturu výstupu.</li>
+        <li><strong>Rozšíření o práci s dokumenty:</strong> Do instrukcí můžete přidat další pravidla pro zpracování nahraných dokumentů.</li>
+    </ul>
+</div>
+
+<script>
+    function copyPrompt() {
+        const promptText = document.getElementById('promptText').innerText.replace('Zkopírovat text', '').trim();
+        navigator.clipboard.writeText(promptText).then(() => {
+            const btn = document.querySelector('.copy-btn');
+            btn.innerText = 'Zkopírováno!';
+            setTimeout(() => {
+                btn.innerText = 'Zkopírovat text';
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>
