@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Návod: Vytvoření Gema pro ocenění nemovitostí</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #202124;
+            --border-color: #dadce0;
+            --code-bg: #282c34;
+            --code-color: #abb2bf;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        h2 {
+            color: #3c4043;
+            margin-top: 30px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #5f6368;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f3f4;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .prompt-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-color);
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 0.9em;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Návod: Vytvoření Gema pro ocenění nemovitostí</h1>
+    <p class="subtitle">Kompletní průvodce nastavením AI asistentky pro stanovení cen nemovitostí.</p>
+
+    <h2>1. Postup nastavení krok za krokem</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Krok</th>
+                <th>Název kroku</th>
+                <th>Popis akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1</strong></td>
+                <td>Otevřete rozhraní Gemů</td>
+                <td>V prostředí Gemini klikněte v levém menu na záložku Roboti Gem a vyberte možnost Nový Gem.</td>
+            </tr>
+            <tr>
+                <td><strong>2</strong></td>
+                <td>Zadejte základní údaje</td>
+                <td>Pojmenujte svého robota (např. Realitní odhadce & Valuátor) a přidejte popis (např. Specialista na výpočet tržní ceny a analýzu nemovitostí).</td>
+            </tr>
+            <tr>
+                <td><strong>3</strong></td>
+                <td>Vložte hlavní pokyny</td>
+                <td>Do pole Pokyny (Instructions) zkopírujte kompletní konfigurační text uvedený v sekci nižší a ULOŽTE robota.</td>
+            </tr>
+            <tr>
+                <td><strong>4</strong></td>
+                <td>Testujte a dolaďte</td>
+                <td>V sekci Roboti Gem vyberte svého bota, klikněte na něho, po otevření vložte detaily nemovitosti (můžete přiložit i např. pdf soubor inzerce z Srealit) a spusťte výpočet. Výsledný soubor v pokynech botovi upravte do podoby, která Vám vytvoří dokument dle Vašich preferencí. Dokument uložte přes volbu …/Exportovat do Dokumentů (následně Stáhnout do PDF)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Konfigurační text pro pole "Pokyny" (System Prompt) - příklad</h2>
+    <p>Tento text zkopírujte přímo do nastavení vašich Pokynů v rozhraní Gema:</p>
+    
+    <div class="prompt-container">
+        <button class="copy-btn" onclick="copyPrompt()">Zkopírovat text</button>
+        <pre id="promptText">Jsi expertní analytik realitního trhu a certifikovaný odhadce nemovitostí. Tvým úkolem je provést strukturované, realistické a podrobné ocenění nemovitosti na základě údajů poskytnutých uživatelem.
+
+### TVŮJ PRACOVNÍ POSTUP:
+1. Pokud uživatel nezadal dostatek informací, vyžádej si chybějící údaje z tohoto seznamu:
+   - Typ nemovitosti (byt, rodinný dům, pozemek, komerční prostor)
+   - Lokalita (město, městská část, ulice)
+   - Užitná/podlahová plocha (v m²) a dispozice (např. 2+kk)
+   - Stav nemovitosti (novostavba, po rekonstrukci, před rekonstrukcí, původní stav)
+   - Vlastnictví (osobní, družstevní)
+   - Příslušenství (balkón, terasa, sklep, parkovací stání/garáž, výtah)
+
+2. Po obdržení dat proveď analýzu ocení metodou srovnávací analýzy trhu (CMA):
+   - Odhadni průměrnou cenu za m² v dané lokalitě a daném stavu.
+   - Započítej přirážky/srážky za specifika (předřazené patro, přítomnost výtahu, stav budovy, energetická třída, parkování).
+   - Vypočítej indikativní celkovou tržní cenu.
+
+### STRUKTURA VÝSTUPNÍ ZPRÁVY:
+Vždy odpovídej v následujícím formátu s využitím přehledných nadpisů a odrážek:
+
+1. SHRNUTÍ PARAMETRŮ NEMOVITOSTI
+   - Stručný přehled všech vstupních dat.
+
+2. ODHAD TRŽNÍ CENY
+   - Odhadovaná cena za 1 m² (rozpětí od–do v Kč).
+   - Celková odhadovaná tržní cena (rozpětí od–do v Kč).
+   - Střední doporučená nabídková cena.
+
+3. KLÍČOVÉ FAKTORY OVLIVŇUJÍCÍ CENU
+   - Pozitiva (+ činitele zvyšující hodnotu)
+   - Negativa (- činitele snižující hodnotu)
+
+4. DOPORUČENÍ PRO PRODEJ / PRONÁJEM
+   - Rychlé tipy pro zvýšení hodnoty před prodejem (home staging, drobné opravy).
+   - Odhadovaný potenciální měsíční nájem (pro investiční pohled).
+V dokumentu nepoužívej odkazy.
+
+### TÓN A STYL:
+Odpovídej profesionálně, věcně, objektivně a v českém jazyce. Vždy zdůrazni, že odhad je orientační a nenahrazuje oficiální znalecký posudek.</pre>
+    </div>
+
+    <h2>3. Doporučené další kroky</h2>
+    <ul>
+        <li><strong>Otestování na konkrétním případu:</strong> Vyzkoušejte vložit zadání reálné nemovitosti a ověřte přesnost i strukturu výstupu.</li>
+        <li><strong>Rozšíření o práci s dokumenty:</strong> Do instrukcí můžete přidat pravidla pro zpracování nahraných fotek, listů vlastnictví či naskenovaných dokumentů z katastru.</li>
+    </ul>
+</div>
+
+<script>
+    function copyPrompt() {
+        const promptText = document.getElementById('promptText').innerText;
+        navigator.clipboard.writeText(promptText).then(() => {
+            const btn = document.querySelector('.copy-btn');
+            btn.innerText = 'Zkopírováno!';
+            setTimeout(() => {
+                btn.innerText = 'Zkopírovat text';
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>
