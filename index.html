@@ -299,41 +299,53 @@
                 reader.onerror = error => reject(error);
             });
 
-            async function sendData(event) {
-                event.preventDefault();
-                const submitBtn = document.getElementById("submitBtn");
-                submitBtn.disabled = true;
-                submitBtn.innerText = "Nahrávám...";
+           async function sendData(event) {
+    event.preventDefault();
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Nahrávám...";
 
-                const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDB8VvtsXjx02XjZ4cw7wBycmZehrDEVmExhTGMKzqpGaHn5qlKgms0DacNu4rJJC7-w/exec";
-                const fileInput = document.getElementById("images");
-                const files = Array.from(fileInput.files);
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDB8VvtsXjx02XjZ4cw7wBycmZehrDEVmExhTGMKzqpGaHn5qlKgms0DacNu4rJJC7-w/exec";
+    const fileInput = document.getElementById("images");
+    const files = Array.from(fileInput.files);
 
-                try {
-                    const convertedFiles = await Promise.all(files.map(file => fileToBase64(file)));
-                    const payload = {
-                        MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
-                        MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL").value,
-                        MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
-                        TEXT_TOP: document.getElementById("TEXT_TOP").value,
-                        TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
-                        images: convertedFiles
-                    };
-                    
-                    await fetch(SCRIPT_URL, {
-                        method: "POST",
-                        mode: "no-cors",
-                        body: JSON.stringify(payload)
-                    });
+    try {
+        const convertedFiles = await Promise.all(files.map(file => fileToBase64(file)));
+        
+        const payload = {
+            MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
+            MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL").value,
+            MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
+            TEXT_TOP: document.getElementById("TEXT_TOP").value,
+            TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
+            images: convertedFiles
+        };
 
-                    alert("Odesláno!");
-                } catch (e) {
-                    alert("Chyba při odesílání.");
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "VYTVOŘIT VIDEO";
-                }
-            }
+        // ZMĚNA ZDE: Odstraněno mode: "no-cors", přidán Content-Type text/plain
+        const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const resData = await response.json();
+        
+        if (resData.result === "success") {
+            alert("Odesláno! Složka i fotky byly na Disku úspěšně vytvořeny.");
+        } else {
+            alert("Chyba při zpracování: " + resData.message);
+        }
+
+    } catch (e) {
+        console.error(e);
+        alert("Chyba při odesílání: " + e.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "VYTVOŘIT VIDEO";
+    }
+}
         </script>
     </body>
     </html>
