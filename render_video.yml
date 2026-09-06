@@ -29,7 +29,7 @@ jobs:
           sudo apt-get install -y ffmpeg fonts-liberation
 
       - name: Install Python dependencies
-        run: pip install -r render/requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Write job payload
         run: echo '${{ toJson(github.event.client_payload) }}' > job.json
@@ -41,10 +41,10 @@ jobs:
         if: success()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python render/notify.py --status success --job job.json --result render_result.json
+        run: python notify.py --status success --job job.json --result render_result.json
 
       - name: Notify broker of failure
         if: failure()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python render/notify.py --status failed --job job.json
+        run: python notify.py --status failed --job job.json
