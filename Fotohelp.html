@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Návod pro makléře: Jak správně fotit nemovitosti</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm 15mm 18mm 15mm;
+            background-color: #fcfbfa;
+            @bottom-right {
+                content: counter(page) " / " counter(pages);
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 8pt;
+                color: #8c8c8c;
+            }
+            @bottom-left {
+                content: "Metodický návod — Fotografování nemovitostí";
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 8pt;
+                color: #8c8c8c;
+            }
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #2b2b2b;
+            margin: 0;
+            padding: 0;
+            font-size: 9.5pt;
+            line-height: 1.5;
+        }
+
+        /* Header / Banner */
+        .header-banner {
+            background-color: #1a2a3a;
+            color: #ffffff;
+            margin: -18mm -15mm 20px -15mm;
+            padding: 25px 20mm 20px 20mm;
+            border-bottom: 4px solid #c5a059;
+        }
+
+        .header-title {
+            font-size: 20pt;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin: 0 0 6px 0;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .header-subtitle {
+            font-size: 11pt;
+            color: #c5a059;
+            font-weight: 400;
+            margin: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .intro-box {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #c5a059;
+            padding: 12px 15px;
+            margin-bottom: 22px;
+            font-size: 9.5pt;
+            color: #4a5568;
+            border-radius: 2px;
+        }
+
+        /* Grid / Columns via Table */
+        .section-title {
+            font-size: 12.5pt;
+            font-weight: 700;
+            color: #1a2a3a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 4px;
+            margin-top: 18px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            page-break-after: avoid;
+        }
+
+        .card-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 12px 0;
+            margin-left: -12px;
+            margin-right: -12px;
+            margin-bottom: 15px;
+        }
+
+        .card-cell {
+            width: 50%;
+            vertical-align: top;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 12px 14px;
+        }
+
+        .card-header {
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #1a2a3a;
+            margin-bottom: 8px;
+            display: block;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 4px;
+        }
+
+        .step-list {
+            margin: 0;
+            padding-left: 16px;
+        }
+
+        .step-list li {
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        .step-list li strong {
+            color: #0f172a;
+        }
+
+        /* Checklists & Highlights */
+        .highlight-box {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            border-radius: 4px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .highlight-title {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+
+        .rule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            background-color: #ffffff;
+        }
+
+        .rule-table th {
+            background-color: #1a2a3a;
+            color: #ffffff;
+            text-align: left;
+            padding: 7px 10px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        .rule-table td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 9pt;
+            color: #334155;
+        }
+
+        .rule-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+
+        .badge-do {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .badge-dont {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            text-align: center;
+            font-style: italic;
+            color: #64748b;
+            font-size: 8.5pt;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-banner">
+        <div class="header-title">Návod na fotografování nemovitostí</div>
+        <div class="header-subtitle">Metodický přehled a standardy vizuální prezentace</div>
+    </div>
+
+    <div class="intro-box">
+        <strong>Proč záleží na kvalitě fotografií?</strong> První dojem rozhoduje. Až 90 % zájemců vybírá nemovitost na základě úvodních fotografií. Kvalitně vyfotografovaný prostor zvyšuje počet prohlídek, zkracuje dobu prodeje a buduje profesionální značku.
+    </div>
+
+    <div class="section-title">1. Příprava nemovitosti (Home Staging)</div>
+    
+    <table class="card-table">
+        <tr>
+            <td class="card-cell">
+                <span class="card-header">Odstranění osobních věcí & Úklid</span>
+                <ul class="step-list">
+                    <li><strong>Depersonalizace:</strong> Schovejte rodinné fotografie, diplomy, hračky a osobní hygienické potřeby.</li>
+                    <li><strong>Čistá kuchyně:</strong> Schovejte utěrky, houbičky, čisticí prostředky a utřete pracovní desku.</li>
+                    <li><strong>Koupelna:</strong> Zavřete víko toalety, skryjte šampony a mýdla (ponechte případně jen dekorační ručníky).</li>
+                    <li><strong>Všeobecný úklid:</strong> Vysajte podlahy, utřete prach z lesklých ploch a zarovnejte židle u stolu.</li>
+                </ul>
+            </td>
+            <td class="card-cell">
+                <span class="card-header">Světlo & Prosvětlení prostoru</span>
+                <ul class="step-list">
+                    <li><strong>Den / Přirozené světlo:</strong> Vytáhněte žaluzie a roztáhněte závěsy do stran.</li>
+                    <li><strong>Rozsviťte všechna světla:</strong> Zapněte centrální osvětlení, lampičky i podhledové LED pásky pro útulnější atmosféru.</li>
+                    <li><strong>Sjednocení barev:</strong> Pozor na kombinaci teplého (žlutého) a studeného (bílé) světla v jedné místnosti.</li>
+                    <li><strong>Otevřené dveře:</strong> Otevřete dveře do navazujících místností pro pocit většího a otevřeného prostoru.</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">2. Kompozice a technika fotografování</div>
+
+    <table class="card-table">
+        <tr>
+            <td class="card-cell">
+                <span class="card-header">Výška fotoaparátu & Linie</span>
+                <ul class="step-list">
+                    <li><strong>Foťte z výšky pasu (cca 110–130 cm):</strong> Nikdy nefoťte z výšky očí! Nízký úhel zachová přirozené proporce a nesnižuje strop.</li>
+                    <li><strong>Svislé linie:</strong> Držte fotoaparát/telefon dokonale rovně. Svislé rohy místností a rámy oken musí být rovné.</li>
+                    <li><strong>Fotografování z rohů:</strong> Pro maximální zabrání prostoru se postavte do rohu místnosti.</li>
+                </ul>
+            </td>
+            <td class="card-cell">
+                <span class="card-header">Nastavení & Širokoúhlý objektiv</span>
+                <ul class="step-list">
+                    <li><strong>Široký úhel (16–24 mm / 0.5x–0.7x):</strong> Používejte širokoúhlý objektiv, vyvarujte se však deformaci rybího oka.</li>
+                    <li><strong>Stativ:</strong> Používejte stativ pro ostré snímky i při slabším osvětlení a pro přesné nastavení roviny.</li>
+                    <li><strong>Orientace na šířku:</strong> 95 % fotografií interiéru foťte <strong>na šířku</strong>. Na výšku foťte jen úzké chodby či malé koupelny.</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">3. Exteriéry, okolí a plánování</div>
+
+    <div class="highlight-box">
+        <div class="highlight-title">Plánování podle počasí a času</div>
+        <div style="font-size: 9pt; color: #334155;">
+            • <strong>Zlatá hodinka:</strong> Exteriéry a fasádu domů foťte v podvečer nebo brzy ráno při měkkém slunečním světle.<br>
+            • <strong>Doplňkové snímky:</strong> Nezapomeňte vyfotit 2–3 snímky nejbližšího okolí (park, zastávka, dětské hřiště, výhled z okna).<br>
+            • <strong>Detaily nemovitosti:</strong> Vyfoťte zajímavé architektonické prvky, krb, značkové spotřebiče nebo kvalitní materiály.
+        </div>
+    </div>
+
+    <div class="section-title">Rychlý přehled: Co dělat a čemu se vyhnout</div>
+
+    <table class="rule-table">
+        <thead>
+            <tr>
+                <th style="width: 50%;">správně (DO)</th>
+                <th style="width: 50%;">špatně (DON'T)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge-do">✓</span> Vyčištěný prostor bez osobních věcí</td>
+                <td><span class="badge-dont">✕</span> Pohozené oblečení, nádobí v dřezu, odraz makléře v zrcadle</td>
+            </tr>
+            <tr>
+                <td><span class="badge-do">✓</span> Foto z výšky pasu se svislými stěnami</td>
+                <td><span class="badge-dont">✕</span> Kácení linií, fotky z nadhledu z výšky očí</td>
+            </tr>
+            <tr>
+                <td><span class="badge-do">✓</span> Rozsvícená světla a vytažené žaluzie</td>
+                <td><span class="badge-dont">✕</span> Zatažené rolety, tmavé kouty, fotografie proti přímému slunci</td>
+            </tr>
+            <tr>
+                <td><span class="badge-do">✓</span> Orientace fotografií na šířku</td>
+                <td><span class="badge-dont">✕</span> Směs chaosu fotek na výšku a na šířku v inzerátu</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer-note">
+        Metodická příručka pro makléře — Správné fotografování nemovitostí
+    </div>
+
+</body>
+</html>
