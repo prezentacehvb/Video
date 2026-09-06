@@ -2,275 +2,260 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>Návod pro makléře: Jak správně fotit nemovitosti</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Návod na fotografování nemovitostí</title>
     <style>
-        @page {
-            size: A4;
-            margin: 18mm 15mm 18mm 15mm;
-            background-color: #fcfbfa;
-            @bottom-right {
-                content: counter(page) " / " counter(pages);
-                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                font-size: 8pt;
-                color: #8c8c8c;
-            }
-            @bottom-left {
-                content: "Metodický návod — Fotografování nemovitostí";
-                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                font-size: 8pt;
-                color: #8c8c8c;
-            }
-        }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --code-bg: #f1f3f4;
+            --success-color: #15803d;
+            --danger-color: #b91c1c;
         }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #2b2b2b;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
             margin: 0;
-            padding: 0;
-            font-size: 9.5pt;
-            line-height: 1.5;
+            padding: 20px;
         }
 
-        /* Header / Banner */
-        .header-banner {
-            background-color: #1a2a3a;
-            color: #ffffff;
-            margin: -18mm -15mm 20px -15mm;
-            padding: 25px 20mm 20px 20mm;
-            border-bottom: 4px solid #c5a059;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
         }
 
-        .header-title {
-            font-size: 20pt;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            margin: 0 0 6px 0;
-            color: #ffffff;
-            text-transform: uppercase;
+        h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
         }
 
-        .header-subtitle {
-            font-size: 11pt;
-            color: #c5a059;
-            font-weight: 400;
-            margin: 0;
-            letter-spacing: 0.3px;
+        h2 {
+            color: var(--text-color);
+            font-size: 1.3rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
         }
 
         .intro-box {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid #c5a059;
-            padding: 12px 15px;
-            margin-bottom: 22px;
-            font-size: 9.5pt;
-            color: #4a5568;
-            border-radius: 2px;
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 30px;
+            color: var(--text-color);
         }
 
-        /* Grid / Columns via Table */
-        .section-title {
-            font-size: 12.5pt;
-            font-weight: 700;
-            color: #1a2a3a;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 4px;
-            margin-top: 18px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            page-break-after: avoid;
-        }
-
-        .card-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 12px 0;
-            margin-left: -12px;
-            margin-right: -12px;
-            margin-bottom: 15px;
-        }
-
-        .card-cell {
-            width: 50%;
-            vertical-align: top;
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            padding: 12px 14px;
-        }
-
-        .card-header {
-            font-size: 10.5pt;
-            font-weight: 700;
-            color: #1a2a3a;
-            margin-bottom: 8px;
-            display: block;
-            border-bottom: 1px solid #edf2f7;
-            padding-bottom: 4px;
-        }
-
-        .step-list {
-            margin: 0;
-            padding-left: 16px;
-        }
-
-        .step-list li {
-            margin-bottom: 6px;
-            color: #334155;
-        }
-
-        .step-list li strong {
-            color: #0f172a;
-        }
-
-        /* Checklists & Highlights */
-        .highlight-box {
-            background-color: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            padding: 10px 14px;
-            border-radius: 4px;
-            margin-top: 10px;
-            margin-bottom: 15px;
-        }
-
-        .highlight-title {
-            font-size: 10pt;
-            font-weight: bold;
-            color: #0f172a;
-            margin-bottom: 5px;
-        }
-
-        .rule-table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            background-color: #ffffff;
+            margin-bottom: 30px;
         }
 
-        .rule-table th {
-            background-color: #1a2a3a;
-            color: #ffffff;
+        th, td {
+            padding: 12px 15px;
             text-align: left;
-            padding: 7px 10px;
-            font-size: 9pt;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--bg-color);
             font-weight: 600;
+            color: var(--text-color);
         }
 
-        .rule-table td {
-            padding: 7px 10px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 9pt;
-            color: #334155;
+        tr:hover {
+            background-color: #f1f3f4;
         }
 
-        .rule-table tr:nth-child(even) td {
-            background-color: #f8fafc;
+        .step-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: center;
+            width: 50px;
+        }
+
+        .prompt-box {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            font-family: inherit;
+            margin-bottom: 30px;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
         }
 
         .badge-do {
-            color: #15803d;
+            color: var(--success-color);
             font-weight: bold;
         }
 
         .badge-dont {
-            color: #b91c1c;
+            color: var(--danger-color);
             font-weight: bold;
         }
 
         .footer-note {
-            margin-top: 20px;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
             text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
             font-style: italic;
-            color: #64748b;
-            font-size: 8.5pt;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 45%;
+            }
+            td:before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 40%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            .rule-table td:nth-of-type(1):before { content: "Správně (DO):"; }
+            .rule-table td:nth-of-type(2):before { content: "Špatně (DON'T):"; }
         }
     </style>
 </head>
 <body>
 
-    <div class="header-banner">
-        <div class="header-title">Návod na fotografování nemovitostí</div>
-        <div class="header-subtitle">Metodický přehled a standardy vizuální prezentace</div>
-    </div>
+<div class="container">
+    <h1>Návod pro makléře: Jak správně fotit nemovitosti</h1>
+    <p class="subtitle">Metodický přehled a standardy vizuální prezentace pro profesionální nabídky.</p>
 
     <div class="intro-box">
         <strong>Proč záleží na kvalitě fotografií?</strong> První dojem rozhoduje. Až 90 % zájemců vybírá nemovitost na základě úvodních fotografií. Kvalitně vyfotografovaný prostor zvyšuje počet prohlídek, zkracuje dobu prodeje a buduje profesionální značku.
     </div>
 
-    <div class="section-title">1. Příprava nemovitosti (Home Staging)</div>
-    
-    <table class="card-table">
-        <tr>
-            <td class="card-cell">
-                <span class="card-header">Odstranění osobních věcí & Úklid</span>
-                <ul class="step-list">
-                    <li><strong>Depersonalizace:</strong> Schovejte rodinné fotografie, diplomy, hračky a osobní hygienické potřeby.</li>
-                    <li><strong>Čistá kuchyně:</strong> Schovejte utěrky, houbičky, čisticí prostředky a utřete pracovní desku.</li>
-                    <li><strong>Koupelna:</strong> Zavřete víko toalety, skryjte šampony a mýdla (ponechte případně jen dekorační ručníky).</li>
-                    <li><strong>Všeobecný úklid:</strong> Vysajte podlahy, utřete prach z lesklých ploch a zarovnejte židle u stolu.</li>
-                </ul>
-            </td>
-            <td class="card-cell">
-                <span class="card-header">Světlo & Prosvětlení prostoru</span>
-                <ul class="step-list">
-                    <li><strong>Den / Přirozené světlo:</strong> Vytáhněte žaluzie a roztáhněte závěsy do stran.</li>
-                    <li><strong>Rozsviťte všechna světla:</strong> Zapněte centrální osvětlení, lampičky i podhledové LED pásky pro útulnější atmosféru.</li>
-                    <li><strong>Sjednocení barev:</strong> Pozor na kombinaci teplého (žlutého) a studeného (bílé) světla v jedné místnosti.</li>
-                    <li><strong>Otevřené dveře:</strong> Otevřete dveře do navazujících místností pro pocit většího a otevřeného prostoru.</li>
-                </ul>
-            </td>
-        </tr>
+    <h2>1. Příprava nemovitosti (Home Staging)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Odstranění osobních věcí & Úklid</th>
+                <th style="width: 50%;">Světlo & Prosvětlení prostoru</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <ul>
+                        <li><strong>Depersonalizace:</strong> Schovejte rodinné fotografie, diplomy, hračky a osobní hygienické potřeby.</li>
+                        <li><strong>Čistá kuchyně:</strong> Schovejte utěrky, houbičky, čisticí prostředky a utřete pracovní desku.</li>
+                        <li><strong>Koupelna:</strong> Zavřete víko toalety, skryjte šampony a mýdla (ponechte případně jen dekorační ručníky).</li>
+                        <li><strong>Všeobecný úklid:</strong> Vysajte podlahy, utřete prach z lesklých ploch a zarovnejte židle u stolu.</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li><strong>Den / Přirozené světlo:</strong> Vytáhněte žaluzie a roztáhněte závěsy do stran.</li>
+                        <li><strong>Rozsviťte všechna světla:</strong> Zapněte centrální osvětlení, lampičky i podhledové LED pásky pro útulnější atmosféru.</li>
+                        <li><strong>Sjednocení barev:</strong> Pozor na kombinaci teplého (žlutého) a studeného (bílé) světla v jedné místnosti.</li>
+                        <li><strong>Otevřené dveře:</strong> Otevřete dveře do navazujících místností pro pocit většího a otevřeného prostoru.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
     </table>
 
-    <div class="section-title">2. Kompozice a technika fotografování</div>
-
-    <table class="card-table">
-        <tr>
-            <td class="card-cell">
-                <span class="card-header">Výška fotoaparátu & Linie</span>
-                <ul class="step-list">
-                    <li><strong>Foťte z výšky pasu (cca 110–130 cm):</strong> Nikdy nefoťte z výšky očí! Nízký úhel zachová přirozené proporce a nesnižuje strop.</li>
-                    <li><strong>Svislé linie:</strong> Držte fotoaparát/telefon dokonale rovně. Svislé rohy místností a rámy oken musí být rovné.</li>
-                    <li><strong>Fotografování z rohů:</strong> Pro maximální zabrání prostoru se postavte do rohu místnosti.</li>
-                </ul>
-            </td>
-            <td class="card-cell">
-                <span class="card-header">Nastavení & Širokoúhlý objektiv</span>
-                <ul class="step-list">
-                    <li><strong>Široký úhel (16–24 mm / 0.5x–0.7x):</strong> Používejte širokoúhlý objektiv, vyvarujte se však deformaci rybího oka.</li>
-                    <li><strong>Stativ:</strong> Používejte stativ pro ostré snímky i při slabším osvětlení a pro přesné nastavení roviny.</li>
-                    <li><strong>Orientace na šířku:</strong> 95 % fotografií interiéru foťte <strong>na šířku</strong>. Na výšku foťte jen úzké chodby či malé koupelny.</li>
-                </ul>
-            </td>
-        </tr>
+    <h2>2. Kompozice a technika fotografování</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Výška fotoaparátu & Linie</th>
+                <th style="width: 50%;">Nastavení & Širokoúhlý objektiv</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <ul>
+                        <li><strong>Foťte z výšky pasu (cca 110–130 cm):</strong> Nikdy nefoťte z výšky očí! Nízký úhel zachová přirozené proporce a nesnižuje strop.</li>
+                        <li><strong>Svislé linie:</strong> Držte fotoaparát/telefon dokonale rovně. Svislé rohy místností a rámy oken musí být rovné.</li>
+                        <li><strong>Fotografování z rohů:</strong> Pro maximální zabrání prostoru se postavte do rohu místnosti.</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li><strong>Široký úhel (16–24 mm / 0.5x–0.7x):</strong> Používejte širokoúhlý objektiv, vyvarujte se však deformaci rybího oka.</li>
+                        <li><strong>Stativ:</strong> Používejte stativ pro ostré snímky i při slabším osvětlení a pro přesné nastavení roviny.</li>
+                        <li><strong>Orientace na šířku:</strong> 95 % fotografií interiéru foťte <strong>na šířku</strong>. Na výšku foťte jen úzké chodby či malé koupelny.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
     </table>
 
-    <div class="section-title">3. Exteriéry, okolí a plánování</div>
-
-    <div class="highlight-box">
-        <div class="highlight-title">Plánování podle počasí a času</div>
-        <div style="font-size: 9pt; color: #334155;">
-            • <strong>Zlatá hodinka:</strong> Exteriéry a fasádu domů foťte v podvečer nebo brzy ráno při měkkém slunečním světle.<br>
-            • <strong>Doplňkové snímky:</strong> Nezapomeňte vyfotit 2–3 snímky nejbližšího okolí (park, zastávka, dětské hřiště, výhled z okna).<br>
-            • <strong>Detaily nemovitosti:</strong> Vyfoťte zajímavé architektonické prvky, krb, značkové spotřebiče nebo kvalitní materiály.
-        </div>
+    <h2>3. Exteriéry, okolí a plánování</h2>
+    <div class="prompt-box">
+        <ul>
+            <li><strong>Zlatá hodinka:</strong> Exteriéry a fasádu domů foťte v podvečer nebo brzy ráno při měkkém slunečním světle.</li>
+            <li><strong>Doplňkové snímky:</strong> Nezapomeňte vyfotit 2–3 snímky nejbližšího okolí (park, zastávka, dětské hřiště, výhled z okna).</li>
+            <li><strong>Detaily nemovitosti:</strong> Vyfoťte zajímavé architektonické prvky, krb, značkové spotřebiče nebo kvalitní materiály.</li>
+        </ul>
     </div>
 
-    <div class="section-title">Rychlý přehled: Co dělat a čemu se vyhnout</div>
-
+    <h2>4. Rychlý přehled: Co dělat a čemu se vyhnout</h2>
     <table class="rule-table">
         <thead>
             <tr>
-                <th style="width: 50%;">správně (DO)</th>
-                <th style="width: 50%;">špatně (DON'T)</th>
+                <th style="width: 50%;">Správně (DO)</th>
+                <th style="width: 50%;">Špatně (DON'T)</th>
             </tr>
         </thead>
         <tbody>
@@ -296,6 +281,7 @@
     <div class="footer-note">
         Metodická příručka pro makléře — Správné fotografování nemovitostí
     </div>
+</div>
 
 </body>
 </html>
