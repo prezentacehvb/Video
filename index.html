@@ -138,6 +138,12 @@
             margin-bottom: 10px;
         }
 
+        input[readonly] {
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+        }
+
         .submit-btn {
             width: 100%;
             padding: 20px;
@@ -216,7 +222,7 @@
     <div class="main-card blurred" id="mainCard">
         <header>
             <div class="logo-text">HVB VIDEO</div>
-            <div class="subtitle">REALITNÍ PREZENTACE BEZ ZÁSAHU AI</div>
+            <div class="subtitle">REALITNÍ PREZENTACE</div>
         </header>
 
         <div class="instruction-box">
@@ -231,7 +237,7 @@
                 </div>
                 <div class="input-group">
                     <label for="MAKLER_EMAIL">E-mail pro doručení</label>
-                    <input type="email" id="MAKLER_EMAIL" name="MAKLER_EMAIL" placeholder="makler@hvbreal.cz" required>
+                    <input type="email" id="MAKLER_EMAIL" name="MAKLER_EMAIL" placeholder="makler@hvbreal.cz" readonly required>
                 </div>
                 <div class="input-group">
                     <label for="TEXT_TOP">Název nemovitosti</label>
@@ -277,6 +283,9 @@
             if (email.endsWith('@hvbreal.cz')) {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.getElementById('mainCard').classList.remove('blurred');
+                // Set the email in the form and make it readonly
+                const formEmail = document.getElementById('MAKLER_EMAIL');
+                formEmail.value = email;
             } else {
                 errorMsg.style.display = 'block';
             }
