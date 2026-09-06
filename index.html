@@ -298,57 +298,63 @@
                 reader.onerror = error => reject(error);
             });
 
-            async function sendData(event) {
-                event.preventDefault();
-                const submitBtn = document.getElementById("submitBtn");
-                submitBtn.disabled = true;
-                submitBtn.innerText = "Zpracovávám a nahrávám...";
+async function sendData(event) {
+    event.preventDefault();
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Zpracovávám a nahrávám...";
 
-                const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
-                const fileInput = document.getElementById("images");
-                const files = Array.from(fileInput.files);
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
+    const fileInput = document.getElementById("images");
+    const files = Array.from(fileInput.files);
 
-                try {
-                    // 1. Převod fotek na Base64
-                    const convertedFiles = await Promise.all(files.map(file => fileToBase64(file)));
-                    
-                    // 2. Sestavení dat z formulářových polí
-                    const payload = {
-                        MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
-                        MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL").value,
-                        MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
-                        TEXT_TOP: document.getElementById("TEXT_TOP").value,
-                        TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
-                        RK_NAZEV: "HVB Real Estate",
-                        images: convertedFiles
-                    };
+    if (files.length === 0) {
+        alert("Vyberte prosím alespoň jednu fotografii.");
+        submitBtn.disabled = false;
+        submitBtn.innerText = "VYTVOŘIT VIDEO";
+        return;
+    }
 
-                    // 3. Odeslání jako text/plain (obchází CORS a zajistí správné přečtení v Apps Scriptu)
-                    const response = await fetch(SCRIPT_URL, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "text/plain;charset=utf-8"
-                        },
-                        body: JSON.stringify(payload)
-                    });
+    try {
+        // 1. Převod fotek na Base64
+        const convertedFiles = await Promise.all(files.map(file => fileToBase64(file)));
 
-                    // 4. Odpověď ze serveru
-                    const result = await response.json();
+        // 2. Vytažení dat z formulářových polí s fallbacky
+        const payload = {
+            MAKLER_JMENO: document.getElementById("MAKLER_JMENO") ? document.getElementById("MAKLER_JMENO").value : "",
+            MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL") ? document.getElementById("MAKLER_EMAIL").value : "",
+            MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON") ? document.getElementById("MAKLER_TELEFON").value : "",
+            TEXT_TOP: document.getElementById("TEXT_TOP") ? document.getElementById("TEXT_TOP").value : "",
+            TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM") ? document.getElementById("TEXT_BOTTOM").value : "",
+            RK_NAZEV: "HVB Real Estate",
+            images: convertedFiles
+        };
 
-                    if (result.result === "success") {
-                        alert("✅ Úspěšně odesláno!\n\nSložka byla vytvořena na Disku a fotky i data byly zapsány.");
-                    } else {
-                        alert("❌ Server vrátil chybu: " + result.message);
-                    }
+        // 3. Odeslání přes text/plain na nové nasazení Apps Scriptu
+        const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(payload)
+        });
 
-                } catch (e) {
-                    console.error("Chyba při odesílání:", e);
-                    alert("❌ Chyba při odesílání: " + e.message);
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "VYTVOŘIT VIDEO";
-                }
-            }
+        const result = await response.json();
+
+        if (result.result === "success") {
+            alert("✅ Úspěšně odesláno!\n\nSložka byla vytvořena a data i fotky byly zapsány na Google Disk.");
+        } else {
+            alert("❌ Server vrátil chybu: " + result.message);
+        }
+
+    } catch (e) {
+        console.error("Chyba při odesílání:", e);
+        alert("❌ Chyba při odesílání: " + e.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "VYTVOŘIT VIDEO";
+    }
+}
         </script>
     </body>
     </html>
