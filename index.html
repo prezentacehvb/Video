@@ -213,7 +213,7 @@
         <div class="login-card">
             <div class="logo-text" style="font-size: 2rem;">PŘIHLÁŠENÍ</div>
             <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Zadejte heslo</p>
-            <input type="email" id="loginEmail" placeholder="" style="width: 100%;">
+            <input type="email" id="loginEmail" placeholder="" style="width: 100%;" onkeydown="if(event.key === 'Enter') checkLogin()">
             <button onclick="checkLogin()" class="submit-btn">VSTOUPIT</button>
             <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;">Chybné heslo</p>
         </div>
@@ -241,15 +241,15 @@
                 </div>
                 <div class="input-group">
                     <label for="TEXT_TOP">Název nemovitosti</label>
-                    <input type="text" id="TEXT_TOP" name="TEXT_TOP" required>
+                    <input type="text" id="TEXT_TOP" name="TEXT_TOP" placeholder="RD 5+kk 100 m2, pozemek 400 m2" required>
                 </div>
                 <div class="input-group">
                     <label for="MAKLER_TELEFON">Telefon</label>
-                    <input type="tel" id="MAKLER_TELEFON" name="MAKLER_TELEFON" required>
+                    <input type="tel" id="MAKLER_TELEFON" name="MAKLER_TELEFON" placeholder="123 456 789" required>
                 </div>
                 <div class="input-group" style="grid-column: span 2;">
                     <label for="TEXT_BOTTOM">Lokalita</label>
-                    <input type="text" id="TEXT_BOTTOM" name="TEXT_BOTTOM" required>
+                    <input type="text" id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder="Český Brod, okr. Kolín" required>
                 </div>
             </div>
 
@@ -277,7 +277,8 @@
 
     <script>
         function checkLogin() {
-            const email = document.getElementById('loginEmail').value.toLowerCase();
+            const emailInput = document.getElementById('loginEmail');
+            const email = emailInput.value.toLowerCase();
             const errorMsg = document.getElementById('loginError');
 
             if (email.endsWith('@hvbreal.cz')) {
