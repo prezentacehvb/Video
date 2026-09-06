@@ -89,8 +89,12 @@
         }
 
         @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .main-card { padding: 30px; }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .main-card {
+                padding: 30px;
+            }
         }
 
         .input-group {
@@ -157,6 +161,7 @@
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
         }
 
         .submit-btn:hover {
@@ -168,6 +173,49 @@
             background: #555;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .ai-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .ai-section h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--primary-light);
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .ai-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .ai-link:hover {
+            background: rgba(142, 36, 170, 0.15);
+            border-color: var(--primary);
+            transform: translateX(5px);
         }
 
         footer {
@@ -225,8 +273,26 @@
             <button type="submit" id="submitBtn" class="submit-btn">VYTVOŘIT VIDEO</button>
         </form>
 
+        <div class="ai-section">
+            <h3>Usnadnění práce pomocí AI - návody</h3>
+            <div class="ai-links">
+                <a href="Upravafoto.html" class="ai-link">
+                    <span>Úprava fotografie</span>
+                    <span>→</span>
+                </a>
+                <a href="Popisnem.html" class="ai-link">
+                    <span>Popis nemovitosti</span>
+                    <span>→</span>
+                </a>
+                <a href="Ocennem.html" class="ai-link">
+                    <span>Ocenění nemovitosti</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+
         <footer>
-            © 2024 HVB VIDEO | MODERNÍ REALITNÍ SYSTÉM
+            © 2026 LM HVB VIDEO | MODERNÍ REALITNÍ SYSTÉM
         </footer>
     </div>
 
@@ -276,7 +342,9 @@
                 await fetch(SCRIPT_URL, {
                     method: "POST",
                     mode: "no-cors",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
                     body: JSON.stringify(payload)
                 });
 
