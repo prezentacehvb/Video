@@ -775,7 +775,7 @@ if IS_COLAB:
                 submitBtn.disabled = true;
                 submitBtn.innerText = "Nahrávám...";
 
-                const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDB8VvtsXjx02XjZ4cw7wBycmZehrDEVmExhTGMKzqpGaHn5qlKgms0DacNu4rJJC7-w/exec";
+                const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
                 const fileInput = document.getElementById("images");
                 const files = Array.from(fileInput.files);
 
