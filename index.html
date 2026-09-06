@@ -319,7 +319,7 @@
                         TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
                         images: convertedFiles
                     };
-
+                    alert(JSON.stringify(payload))
                     await fetch(SCRIPT_URL, {
                         method: "POST",
                         mode: "no-cors",
