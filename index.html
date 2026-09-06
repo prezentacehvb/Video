@@ -284,6 +284,7 @@
                 if (email.endsWith('@hvbreal.cz')) {
                     document.getElementById('loginOverlay').style.display = 'none';
                     document.getElementById('mainCard').classList.remove('blurred');
+                    // Set the email in the form and make it readonly
                     const formEmail = document.getElementById('MAKLER_EMAIL');
                     formEmail.value = email;
                 } else {
@@ -298,63 +299,41 @@
                 reader.onerror = error => reject(error);
             });
 
-async function sendData(event) {
-    event.preventDefault();
-    const submitBtn = document.getElementById("submitBtn");
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Zpracovávám a nahrávám...";
+            async function sendData(event) {
+                event.preventDefault();
+                const submitBtn = document.getElementById("submitBtn");
+                submitBtn.disabled = true;
+                submitBtn.innerText = "Nahrávám...";
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
-    const fileInput = document.getElementById("images");
-    const files = Array.from(fileInput.files);
+                const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
+                const fileInput = document.getElementById("images");
+                const files = Array.from(fileInput.files);
 
-    if (files.length === 0) {
-        alert("Vyberte prosím alespoň jednu fotografii.");
-        submitBtn.disabled = false;
-        submitBtn.innerText = "VYTVOŘIT VIDEO";
-        return;
-    }
+                try {
+                    const convertedFiles = await Promise.all(files.map(file => fileToBase64(file)));
+                    const payload = {
+                        MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
+                        MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL").value,
+                        MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
+                        TEXT_TOP: document.getElementById("TEXT_TOP").value,
+                        TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
+                        images: convertedFiles
+                    };
 
-    try {
-        // 1. Převod fotek na Base64
-        const convertedFiles = await Promise.all(files.map(file => fileToBase64(file)));
+                    await fetch(SCRIPT_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        body: JSON.stringify(payload)
+                    });
 
-        // 2. Vytažení dat z formulářových polí s fallbacky
-        const payload = {
-            MAKLER_JMENO: document.getElementById("MAKLER_JMENO") ? document.getElementById("MAKLER_JMENO").value : "",
-            MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL") ? document.getElementById("MAKLER_EMAIL").value : "",
-            MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON") ? document.getElementById("MAKLER_TELEFON").value : "",
-            TEXT_TOP: document.getElementById("TEXT_TOP") ? document.getElementById("TEXT_TOP").value : "",
-            TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM") ? document.getElementById("TEXT_BOTTOM").value : "",
-            RK_NAZEV: "HVB Real Estate",
-            images: convertedFiles
-        };
-
-        // 3. Odeslání přes text/plain na nové nasazení Apps Scriptu
-        const response = await fetch(SCRIPT_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-
-        if (result.result === "success") {
-            alert("✅ Úspěšně odesláno!\n\nSložka byla vytvořena a data i fotky byly zapsány na Google Disk.");
-        } else {
-            alert("❌ Server vrátil chybu: " + result.message);
-        }
-
-    } catch (e) {
-        console.error("Chyba při odesílání:", e);
-        alert("❌ Chyba při odesílání: " + e.message);
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = "VYTVOŘIT VIDEO";
-    }
-}
+                    alert("Odesláno!");
+                } catch (e) {
+                    alert("Chyba při odesílání.");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "VYTVOŘIT VIDEO";
+                }
+            }
         </script>
     </body>
     </html>
