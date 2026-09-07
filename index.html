@@ -55,23 +55,6 @@
             width: 90%;
         }
 
-        .captcha-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin: 15px 0 20px 0;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .captcha-container input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            margin: 0;
-        }
-
         /* Blur effect for content */
         .main-card.blurred {
             filter: blur(20px);
@@ -120,7 +103,6 @@
             padding: 24px;
             margin-bottom: 40px;
             border-left: 4px solid var(--primary);
-            line-height: 1.5;
         }
 
         .form-grid {
@@ -236,14 +218,8 @@
             <div class="logo-text" style="font-size: 2rem;">PŘIHLÁŠENÍ</div>
             <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Zadejte e-mail</p>
             <input type="email" id="loginEmail" placeholder="vás-email@hvbreal.cz" style="width: 100%;" onkeydown="if(event.key === 'Enter') checkLogin()">
-            
-            <div class="captcha-container">
-                <input type="checkbox" id="robotCheck">
-                <label for="robotCheck" style="margin: 0; cursor: pointer; text-transform: none;">Nejsem robot</label>
-            </div>
-
             <button onclick="checkLogin()" class="submit-btn">VSTOUPIT</button>
-            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
+            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;">Přístup povolen pouze pro @hvbreal.cz</p>
         </div>
     </div>
 
@@ -254,10 +230,7 @@
         </header>
 
         <div class="instruction-box">
-            <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie (5–15 fotografií). Odkaz ke stažení videa obdržíte do e-mailu.</p>
-            <p style="margin-top: 8px; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7);">
-                ⚠️ <strong>Upozornění k fotografiím:</strong> Nahrávejte pouze fotografie na šířku. Snímky orientované na výšku jsou systémem automaticky vyřazeny.
-            </p>
+            <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie. Odkaz ke stažení videa obdržíte do e-mailu.</p>
         </div>
 
         <form id="videoForm" onsubmit="sendData(event)">
@@ -310,14 +283,7 @@
         function checkLogin() {
             const emailInput = document.getElementById('loginEmail');
             const email = emailInput.value.toLowerCase().trim();
-            const isRobotChecked = document.getElementById('robotCheck').checked;
             const errorMsg = document.getElementById('loginError');
-
-            if (!isRobotChecked) {
-                errorMsg.innerText = "Zaškrtněte políčko 'Nejsem robot'.";
-                errorMsg.style.display = 'block';
-                return;
-            }
 
             if (email.endsWith('@hvbreal.cz')) {
                 document.getElementById('loginOverlay').style.display = 'none';
@@ -325,12 +291,11 @@
                 const formEmail = document.getElementById('MAKLER_EMAIL');
                 formEmail.value = email;
             } else {
-                errorMsg.innerText = "Přístup povolen pouze pro @hvbreal.cz";
                 errorMsg.style.display = 'block';
             }
         }
 
-        // Komprese a zmenšení fotky na straně klienta z funkčního kódu (s přeskočením fotek na výšku)
+        // Komprese a zmenšení fotky na straně klienta (prevence překročení limitů skriptu)
         function resizeAndCompressImage(file, maxWidth = 1920, maxHeight = 1080, quality = 0.8) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -341,12 +306,6 @@
                     img.onload = () => {
                         let width = img.width;
                         let height = img.height;
-
-                        // Kontrola orientace na výšku -> fotku vyřadíme
-                        if (height > width) {
-                            resolve(null);
-                            return;
-                        }
 
                         if (width > maxWidth || height > maxHeight) {
                             if (width / height > maxWidth / maxHeight) {
@@ -392,25 +351,8 @@
             }
 
             try {
-                // 1. Zmenšení fotek a filtrace fotek na výšku
-                const processedResults = await Promise.all(files.map(file => resizeAndCompressImage(file)));
-                const convertedFiles = processedResults.filter(file => file !== null);
-                const portraitCount = files.length - convertedFiles.length;
-
-                if (convertedFiles.length === 0) {
-                    alert(`Nebyla nalezena žádná použitelná fotografia na šířku.\n\nVybráno celkem: ${files.length}\nVyřazeno (na výšku): ${portraitCount}\n\nNahrajte prosím fotografie na šířku.`);
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "VYTVOŘIT VIDEO";
-                    return;
-                }
-
-                // Omezení na maximálně 15 fotek
-                let finalFiles = convertedFiles;
-                let excessCount = 0;
-                if (convertedFiles.length > 15) {
-                    excessCount = convertedFiles.length - 15;
-                    finalFiles = convertedFiles.slice(0, 15);
-                }
+                // 1. Zmenšení fotek
+                const convertedFiles = await Promise.all(files.map(file => resizeAndCompressImage(file)));
 
                 // 2. Vygenerování unikátního CLIENT_JOB_ID
                 const timeStamp = new Date().getTime();
@@ -425,7 +367,7 @@
                     MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
                     TEXT_TOP: document.getElementById("TEXT_TOP").value,
                     TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
-                    images: finalFiles
+                    images: convertedFiles
                 };
 
                 // 4. Odeslání do Apps Scriptu
@@ -438,12 +380,7 @@
                     body: JSON.stringify(payload)
                 });
 
-                let alertMsg = `Odesláno! Zpracování videa bylo zahájeno. Po dokončení vám přijde e-mail.\n\n` +
-                               `- Přijato fotografií na šířku: ${finalFiles.length}\n`;
-                if (portraitCount > 0) alertMsg += `- Vyřazeno (na výšku): ${portraitCount}\n`;
-                if (excessCount > 0) alertMsg += `- Vyřazeno (přesahující limit 15 ks): ${excessCount}\n`;
-
-                alert(alertMsg);
+                alert("Odesláno! Zpracování videa bylo zahájeno. Po dokončení vám přijde e-mail.");
                 document.getElementById("videoForm").reset();
 
             } catch (e) {
