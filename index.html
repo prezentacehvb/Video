@@ -1,584 +1,396 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HVB Video - Moderní Prezentace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8e24aa;
+            --primary-light: #d1c4e9;
+            --accent: #ffffff;
+            --bg-dark: #0a0a0c;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-    <!DOCTYPE html>
-    <html lang="cs">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>HVB Video - Moderní Prezentace</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-        <style>
-            :root {
-                --primary: #8e24aa;
-                --primary-light: #d1c4e9;
-                --accent: #ffffff;
-                --bg-dark: #0a0a0c;
-                --glass: rgba(255, 255, 255, 0.03);
-                --glass-border: rgba(255, 255, 255, 0.1);
-            }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #1a0b2e, var(--bg-dark));
+            color: var(--accent);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
 
-            body {
-                font-family: 'Inter', sans-serif;
-                background: radial-gradient(circle at top right, #1a0b2e, var(--bg-dark));
-                color: var(--accent);
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 40px 20px;
-                overflow-x: hidden;
-            }
+        /* Login Overlay */
+        #loginOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
 
-            /* Login Overlay */
-            #loginOverlay {
-                position: fixed;
-                top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.8);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 1000;
-                backdrop-filter: blur(10px);
-            }
+        .login-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
 
-            .login-card {
-                background: var(--glass);
-                border: 1px solid var(--glass-border);
-                padding: 40px;
-                border-radius: 24px;
-                text-align: center;
-                max-width: 400px;
-                width: 90%;
-            }
+        /* Blur effect for content */
+        .main-card.blurred {
+            filter: blur(20px);
+            pointer-events: none;
+            user-select: none;
+        }
 
-            /* Blur effect for content */
-            .main-card.blurred {
-                filter: blur(20px);
-                pointer-events: none;
-                user-select: none;
-            }
+        .main-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            width: 100%;
+            max-width: 850px;
+            padding: 60px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: filter 0.5s ease;
+        }
 
-            .main-card {
-                background: var(--glass);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border: 1px solid var(--glass-border);
-                border-radius: 32px;
-                width: 100%;
-                max-width: 850px;
-                padding: 60px;
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                transition: filter 0.5s ease;
-            }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
 
-            header {
-                text-align: center;
-                margin-bottom: 50px;
-            }
+        .logo-text {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+        }
 
-            .logo-text {
-                font-size: 3.5rem;
-                font-weight: 800;
-                background: linear-gradient(to right, #fff, var(--primary-light));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                letter-spacing: -2px;
-                margin-bottom: 8px;
-            }
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
 
-            .subtitle {
-                color: rgba(255, 255, 255, 0.6);
-                font-size: 1.1rem;
-                font-weight: 300;
-                letter-spacing: 1px;
-            }
+        .instruction-box {
+            background: rgba(142, 36, 170, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 40px;
+            border-left: 4px solid var(--primary);
+        }
 
-            .instruction-box {
-                background: rgba(142, 36, 170, 0.1);
-                border-radius: 16px;
-                padding: 24px;
-                margin-bottom: 40px;
-                border-left: 4px solid var(--primary);
-            }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
 
-            .form-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 24px;
-                margin-bottom: 40px;
-            }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
 
-            .input-group {
-                display: flex;
-                flex-direction: column;
-            }
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: var(--primary-light);
+            opacity: 0.8;
+        }
 
-            label {
-                font-size: 0.8rem;
-                font-weight: 600;
-                text-transform: uppercase;
-                margin-bottom: 8px;
-                color: var(--primary-light);
-                opacity: 0.8;
-            }
+        input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
 
-            input {
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid var(--glass-border);
-                padding: 14px 18px;
-                border-radius: 12px;
-                color: white;
-                font-family: inherit;
-                font-size: 1rem;
-                margin-bottom: 10px;
-            }
+        input[readonly] {
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+        }
 
-            input[readonly] {
-                background: rgba(255, 255, 255, 0.02);
-                color: rgba(255, 255, 255, 0.5);
-                cursor: not-allowed;
-            }
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), #4a148c);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
 
-            .submit-btn {
-                width: 100%;
-                padding: 20px;
-                background: linear-gradient(135deg, var(--primary), #4a148c);
-                color: white;
-                border: none;
-                border-radius: 16px;
-                font-size: 1.1rem;
-                font-weight: 700;
-                cursor: pointer;
-            }
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
-            .submit-btn:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-            }
+        .ai-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--glass-border);
+        }
 
-            .ai-section {
-                background: rgba(255, 255, 255, 0.02);
-                border-radius: 20px;
-                padding: 30px;
-                border: 1px solid var(--glass-border);
-            }
+        .ai-section h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--primary-light);
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
 
-            .ai-section h3 {
-                font-size: 0.9rem;
-                font-weight: 600;
-                text-transform: uppercase;
-                color: var(--primary-light);
-                margin-bottom: 20px;
-                text-align: center;
-                letter-spacing: 1px;
-            }
+        .ai-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-            .ai-links {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-            }
+        .ai-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
 
-            .ai-link {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 12px 20px;
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 12px;
-                text-decoration: none;
-                color: white;
-                font-size: 0.95rem;
-                transition: all 0.2s;
-                border: 1px solid transparent;
-            }
+        .ai-link:hover {
+            background: rgba(142, 36, 170, 0.15);
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
 
-            .ai-link:hover {
-                background: rgba(142, 36, 170, 0.15);
-                border-color: var(--primary);
-                transform: translateX(5px);
-            }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.8rem;
+            opacity: 0.4;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginOverlay">
+        <div class="login-card">
+            <div class="logo-text" style="font-size: 2rem;">PŘIHLÁŠENÍ</div>
+            <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Zadejte e-mail</p>
+            <input type="email" id="loginEmail" placeholder="vás-email@hvbreal.cz" style="width: 100%;" onkeydown="if(event.key === 'Enter') checkLogin()">
+            <button onclick="checkLogin()" class="submit-btn">VSTOUPIT</button>
+            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;">Přístup povolen pouze pro @hvbreal.cz</p>
+        </div>
+    </div>
 
-            footer {
-                text-align: center;
-                margin-top: 40px;
-                font-size: 0.8rem;
-                opacity: 0.4;
-            }
+    <div class="main-card blurred" id="mainCard">
+        <header>
+            <div class="logo-text">HVB VIDEO</div>
+            <div class="subtitle">REALITNÍ PREZENTACE</div>
+        </header>
 
-            /* --- Progress / stav zpracování --- */
-            #progressSection {
-                display: none;
-                margin-top: 10px;
-                margin-bottom: 30px;
-            }
+        <div class="instruction-box">
+            <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie. Odkaz ke stažení videa obdržíte do e-mailu.</p>
+        </div>
 
-            #progressLabel {
-                margin-bottom: 10px;
-                font-size: 0.95rem;
-                color: var(--primary-light);
-                text-align: center;
-            }
+        <form id="videoForm" onsubmit="sendData(event)">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="MAKLER_JMENO">Jméno makléře</label>
+                    <input type="text" id="MAKLER_JMENO" name="MAKLER_JMENO" placeholder="František Procházka" required>
+                </div>
+                <div class="input-group">
+                    <label for="MAKLER_EMAIL">E-mail pro doručení</label>
+                    <input type="email" id="MAKLER_EMAIL" name="MAKLER_EMAIL" placeholder="makler@hvbreal.cz" readonly required>
+                </div>
+                <div class="input-group">
+                    <label for="TEXT_TOP">Název nemovitosti</label>
+                    <input type="text" id="TEXT_TOP" name="TEXT_TOP" placeholder="RD 5+kk 100 m2, pozemek 400 m2" required>
+                </div>
+                <div class="input-group">
+                    <label for="MAKLER_TELEFON">Telefon</label>
+                    <input type="tel" id="MAKLER_TELEFON" name="MAKLER_TELEFON" placeholder="123 456 789" required>
+                </div>
+                <div class="input-group" style="grid-column: span 2;">
+                    <label for="TEXT_BOTTOM">Lokalita</label>
+                    <input type="text" id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder="Český Brod, okr. Kolín" required>
+                </div>
+            </div>
 
-            .progress-track {
-                background: rgba(255, 255, 255, 0.08);
-                border-radius: 10px;
-                overflow: hidden;
-                height: 16px;
-            }
+            <div style="text-align: center; margin-bottom: 30px;">
+                <input type="file" id="images" name="images" multiple accept="image/*" required>
+            </div>
 
-            .progress-track.indeterminate .progress-fill {
-                width: 40% !important;
-                animation: indeterminate-slide 1.4s ease-in-out infinite;
-            }
+            <button type="submit" id="submitBtn" class="submit-btn">VYTVOŘIT VIDEO</button>
+        </form>
 
-            @keyframes indeterminate-slide {
-                0%   { margin-left: -40%; }
-                100% { margin-left: 100%; }
-            }
-
-            #progressFill {
-                background: linear-gradient(135deg, var(--primary), #4a148c);
-                height: 100%;
-                width: 0%;
-                transition: width 0.2s ease;
-            }
-
-            #progressTime {
-                margin-top: 8px;
-                font-size: 0.8rem;
-                opacity: 0.6;
-                text-align: center;
-            }
-
-            #doneSection {
-                display: none;
-                margin-top: 10px;
-                margin-bottom: 30px;
-                text-align: center;
-            }
-
-            #downloadBtn {
-                display: inline-block;
-                text-decoration: none;
-                padding: 18px 40px;
-                background: linear-gradient(135deg, #2e7d32, #1b5e20);
-                color: white;
-                border-radius: 16px;
-                font-weight: 700;
-                font-size: 1.05rem;
-            }
-
-            #errorSection {
-                display: none;
-                margin-top: 10px;
-                margin-bottom: 30px;
-                text-align: center;
-                color: #ff8a80;
-                font-size: 0.9rem;
-            }
-        </style>
-    </head>
-    <body>
-        <!-- Login Screen -->
-        <div id="loginOverlay">
-            <div class="login-card">
-                <div class="logo-text" style="font-size: 2rem;">PŘIHLÁŠENÍ</div>
-                <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Zadejte heslo</p>
-                <input type="email" id="loginEmail" placeholder="" style="width: 100%;" onkeydown="if(event.key === 'Enter') checkLogin()">
-                <button onclick="checkLogin()" class="submit-btn">VSTOUPIT</button>
-                <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;">Chybné heslo</p>
+        <div class="ai-section">
+            <h3>Nápověda</h3>
+            <div class="ai-links">
+                <a href="Fotohelp.html" class="ai-link"><span>Fotografické minimum</span><span>→</span></a>
+                <a href="Upravafoto.html" class="ai-link"><span>Úprava fotografie</span><span>→</span></a>
+                <a href="Popisnem.html" class="ai-link"><span>Popis nemovitosti</span><span>→</span></a>
+                <a href="Ocennem.html" class="ai-link"><span>Ocenění nemovitosti</span><span>→</span></a>
             </div>
         </div>
 
-        <div class="main-card blurred" id="mainCard">
-            <header>
-                <div class="logo-text">HVB VIDEO</div>
-                <div class="subtitle">REALITNÍ PREZENTACE</div>
-            </header>
+        <footer>
+            © 2026 LM HVB VIDEO
+        </footer>
+    </div>
 
-            <div class="instruction-box">
-                <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie. Fotky se před odesláním automaticky zmenší na Full HD, ať jsou z fotoaparátu jakkoli velké. Jakmile bude video hotové, uvidíte tlačítko ke stažení přímo zde - odkaz zároveň dorazí i e-mailem.</p>
-            </div>
+    <script>
+        function checkLogin() {
+            const emailInput = document.getElementById('loginEmail');
+            const email = emailInput.value.toLowerCase().trim();
+            const errorMsg = document.getElementById('loginError');
 
-            <form id="videoForm" onsubmit="sendData(event)">
-                <div class="form-grid">
-                    <div class="input-group">
-                        <label for="MAKLER_JMENO">Jméno makléře</label>
-                        <input type="text" id="MAKLER_JMENO" name="MAKLER_JMENO" placeholder="František Procházka" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="MAKLER_EMAIL">E-mail pro doručení</label>
-                        <input type="email" id="MAKLER_EMAIL" name="MAKLER_EMAIL" placeholder="makler@hvbreal.cz" readonly required>
-                    </div>
-                    <div class="input-group">
-                        <label for="TEXT_TOP">Název nemovitosti</label>
-                        <input type="text" id="TEXT_TOP" name="TEXT_TOP" placeholder="RD 5+kk 100 m2, pozemek 400 m2" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="MAKLER_TELEFON">Telefon</label>
-                        <input type="tel" id="MAKLER_TELEFON" name="MAKLER_TELEFON" placeholder="123 456 789" required>
-                    </div>
-                    <div class="input-group" style="grid-column: span 2;">
-                        <label for="TEXT_BOTTOM">Lokalita</label>
-                        <input type="text" id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder="Český Brod, okr. Kolín" required>
-                    </div>
-                </div>
-
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <input type="file" id="images" name="images" multiple accept="image/*" required>
-                </div>
-
-                <!-- Průběh nahrávání / zpracování -->
-                <div id="progressSection">
-                    <div id="progressLabel"></div>
-                    <div class="progress-track" id="progressTrack">
-                        <div id="progressFill"></div>
-                    </div>
-                    <div id="progressTime"></div>
-                </div>
-
-                <div id="doneSection">
-                    <a id="downloadBtn" href="#" target="_blank">⬇ STÁHNOUT VIDEO</a>
-                </div>
-
-                <div id="errorSection"></div>
-
-                <button type="submit" id="submitBtn" class="submit-btn">VYTVOŘIT VIDEO</button>
-            </form>
-
-            <div class="ai-section">
-                <h3>Nápověda</h3>
-                <div class="ai-links">
-                    <a href="Fotohelp.html" class="ai-link"><span>Fotografické minimum</span><span>→</span></a>
-                    <a href="Upravafoto.html" class="ai-link"><span>Úprava fotografie</span><span>→</span></a>
-                    <a href="Popisnem.html" class="ai-link"><span>Popis nemovitosti</span><span>→</span></a>
-                    <a href="Ocennem.html" class="ai-link"><span>Ocenění nemovitosti</span><span>→</span></a>
-                </div>
-            </div>
-
-            <footer>
-                © 2026 LM HVB VIDEO
-            </footer>
-        </div>
-
-        <script>
-            function checkLogin() {
-                const emailInput = document.getElementById('loginEmail');
-                const email = emailInput.value.toLowerCase();
-                const errorMsg = document.getElementById('loginError');
-
-                if (email.endsWith('@hvbreal.cz')) {
-                    document.getElementById('loginOverlay').style.display = 'none';
-                    document.getElementById('mainCard').classList.remove('blurred');
-                    const formEmail = document.getElementById('MAKLER_EMAIL');
-                    formEmail.value = email;
-                } else {
-                    errorMsg.style.display = 'block';
-                }
+            if (email.endsWith('@hvbreal.cz')) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('mainCard').classList.remove('blurred');
+                const formEmail = document.getElementById('MAKLER_EMAIL');
+                formEmail.value = email;
+            } else {
+                errorMsg.style.display = 'block';
             }
+        }
 
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
-
-            // Fotky se zmenší tak, aby delší strana nebyla větší než tohle
-            // číslo - Full HD (1920 px) je pro finální video víc než dost,
-            // video.py stejně všechno škáluje na 1920x1080. Zmenšení tady
-            // hlavně zrychlí nahrávání a nešahá to na kvalitu videa.
-            const MAX_DIMENSION = 1920;
-            const JPEG_QUALITY = 0.88;
-
-            // Zmenší obrázek na canvasu a vrátí { name, base64 } jako JPEG.
-            // Pokud je obrázek už menší než MAX_DIMENSION, jen se překóduje
-            // (šetří to hlavně velké originály z fotoaparátů/telefonů).
-            const resizeAndEncode = file => new Promise((resolve, reject) => {
-                const img = new Image();
+        // Komprese a zmenšení fotky na straně klienta (prevence překročení limitů skriptu)
+        function resizeAndCompressImage(file, maxWidth = 1920, maxHeight = 1080, quality = 0.8) {
+            return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-
-                reader.onload = () => { img.src = reader.result; };
-                reader.onerror = reject;
-
-                img.onload = () => {
-                    let { width, height } = img;
-                    if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
-                        if (width >= height) {
-                            height = Math.round(height * (MAX_DIMENSION / width));
-                            width = MAX_DIMENSION;
-                        } else {
-                            width = Math.round(width * (MAX_DIMENSION / height));
-                            height = MAX_DIMENSION;
-                        }
-                    }
-
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
-                    resolve({
-                        name: file.name.replace(/\.[^.]+$/, '') + '.jpg',
-                        base64: dataUrl.split(',')[1]
-                    });
-                };
-                img.onerror = reject;
-
                 reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth || height > maxHeight) {
+                            if (width / height > maxWidth / maxHeight) {
+                                height = Math.round((height * maxWidth) / width);
+                                width = maxWidth;
+                            } else {
+                                width = Math.round((width * maxHeight) / height);
+                                height = maxHeight;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        const base64Data = dataUrl.split(',')[1];
+                        resolve({ name: file.name, base64: base64Data });
+                    };
+                    img.onerror = (err) => reject(err);
+                };
+                reader.onerror = (err) => reject(err);
             });
+        }
 
-            function genJobId() {
-                return 'job_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+        async function sendData(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Zpracovávám a nahrávám...";
+
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDB8VvtsXjx02XjZ4cw7wBycmZehrDEVmExhTGMKzqpGaHn5qlKgms0DacNu4rJJC7-w/exec";
+            const fileInput = document.getElementById("images");
+            const files = Array.from(fileInput.files);
+
+            if (files.length === 0) {
+                alert("Vyberte prosím alespoň jednu fotografii.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "VYTVOŘIT VIDEO";
+                return;
             }
 
-            function formatElapsed(ms) {
-                const s = Math.floor(ms / 1000);
-                const m = Math.floor(s / 60);
-                const rs = s % 60;
-                return m > 0 ? `${m} min ${rs} s` : `${rs} s`;
-            }
+            try {
+                // 1. Zmenšení fotek
+                const convertedFiles = await Promise.all(files.map(file => resizeAndCompressImage(file)));
 
-            let pollTimer = null;
-            let pollStartTime = null;
+                // 2. Vygenerování unikátního CLIENT_JOB_ID
+                const timeStamp = new Date().getTime();
+                const randomPart = Math.random().toString(36).substring(2, 7);
+                const clientJobId = "job_" + timeStamp + "_" + randomPart;
 
-            function stopPolling() {
-                if (pollTimer) {
-                    clearInterval(pollTimer);
-                    pollTimer = null;
-                }
-            }
-
-            function startPolling(clientJobId) {
-                const progressLabel = document.getElementById('progressLabel');
-                const progressTime = document.getElementById('progressTime');
-                const progressTrack = document.getElementById('progressTrack');
-                const doneSection = document.getElementById('doneSection');
-                const errorSection = document.getElementById('errorSection');
-                const submitBtn = document.getElementById('submitBtn');
-
-                progressTrack.classList.add('indeterminate');
-                pollStartTime = Date.now();
-
-                const callbackName = 'hvbStatusCb_' + clientJobId.replace(/[^a-zA-Z0-9]/g, '');
-
-                window[callbackName] = function (res) {
-                    progressTime.innerText = 'Uplynulo: ' + formatElapsed(Date.now() - pollStartTime);
-
-                    if (res.status === 'HOTOVO' && res.videoUrl) {
-                        stopPolling();
-                        progressTrack.classList.remove('indeterminate');
-                        document.getElementById('progressFill').style.width = '100%';
-                        progressLabel.innerText = 'Video je hotové! 🎬';
-                        doneSection.style.display = 'block';
-                        document.getElementById('downloadBtn').href = res.videoUrl;
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = 'VYTVOŘIT DALŠÍ VIDEO';
-                    } else if (res.status === 'DISPATCH_FAILED' || res.status === 'NO_PHOTOS' || res.status === 'error') {
-                        stopPolling();
-                        progressTrack.classList.remove('indeterminate');
-                        progressLabel.innerText = 'Zpracování se nezdařilo.';
-                        errorSection.style.display = 'block';
-                        errorSection.innerText = res.error || res.message || 'Zkuste to prosím znovu, případně zkontrolujte e-mail.';
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = 'VYTVOŘIT VIDEO';
-                    } else {
-                        progressLabel.innerText = 'Vytváří se video... (obvykle pár minut, klidně počkejte)';
-                    }
+                // 3. Příprava dat
+                const payload = {
+                    CLIENT_JOB_ID: clientJobId,
+                    MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
+                    MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL").value,
+                    MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
+                    TEXT_TOP: document.getElementById("TEXT_TOP").value,
+                    TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
+                    images: convertedFiles
                 };
 
-                function poll() {
-                    const script = document.createElement('script');
-                    script.src = SCRIPT_URL + '?jobId=' + encodeURIComponent(clientJobId) +
-                        '&callback=' + callbackName + '&_=' + Date.now();
-                    script.onload = () => script.remove();
-                    script.onerror = () => script.remove();
-                    document.body.appendChild(script);
-                }
+                // 4. Odeslání do Apps Scriptu
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-                poll();
-                pollTimer = setInterval(poll, 5000);
+                alert("Odesláno! Zpracování videa bylo zahájeno. Po dokončení vám přijde e-mail.");
+                document.getElementById("videoForm").reset();
+
+            } catch (e) {
+                console.error(e);
+                alert("Chyba při zpracování fotografií nebo odesílání.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "VYTVOŘIT VIDEO";
             }
-
-            async function sendData(event) {
-                event.preventDefault();
-
-                const submitBtn = document.getElementById('submitBtn');
-                const progressSection = document.getElementById('progressSection');
-                const progressLabel = document.getElementById('progressLabel');
-                const progressFill = document.getElementById('progressFill');
-                const progressTime = document.getElementById('progressTime');
-                const progressTrack = document.getElementById('progressTrack');
-                const doneSection = document.getElementById('doneSection');
-                const errorSection = document.getElementById('errorSection');
-
-                submitBtn.disabled = true;
-                submitBtn.innerText = 'Připravuji fotografie...';
-                progressSection.style.display = 'block';
-                progressTrack.classList.remove('indeterminate');
-                doneSection.style.display = 'none';
-                errorSection.style.display = 'none';
-                progressFill.style.width = '0%';
-                progressLabel.innerText = 'Zmenšuji fotografie na Full HD...';
-                progressTime.innerText = '';
-
-                const fileInput = document.getElementById('images');
-                const files = Array.from(fileInput.files);
-                const clientJobId = genJobId();
-
-                try {
-                    const convertedFiles = await Promise.all(files.map(resizeAndEncode));
-
-                    const payload = {
-                        CLIENT_JOB_ID: clientJobId,
-                        MAKLER_JMENO: document.getElementById('MAKLER_JMENO').value,
-                        MAKLER_EMAIL: document.getElementById('MAKLER_EMAIL').value,
-                        MAKLER_TELEFON: document.getElementById('MAKLER_TELEFON').value,
-                        TEXT_TOP: document.getElementById('TEXT_TOP').value,
-                        TEXT_BOTTOM: document.getElementById('TEXT_BOTTOM').value,
-                        images: convertedFiles
-                    };
-                    const body = JSON.stringify(payload);
-
-                    submitBtn.innerText = 'NAHRÁVÁM...';
-                    const uploadStart = Date.now();
-
-                    await new Promise((resolve) => {
-                        const xhr = new XMLHttpRequest();
-                        xhr.open('POST', SCRIPT_URL);
-                        xhr.upload.onprogress = (e) => {
-                            if (e.lengthComputable) {
-                                const pct = Math.round((e.loaded / e.total) * 100);
-                                progressFill.style.width = pct + '%';
-                                progressLabel.innerText = `Nahrávám fotografie... ${pct}%`;
-                                progressTime.innerText = 'Uplynulo: ' + formatElapsed(Date.now() - uploadStart);
-                            }
-                        };
-                        // Apps Script neposílá CORS hlavičky, takže odpověď
-                        // nejde v prohlížeči přečíst - onloadend nastane tak
-                        // jako tak (ať už "úspěšně" nebo s CORS chybou), a to
-                        // je signál, že požadavek byl na server odeslán.
-                        xhr.onloadend = () => resolve();
-                        xhr.onerror = () => resolve();
-                        xhr.send(body);
-                    });
-
-                    progressFill.style.width = '100%';
-                    submitBtn.innerText = 'ZPRACOVÁVÁM VIDEO...';
-                    startPolling(clientJobId);
-
-                } catch (e) {
-                    progressLabel.innerText = 'Chyba při přípravě/odesílání fotografií.';
-                    errorSection.style.display = 'block';
-                    errorSection.innerText = e && e.message ? e.message : String(e);
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'VYTVOŘIT VIDEO';
-                }
-            }
-        </script>
-    </body>
-    </html>
-    
+        }
+    </script>
+</body>
+</html>
