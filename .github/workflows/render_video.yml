@@ -32,7 +32,21 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Write job payload
-        run: echo '${{ toJson(github.event.client_payload) }}' > job.json
+        # OPRAVA: původní `echo '${{ toJson(...) }}' > job.json` mohlo
+        # poškodit JSON, pokud text z formuláře (jméno, název nemovitosti,
+        # lokalita) obsahoval apostrof nebo jiný znak konfliktní s bash
+        # jednoduchými uvozovkami - video.py pak spadlo hned na json.load().
+        # Předání přes env proměnnou nechá GitHub Actions hodnotu bezpečně
+        # naescapovat a printf ji zapíše 1:1 beze změny.
+        env:
+          JOB_PAYLOAD: ${{ toJson(github.event.client_payload) }}
+        run: printf '%s' "$JOB_PAYLOAD" > job.json
+
+      - name: Validate job payload
+        # Rychlá kontrola, že job.json je validní JSON - pokud ne, workflow
+        # selže hned tady s jasnou chybou místo nesrozumitelného pádu
+        # uvnitř video.py.
+        run: python -c "import json; json.load(open('job.json', encoding='utf-8')); print('job.json OK')"
 
       - name: Render video
         run: python video.py job.json
