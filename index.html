@@ -295,7 +295,7 @@
             }
         }
 
-        // Komprese a zmenšení fotky na straně klienta (prevence překročení limitů skriptu)
+        // Komprese a zmenšení fotky na straně klienta
         function resizeAndCompressImage(file, maxWidth = 1920, maxHeight = 1080, quality = 0.8) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -327,9 +327,9 @@
                         const base64Data = dataUrl.split(',')[1];
                         resolve({ name: file.name, base64: base64Data });
                     };
-                    img.onerror = (err) => reject(err);
+                    img.onerror = (err) => reject(new Error("Chyba načtení obrázku: " + file.name));
                 };
-                reader.onerror = (err) => reject(err);
+                reader.onerror = (err) => reject(new Error("Chyba čtení souboru: " + file.name));
             });
         }
 
@@ -354,7 +354,7 @@
                 // 1. Zmenšení fotek
                 const convertedFiles = await Promise.all(files.map(file => resizeAndCompressImage(file)));
 
-                // 2. Vygenerování unikátního CLIENT_JOB_ID
+                // 2. Vygenerování ID úlohy
                 const timeStamp = new Date().getTime();
                 const randomPart = Math.random().toString(36).substring(2, 7);
                 const clientJobId = "job_" + timeStamp + "_" + randomPart;
@@ -370,22 +370,38 @@
                     images: convertedFiles
                 };
 
-                // 4. Odeslání do Apps Scriptu (text/plain bez no-cors pro správné doručení payloadu)
-                await fetch(SCRIPT_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "text/plain;charset=utf-8"
-                    },
-                    body: JSON.stringify(payload)
-                });
+                // 4. Odeslání pomocí skrytého formuláře (obchází CORS pravidla)
+                const iframe = document.createElement("iframe");
+                iframe.name = "hidden_iframe_target";
+                iframe.style.display = "none";
+                document.body.appendChild(iframe);
 
-                alert("Odesláno! Zpracování videa bylo zahájeno. Po dokončení vám přijde e-mail.");
-                document.getElementById("videoForm").reset();
+                const form = document.createElement("form");
+                form.method = "POST";
+                form.action = SCRIPT_URL;
+                form.target = "hidden_iframe_target";
+
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "postData";
+                input.value = JSON.stringify(payload);
+                form.appendChild(input);
+
+                document.body.appendChild(form);
+                form.submit();
+
+                setTimeout(() => {
+                    document.body.removeChild(form);
+                    document.body.removeChild(iframe);
+                    alert("Odesláno! Zpracování videa bylo zahájeno. Po dokončení vám přijde e-mail.");
+                    document.getElementById("videoForm").reset();
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "VYTVOŘIT VIDEO";
+                }, 1500);
 
             } catch (e) {
-                console.error(e);
-                alert("Chyba při zpracování fotografií nebo odesílání.");
-            } finally {
+                console.error("Chyba:", e);
+                alert("Chyba: " + e.message);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "VYTVOŘIT VIDEO";
             }
