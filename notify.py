@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Zveřejní vyrenderované video jako GitHub Release asset a zavolá zpět
-Apps Script webapp, aby poslal makléři e-mail (nebo e-mail o chybě).
+Po dokončení (nebo selhání) renderu zavolá zpět Apps Script webapp, aby
+poslal makléři e-mail.
+
+ZMĚNA OPROTI PŮVODNÍ VERZI:
+  Video se už NEPUBLIKUJE jako GitHub Release (to by časem vyčerpalo
+  kapacitu GitHubu). Místo toho se pošle jako base64 přímo v callbacku
+  na Apps Script, který ho uloží do stejné pojmenované složky na Disku,
+  kde už jsou fotky a config.json. GitHub tak nikdy nedrží žádné video
+  trvale.
 
 Použití:
     python notify.py --status success --job job.json --result render_result.json
@@ -12,62 +19,8 @@ import os
 import sys
 import json
 import argparse
-import re
-import time
+import base64
 import requests
-
-
-def sanitize_tag(raw_input):
-    """Převede název na platný a čistý formát pro GitHub Release Tag."""
-    clean = re.sub(r"[^a-zA-Z0-9_\-.]", "_", str(raw_input))
-    return clean.strip("_")
-
-
-def create_release_with_asset(job_id, title, video_path):
-    repo = os.environ["GITHUB_REPOSITORY"]
-    token = os.environ["GITHUB_TOKEN"]
-    headers = {
-        "Authorization": f"token {token}",
-        "Accept": "application/vnd.github+json",
-    }
-
-    # Vyčištění tagu od mezer a diakritiky + přidání časového razítka proti duplicitám (422)
-    clean_job_id = sanitize_tag(job_id)
-    unique_tag = f"rel_{clean_job_id}_{int(time.time())}"
-
-    create_url = f"https://api.github.com/repos/{repo}/releases"
-    payload = {
-        "tag_name": unique_tag,
-        "target_commitish": "main",
-        "name": title,
-        "body": "Automaticky vygenerované video (HVB Video pipeline).",
-        "draft": False,
-        "prerelease": False,
-    }
-
-    resp = requests.post(create_url, headers=headers, json=payload)
-    
-    # Zpětná záloha pro případ, že by tag přesto kolidoval
-    if resp.status_code == 422:
-        payload["tag_name"] = f"rel_{int(time.time())}"
-        resp = requests.post(create_url, headers=headers, json=payload)
-
-    resp.raise_for_status()
-    release = resp.json()
-    upload_url_template = release["upload_url"].split("{")[0]
-
-    filename = os.path.basename(video_path)
-    with open(video_path, "rb") as f:
-        video_bytes = f.read()
-
-    upload_resp = requests.post(
-        f"{upload_url_template}?name={filename}",
-        headers={**headers, "Content-Type": "video/mp4"},
-        data=video_bytes,
-    )
-    upload_resp.raise_for_status()
-    asset = upload_resp.json()
-    return asset["browser_download_url"]
 
 
 def call_callback(callback_url, payload):
@@ -75,8 +28,9 @@ def call_callback(callback_url, payload):
         print("VAROVÁNÍ: chybí callback_url, e-mail se neodešle.", file=sys.stderr)
         return
     try:
-        resp = requests.post(callback_url, json=payload, timeout=30)
-        print(f"Callback odpověď: {resp.status_code} {resp.text}")
+        # Video v base64 může být poměrně velké, dáváme delší timeout
+        resp = requests.post(callback_url, json=payload, timeout=300)
+        print(f"Callback odpověď: {resp.status_code} {resp.text[:500]}")
     except Exception as e:
         print(f"CHYBA při volání callbacku: {e}", file=sys.stderr)
 
@@ -98,6 +52,7 @@ def main():
     config = job.get("config", {})
     callback_url = job.get("callback_url")
     job_id = job.get("job_id", "job_unknown")
+    folder_id = job.get("folder_id")
 
     email = config.get("MAKLER_EMAIL")
     name = config.get("MAKLER_JMENO")
@@ -108,7 +63,6 @@ def main():
             with open(args.result, "r", encoding="utf-8") as f:
                 result = json.load(f)
 
-        # Načtení cesty k videu (s fallbackem na standardní výstup)
         video_path = result.get("video_file") or result.get("video_path") or "output.mp4"
 
         if not os.path.exists(video_path):
@@ -121,19 +75,24 @@ def main():
             })
             sys.exit(1)
 
-        video_url = create_release_with_asset(
-            job_id=job_id,
-            title=f"Video – {name or job_id}",
-            video_path=video_path,
-        )
-        print(f"Video zveřejněno: {video_url}")
+        if not folder_id:
+            print("VAROVÁNÍ: job.json neobsahuje folder_id - video se nepodaří "
+                  "uložit do správné složky na Disku.", file=sys.stderr)
+
+        with open(video_path, "rb") as f:
+            video_b64 = base64.b64encode(f.read()).decode("utf-8")
+
+        size_mb = len(video_b64) / (1024 * 1024)
+        print(f"Video zakódováno jako base64 ({size_mb:.1f} MB), posílám na Apps Script...")
 
         call_callback(callback_url, {
             "action": "notify_complete",
             "email": email,
             "name": name,
             "job_id": job_id,
-            "video_url": video_url,
+            "folder_id": folder_id,
+            "video_base64": video_b64,
+            "video_filename": os.path.basename(video_path),
         })
     else:
         call_callback(callback_url, {

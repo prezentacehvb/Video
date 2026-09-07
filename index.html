@@ -156,6 +156,11 @@
                 cursor: pointer;
             }
 
+            .submit-btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
             .ai-section {
                 background: rgba(255, 255, 255, 0.02);
                 border-radius: 20px;
@@ -205,6 +210,78 @@
                 font-size: 0.8rem;
                 opacity: 0.4;
             }
+
+            /* --- Progress / stav zpracování --- */
+            #progressSection {
+                display: none;
+                margin-top: 10px;
+                margin-bottom: 30px;
+            }
+
+            #progressLabel {
+                margin-bottom: 10px;
+                font-size: 0.95rem;
+                color: var(--primary-light);
+                text-align: center;
+            }
+
+            .progress-track {
+                background: rgba(255, 255, 255, 0.08);
+                border-radius: 10px;
+                overflow: hidden;
+                height: 16px;
+            }
+
+            .progress-track.indeterminate .progress-fill {
+                width: 40% !important;
+                animation: indeterminate-slide 1.4s ease-in-out infinite;
+            }
+
+            @keyframes indeterminate-slide {
+                0%   { margin-left: -40%; }
+                100% { margin-left: 100%; }
+            }
+
+            #progressFill {
+                background: linear-gradient(135deg, var(--primary), #4a148c);
+                height: 100%;
+                width: 0%;
+                transition: width 0.2s ease;
+            }
+
+            #progressTime {
+                margin-top: 8px;
+                font-size: 0.8rem;
+                opacity: 0.6;
+                text-align: center;
+            }
+
+            #doneSection {
+                display: none;
+                margin-top: 10px;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+
+            #downloadBtn {
+                display: inline-block;
+                text-decoration: none;
+                padding: 18px 40px;
+                background: linear-gradient(135deg, #2e7d32, #1b5e20);
+                color: white;
+                border-radius: 16px;
+                font-weight: 700;
+                font-size: 1.05rem;
+            }
+
+            #errorSection {
+                display: none;
+                margin-top: 10px;
+                margin-bottom: 30px;
+                text-align: center;
+                color: #ff8a80;
+                font-size: 0.9rem;
+            }
         </style>
     </head>
     <body>
@@ -226,7 +303,7 @@
             </header>
 
             <div class="instruction-box">
-                <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie. Odkaz ke stažení videa obdržíte do 60 minut.</p>
+                <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie. Fotky se před odesláním automaticky zmenší na Full HD, ať jsou z fotoaparátu jakkoli velké. Jakmile bude video hotové, uvidíte tlačítko ke stažení přímo zde - odkaz zároveň dorazí i e-mailem.</p>
             </div>
 
             <form id="videoForm" onsubmit="sendData(event)">
@@ -257,6 +334,21 @@
                     <input type="file" id="images" name="images" multiple accept="image/*" required>
                 </div>
 
+                <!-- Průběh nahrávání / zpracování -->
+                <div id="progressSection">
+                    <div id="progressLabel"></div>
+                    <div class="progress-track" id="progressTrack">
+                        <div id="progressFill"></div>
+                    </div>
+                    <div id="progressTime"></div>
+                </div>
+
+                <div id="doneSection">
+                    <a id="downloadBtn" href="#" target="_blank">⬇ STÁHNOUT VIDEO</a>
+                </div>
+
+                <div id="errorSection"></div>
+
                 <button type="submit" id="submitBtn" class="submit-btn">VYTVOŘIT VIDEO</button>
             </form>
 
@@ -284,7 +376,6 @@
                 if (email.endsWith('@hvbreal.cz')) {
                     document.getElementById('loginOverlay').style.display = 'none';
                     document.getElementById('mainCard').classList.remove('blurred');
-                    // Set the email in the form and make it readonly
                     const formEmail = document.getElementById('MAKLER_EMAIL');
                     formEmail.value = email;
                 } else {
@@ -292,46 +383,199 @@
                 }
             }
 
-            const fileToBase64 = file => new Promise((resolve, reject) => {
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDB8VvtsXjx02XjZ4cw7wBycmZehrDEVmExhTGMKzqpGaHn5qlKgms0DacNu4rJJC7-w/exec";
+
+            // Fotky se zmenší tak, aby delší strana nebyla větší než tohle
+            // číslo - Full HD (1920 px) je pro finální video víc než dost,
+            // video.py stejně všechno škáluje na 1920x1080. Zmenšení tady
+            // hlavně zrychlí nahrávání a nešahá to na kvalitu videa.
+            const MAX_DIMENSION = 1920;
+            const JPEG_QUALITY = 0.88;
+
+            // Zmenší obrázek na canvasu a vrátí { name, base64 } jako JPEG.
+            // Pokud je obrázek už menší než MAX_DIMENSION, jen se překóduje
+            // (šetří to hlavně velké originály z fotoaparátů/telefonů).
+            const resizeAndEncode = file => new Promise((resolve, reject) => {
+                const img = new Image();
                 const reader = new FileReader();
+
+                reader.onload = () => { img.src = reader.result; };
+                reader.onerror = reject;
+
+                img.onload = () => {
+                    let { width, height } = img;
+                    if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+                        if (width >= height) {
+                            height = Math.round(height * (MAX_DIMENSION / width));
+                            width = MAX_DIMENSION;
+                        } else {
+                            width = Math.round(width * (MAX_DIMENSION / height));
+                            height = MAX_DIMENSION;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
+                    resolve({
+                        name: file.name.replace(/\.[^.]+$/, '') + '.jpg',
+                        base64: dataUrl.split(',')[1]
+                    });
+                };
+                img.onerror = reject;
+
                 reader.readAsDataURL(file);
-                reader.onload = () => resolve({ name: file.name, base64: reader.result.split(',')[1] });
-                reader.onerror = error => reject(error);
             });
+
+            function genJobId() {
+                return 'job_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+            }
+
+            function formatElapsed(ms) {
+                const s = Math.floor(ms / 1000);
+                const m = Math.floor(s / 60);
+                const rs = s % 60;
+                return m > 0 ? `${m} min ${rs} s` : `${rs} s`;
+            }
+
+            let pollTimer = null;
+            let pollStartTime = null;
+
+            function stopPolling() {
+                if (pollTimer) {
+                    clearInterval(pollTimer);
+                    pollTimer = null;
+                }
+            }
+
+            function startPolling(clientJobId) {
+                const progressLabel = document.getElementById('progressLabel');
+                const progressTime = document.getElementById('progressTime');
+                const progressTrack = document.getElementById('progressTrack');
+                const doneSection = document.getElementById('doneSection');
+                const errorSection = document.getElementById('errorSection');
+                const submitBtn = document.getElementById('submitBtn');
+
+                progressTrack.classList.add('indeterminate');
+                pollStartTime = Date.now();
+
+                const callbackName = 'hvbStatusCb_' + clientJobId.replace(/[^a-zA-Z0-9]/g, '');
+
+                window[callbackName] = function (res) {
+                    progressTime.innerText = 'Uplynulo: ' + formatElapsed(Date.now() - pollStartTime);
+
+                    if (res.status === 'HOTOVO' && res.videoUrl) {
+                        stopPolling();
+                        progressTrack.classList.remove('indeterminate');
+                        document.getElementById('progressFill').style.width = '100%';
+                        progressLabel.innerText = 'Video je hotové! 🎬';
+                        doneSection.style.display = 'block';
+                        document.getElementById('downloadBtn').href = res.videoUrl;
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = 'VYTVOŘIT DALŠÍ VIDEO';
+                    } else if (res.status === 'DISPATCH_FAILED' || res.status === 'NO_PHOTOS' || res.status === 'error') {
+                        stopPolling();
+                        progressTrack.classList.remove('indeterminate');
+                        progressLabel.innerText = 'Zpracování se nezdařilo.';
+                        errorSection.style.display = 'block';
+                        errorSection.innerText = res.error || res.message || 'Zkuste to prosím znovu, případně zkontrolujte e-mail.';
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = 'VYTVOŘIT VIDEO';
+                    } else {
+                        progressLabel.innerText = 'Vytváří se video... (obvykle pár minut, klidně počkejte)';
+                    }
+                };
+
+                function poll() {
+                    const script = document.createElement('script');
+                    script.src = SCRIPT_URL + '?jobId=' + encodeURIComponent(clientJobId) +
+                        '&callback=' + callbackName + '&_=' + Date.now();
+                    script.onload = () => script.remove();
+                    script.onerror = () => script.remove();
+                    document.body.appendChild(script);
+                }
+
+                poll();
+                pollTimer = setInterval(poll, 5000);
+            }
 
             async function sendData(event) {
                 event.preventDefault();
-                const submitBtn = document.getElementById("submitBtn");
-                submitBtn.disabled = true;
-                submitBtn.innerText = "Nahrávám...";
 
-                const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
-                const fileInput = document.getElementById("images");
+                const submitBtn = document.getElementById('submitBtn');
+                const progressSection = document.getElementById('progressSection');
+                const progressLabel = document.getElementById('progressLabel');
+                const progressFill = document.getElementById('progressFill');
+                const progressTime = document.getElementById('progressTime');
+                const progressTrack = document.getElementById('progressTrack');
+                const doneSection = document.getElementById('doneSection');
+                const errorSection = document.getElementById('errorSection');
+
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Připravuji fotografie...';
+                progressSection.style.display = 'block';
+                progressTrack.classList.remove('indeterminate');
+                doneSection.style.display = 'none';
+                errorSection.style.display = 'none';
+                progressFill.style.width = '0%';
+                progressLabel.innerText = 'Zmenšuji fotografie na Full HD...';
+                progressTime.innerText = '';
+
+                const fileInput = document.getElementById('images');
                 const files = Array.from(fileInput.files);
+                const clientJobId = genJobId();
 
                 try {
-                    const convertedFiles = await Promise.all(files.map(file => fileToBase64(file)));
+                    const convertedFiles = await Promise.all(files.map(resizeAndEncode));
+
                     const payload = {
-                        MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
-                        MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL").value,
-                        MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
-                        TEXT_TOP: document.getElementById("TEXT_TOP").value,
-                        TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
+                        CLIENT_JOB_ID: clientJobId,
+                        MAKLER_JMENO: document.getElementById('MAKLER_JMENO').value,
+                        MAKLER_EMAIL: document.getElementById('MAKLER_EMAIL').value,
+                        MAKLER_TELEFON: document.getElementById('MAKLER_TELEFON').value,
+                        TEXT_TOP: document.getElementById('TEXT_TOP').value,
+                        TEXT_BOTTOM: document.getElementById('TEXT_BOTTOM').value,
                         images: convertedFiles
                     };
+                    const body = JSON.stringify(payload);
 
-                    await fetch(SCRIPT_URL, {
-                        method: "POST",
-                        mode: "no-cors",
-                        body: JSON.stringify(payload)
+                    submitBtn.innerText = 'NAHRÁVÁM...';
+                    const uploadStart = Date.now();
+
+                    await new Promise((resolve) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', SCRIPT_URL);
+                        xhr.upload.onprogress = (e) => {
+                            if (e.lengthComputable) {
+                                const pct = Math.round((e.loaded / e.total) * 100);
+                                progressFill.style.width = pct + '%';
+                                progressLabel.innerText = `Nahrávám fotografie... ${pct}%`;
+                                progressTime.innerText = 'Uplynulo: ' + formatElapsed(Date.now() - uploadStart);
+                            }
+                        };
+                        // Apps Script neposílá CORS hlavičky, takže odpověď
+                        // nejde v prohlížeči přečíst - onloadend nastane tak
+                        // jako tak (ať už "úspěšně" nebo s CORS chybou), a to
+                        // je signál, že požadavek byl na server odeslán.
+                        xhr.onloadend = () => resolve();
+                        xhr.onerror = () => resolve();
+                        xhr.send(body);
                     });
 
-                    alert("Odesláno!");
+                    progressFill.style.width = '100%';
+                    submitBtn.innerText = 'ZPRACOVÁVÁM VIDEO...';
+                    startPolling(clientJobId);
+
                 } catch (e) {
-                    alert("Chyba při odesílání.");
-                } finally {
+                    progressLabel.innerText = 'Chyba při přípravě/odesílání fotografií.';
+                    errorSection.style.display = 'block';
+                    errorSection.innerText = e && e.message ? e.message : String(e);
                     submitBtn.disabled = false;
-                    submitBtn.innerText = "VYTVOŘIT VIDEO";
+                    submitBtn.innerText = 'VYTVOŘIT VIDEO';
                 }
             }
         </script>
