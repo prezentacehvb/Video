@@ -370,10 +370,9 @@
                     images: convertedFiles
                 };
 
-                // 4. Odeslání do Apps Scriptu
+                // 4. Odeslání do Apps Scriptu (text/plain bez no-cors pro správné doručení payloadu)
                 await fetch(SCRIPT_URL, {
                     method: "POST",
-                    mode: "no-cors",
                     headers: {
                         "Content-Type": "text/plain;charset=utf-8"
                     },
