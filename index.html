@@ -284,7 +284,7 @@
                 </div>
                 <div class="input-group">
                     <label for="TEXT_TOP">Název nemovitosti</label>
-                    <input type="text" id="TEXT_TOP" name="TEXT_TOP" placeholder="RD 5+kk 100 m2, pozemek 400 m2" required>
+                    <input type="text" id="TEXT_TOP" name="TEXT_TOP" placeholder="RD 5+kk 100 m², pozemek 400 m²" required>
                 </div>
                 <div class="input-group">
                     <label for="MAKLER_TELEFON">Telefon</label>
@@ -334,6 +334,11 @@
             } else {
                 errorMsg.style.display = 'block';
             }
+        }
+
+        // Pomocná funkce pro automatickou opravu "m2" na "m²"
+        function fixM2(text) {
+            return text.replace(/m2/gi, 'm²');
         }
 
         // Komprese a zmenšení fotky + kontrola orientace na šířku
@@ -396,8 +401,18 @@
                 return;
             }
 
+            // Automatická oprava "m2" na "m²" v zadaných textech
+            const rawTextTop = document.getElementById("TEXT_TOP").value;
+            const rawTextBottom = document.getElementById("TEXT_BOTTOM").value;
+            
+            const textTopFixed = fixM2(rawTextTop);
+            const textBottomFixed = fixM2(rawTextBottom);
+
+            // Aktualizace hodnot v polích, aby to viděl i makléř na obrazovce
+            document.getElementById("TEXT_TOP").value = textTopFixed;
+            document.getElementById("TEXT_BOTTOM").value = textBottomFixed;
+
             let secondsElapsed = 0;
-            const startTime = new Date();
             
             const timerInterval = setInterval(() => {
                 secondsElapsed++;
@@ -426,8 +441,8 @@
                     MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
                     MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL").value,
                     MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
-                    TEXT_TOP: document.getElementById("TEXT_TOP").value,
-                    TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
+                    TEXT_TOP: textTopFixed,
+                    TEXT_BOTTOM: textBottomFixed,
                     images: convertedFiles
                 };
 
