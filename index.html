@@ -267,8 +267,8 @@
             <ul>
                 <li>Vyplňte údaje a vložte <strong>5 až 15 fotografií</strong>.</li>
                 <li>Všechny fotografie musí být orientovány <strong>na šířku</strong> (fotografie na výšku budou automaticky vyřazeny).</li>
-                <li>Pokud fotografie neocíslujete, budou seřadit <strong>náhodně</strong>. Pokud je očíslujete, zobrazí se v daném pořadí.</li>
-                <li>Odkaz ke stažení videa obdržíte do e-mailu.</li>
+                <li>Nebudou-li fotografie očíslovány, budou seřazeny ve videu náhodně. Očíslované se zobrazí vzestupně.</li>
+                <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
             </ul>
         </div>
 
@@ -430,7 +430,7 @@
                     body: JSON.stringify(payload)
                 });
 
-                alert("Odesláno! Zpracování videa bylo zahájeno. Po dokončení vám přijde e-mail.");
+                alert("Odesláno! Zpracování videa bylo zahájeno. Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.");
                 document.getElementById("videoForm").reset();
 
             } catch (e) {
