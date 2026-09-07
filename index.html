@@ -175,9 +175,19 @@
         }
 
         .submit-btn:disabled {
-            opacity: 0.8;
+            opacity: 0.6;
             cursor: wait;
-            background: linear-gradient(135deg, #512da8, #311b92);
+        }
+
+        #statusInfo {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+            display: none;
+            text-align: center;
+            line-height: 1.4;
         }
 
         .ai-section {
@@ -239,7 +249,7 @@
             <div class="logo-text" style="font-size: 2rem;">PŘIHLÁŠENÍ</div>
             <p style="margin-bottom: 20px; color: rgba(255,255,255,0.7);">Zadejte e-mail</p>
             
-            <input type="email" id="loginEmail" style="width: 100%;" onkeydown="if(event.key === 'Enter') checkLogin()">
+            <input type="email" id="loginEmail" placeholder="vás-email@hvbreal.cz" style="width: 100%;" onkeydown="if(event.key === 'Enter') checkLogin()">
             
             <div class="captcha-container">
                 <input type="checkbox" id="robotCheck">
@@ -258,9 +268,9 @@
         </header>
 
         <div class="instruction-box">
-            <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie. Odkaz ke stažení videa obdržíte do e-mailu.</p>
+            <p><strong>Návod:</strong> Vyplňte údaje a vložte fotografie (5–15 fotografií). Odkaz ke stažení videa obdržíte do e-mailu.</p>
             <p style="margin-top: 8px; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7);">
-                ⚠️ <strong>Upozornění k fotografiím:</strong> Nahrávejte 5 až 15 fotografií. Systém automaticky akceptuje <strong>pouze fotografie na šířku</strong> (fotografie na výšku jsou automaticky vyřazeny) a v případě nahrání více než 15 snímků použije prvních 15.
+                ⚠️ <strong>Upozornění k fotografiím:</strong> Nahrávejte pouze fotografie na šířku. Snímky orientované na výšku jsou systémem automaticky vyřazeny.
             </p>
         </div>
 
@@ -293,6 +303,7 @@
             </div>
 
             <button type="submit" id="submitBtn" class="submit-btn">VYTVOŘIT VIDEO</button>
+            <div id="statusInfo"></div>
         </form>
 
         <div class="ai-section">
@@ -329,7 +340,7 @@
                 const formEmail = document.getElementById('MAKLER_EMAIL');
                 formEmail.value = email;
             } else {
-                errorMsg.innerText = "Přístup povolen pouze pro e-maily @hvbreal.cz";
+                errorMsg.innerText = "Přístup povolen pouze pro @hvbreal.cz";
                 errorMsg.style.display = 'block';
             }
         }
@@ -340,8 +351,8 @@
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        // Zpracování, zmenšení na Full HD a komprese (0.85 kvalita pro hladký přenos do Google Apps Scriptu)
-        function processImage(file, maxWidth = 1920, maxHeight = 1080) {
+        // Původní funkční komprese 0.8 s kontrolou orientace
+        function resizeAndCompressImage(file, maxWidth = 1920, maxHeight = 1080, quality = 0.8) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -352,13 +363,12 @@
                         let width = img.width;
                         let height = img.height;
 
-                        // Vyřazení fotek na výšku
+                        // Kontrola na výšku - vrací null
                         if (height > width) {
-                            resolve({ valid: false, reason: "portrait", name: file.name });
+                            resolve(null);
                             return;
                         }
 
-                        // Zmenšení na Full HD rozlišení
                         if (width > maxWidth || height > maxHeight) {
                             if (width / height > maxWidth / maxHeight) {
                                 height = Math.round((height * maxWidth) / width);
@@ -375,33 +385,34 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // Nastavení optimální komprese 0.85
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                        const dataUrl = canvas.toDataURL('image/jpeg', quality);
                         const base64Data = dataUrl.split(',')[1];
                         
-                        resolve({ 
-                            valid: true,
-                            name: file.name.replace(/\.[^/.]+$/, "") + ".jpg", 
-                            base64: base64Data 
-                        });
+                        // Přesný formát jako v původním fungujícím kódu
+                        resolve({ name: file.name, base64: base64Data });
                     };
-                    img.onerror = () => resolve({ valid: false, reason: "error", name: file.name });
+                    img.onerror = () => resolve(null);
                 };
-                reader.onerror = () => resolve({ valid: false, reason: "error", name: file.name });
+                reader.onerror = () => resolve(null);
             });
         }
 
         async function sendData(event) {
             event.preventDefault();
             const submitBtn = document.getElementById("submitBtn");
+            const statusInfo = document.getElementById("statusInfo");
+
             submitBtn.disabled = true;
+            statusInfo.style.display = "block";
+            statusInfo.style.color = "#ffffff";
 
             let secondsElapsed = 0;
-            submitBtn.innerText = `Probíhá nahrávání fotografií... (Čas: 00:00)`;
-            
+            submitBtn.innerText = `Zpracovávám a nahrávám... (00:00)`;
+            statusInfo.innerHTML = "Zpracovávám fotografie...";
+
             const timerInterval = setInterval(() => {
                 secondsElapsed++;
-                submitBtn.innerText = `Probíhá nahrávání fotografií... (Čas: ${formatTime(secondsElapsed)})`;
+                submitBtn.innerText = `Zpracovávám a nahrávám... (${formatTime(secondsElapsed)})`;
             }, 1000);
 
             const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDB8VvtsXjx02XjZ4cw7wBycmZehrDEVmExhTGMKzqpGaHn5qlKgms0DacNu4rJJC7-w/exec";
@@ -410,42 +421,44 @@
 
             if (files.length === 0) {
                 clearInterval(timerInterval);
-                alert("Vyberte prosím fotografie.");
+                alert("Vyberte prosím alespoň jednu fotografii.");
                 submitBtn.disabled = false;
                 submitBtn.innerText = "VYTVOŘIT VIDEO";
+                statusInfo.style.display = "none";
                 return;
             }
 
             try {
-                const processedResults = await Promise.all(files.map(file => processImage(file)));
+                // 1. Zmenšení fotek a filtrace vyřazených fotek na výšku
+                const rawResults = await Promise.all(files.map(file => resizeAndCompressImage(file)));
+                
+                // Odfiltrujeme null (fotky na výšku)
+                const convertedFiles = rawResults.filter(item => item !== null);
+                const portraitCount = files.length - convertedFiles.length;
 
-                const validImages = processedResults.filter(item => item.valid);
-                const portraitCount = processedResults.filter(item => !item.valid && item.reason === "portrait").length;
-
-                if (validImages.length < 1) {
+                if (convertedFiles.length === 0) {
                     clearInterval(timerInterval);
-                    alert(`Nebyla nalezena žádná použitelná fotografia na šířku.\n\n` +
-                          `Vybráno celkem: ${files.length}\n` +
-                          `Vyřazeno (na výšku): ${portraitCount}\n\n` +
-                          `Nahrajte prosím fotografie na šířku.`);
+                    statusInfo.style.color = "#ff5252";
+                    statusInfo.innerHTML = `<strong>Chyba:</strong> Vybráno ${files.length} fotografií, ale všech ${portraitCount} bylo vyřazeno (jsou na výšku). Nahrajte prosím fotografie na šířku.`;
                     submitBtn.disabled = false;
                     submitBtn.innerText = "VYTVOŘIT VIDEO";
                     return;
                 }
 
-                let finalImages = validImages;
+                // Omezení na maximálně 15 fotek
+                let finalFiles = convertedFiles;
                 let excessCount = 0;
-                if (validImages.length > 15) {
-                    excessCount = validImages.length - 15;
-                    finalImages = validImages.slice(0, 15);
+                if (convertedFiles.length > 15) {
+                    excessCount = convertedFiles.length - 15;
+                    finalFiles = convertedFiles.slice(0, 15);
                 }
 
-                const imagesToUpload = finalImages.map(img => ({ name: img.name, base64: img.base64 }));
-
+                // 2. Vygenerování unikátního CLIENT_JOB_ID
                 const timeStamp = new Date().getTime();
                 const randomPart = Math.random().toString(36).substring(2, 7);
                 const clientJobId = "job_" + timeStamp + "_" + randomPart;
 
+                // 3. Přesná struktura payloadu z funkčního kódu
                 const payload = {
                     CLIENT_JOB_ID: clientJobId,
                     MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
@@ -453,9 +466,10 @@
                     MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
                     TEXT_TOP: document.getElementById("TEXT_TOP").value,
                     TEXT_BOTTOM: document.getElementById("TEXT_BOTTOM").value,
-                    images: imagesToUpload
+                    images: finalFiles
                 };
 
+                // 4. Odeslání do Apps Scriptu (identické jako ve funkčním kódu)
                 await fetch(SCRIPT_URL, {
                     method: "POST",
                     mode: "no-cors",
@@ -468,22 +482,23 @@
                 clearInterval(timerInterval);
                 const finalFormattedTime = formatTime(secondsElapsed);
 
-                submitBtn.innerText = `Fotografie nahrány! (Celkový čas: ${finalFormattedTime})`;
+                submitBtn.innerText = `Odesláno! (${finalFormattedTime})`;
 
-                let statusMessage = `Fotografie nahrány! Celkový čas: ${finalFormattedTime}\n\n` +
-                                    `- Přijato a upraveno na Full HD: ${finalImages.length} fotek\n`;
-                if (portraitCount > 0) statusMessage += `- Vyřazeno (fotografie na výšku): ${portraitCount}\n`;
-                if (excessCount > 0) statusMessage += `- Vyřazeno (přesahující limit 15 ks): ${excessCount}\n`;
-                
-                statusMessage += `\nOdesláno! Zpracování videa bylo zahájeno. Odkaz ke stažení obdržíte do e-mailu.`;
-                
-                alert(statusMessage);
+                let infoText = `<strong>Fotografie nahrány za ${finalFormattedTime}!</strong><br>` +
+                               `• Přijato na šířku: ${finalFiles.length} fotek<br>`;
+                if (portraitCount > 0) infoText += `<span style="color: #ffab40;">• Vyřazeno na výšku: ${portraitCount} ks</span><br>`;
+                if (excessCount > 0) infoText += `<span style="color: #ffab40;">• Vyřazeno nad limit 15 ks: ${excessCount} ks</span><br>`;
+                infoText += `<br>Zpracování videa bylo zahájeno. Po dokončení obdržíte e-mail.`;
+
+                statusInfo.innerHTML = infoText;
                 document.getElementById("videoForm").reset();
 
             } catch (e) {
                 clearInterval(timerInterval);
                 console.error(e);
-                alert("Chyba při zpracování fotografií nebo odesílání.");
+                statusInfo.style.color = "#ff5252";
+                statusInfo.innerHTML = "Chyba při zpracování fotografií nebo odesílání.";
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = "VYTVOŘIT VIDEO";
             }
