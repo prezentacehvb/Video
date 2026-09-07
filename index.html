@@ -252,7 +252,7 @@
             </div>
 
             <button onclick="checkLogin()" class="submit-btn">VSTOUPIT</button>
-            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;">Přístup povolen pouze pro @hvbreal.cz po zaškrtnutí potvrzení.</p>
+            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;">Chybné heslo</p>
         </div>
     </div>
 
@@ -263,11 +263,11 @@
         </header>
 
         <div class="instruction-box">
-            <p><strong>Návod k použití a pravidla pro fotografie:</strong></p>
+            <p><strong>Návod k použití a pravidla pro vložení fotografií:</strong></p>
             <ul>
-                <li>Vyplňte údaje a vložte <strong>5 až 15 fotografií</strong>.</li>
-                <li>Všechny fotografie musí být orientovány <strong>na šířku</strong> (fotografie na výšku budou automaticky vyřazeny).</li>
-                <li>Nebudou-li fotografie očíslovány, budou seřazeny ve videu náhodně. Očíslované se zobrazí vzestupně.</li>
+                <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
+                <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
+                <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
                 <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
             </ul>
         </div>
@@ -388,24 +388,34 @@
             const fileInput = document.getElementById("images");
             const files = Array.from(fileInput.files);
 
-            // Kontrola celkového počtu fotografií (5 až 15)
-            if (files.length < 5 || files.length > 15) {
-                alert(`Vyberte prosím 5 až 15 fotografií. Nyní jste vybral(a) ${files.length} souborů.`);
+            // Kontrola maximálního počtu fotografií (max. 15)
+            if (files.length > 15) {
+                alert(`Vyberte prosím maximálně 15 fotografií. Nyní jste vybral(a) ${files.length} souborů.`);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "VYTVOŘIT VIDEO";
                 return;
             }
 
+            let secondsElapsed = 0;
+            const startTime = new Date();
+            
+            const timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = Math.floor(secondsElapsed / 60);
+                const secs = secondsElapsed % 60;
+                const timeStr = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                submitBtn.innerText = `Odesílám data ke zpracování... (${timeStr})`;
+            }, 1000);
+
+            submitBtn.innerText = `Odesílám data ke zpracování... (0:00)`;
+
             try {
-                // Postupné zpracování s ukazatelem průběhu
+                // Postupné zpracování fotografií
                 const convertedFiles = [];
                 for (let i = 0; i < files.length; i++) {
-                    submitBtn.innerText = `Zpracovávám foto ${i + 1} z ${files.length}...`;
                     const processed = await processAndValidateImage(files[i]);
                     convertedFiles.push(processed);
                 }
-
-                submitBtn.innerText = "Odesílám data na server...";
 
                 const timeStamp = new Date().getTime();
                 const randomPart = Math.random().toString(36).substring(2, 7);
@@ -430,13 +440,17 @@
                     body: JSON.stringify(payload)
                 });
 
-                alert("Odesláno! Zpracování videa bylo zahájeno. Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.");
+                clearInterval(timerInterval);
+                const sentTime = new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                alert(`Data odeslána v ${sentTime}`);
                 document.getElementById("videoForm").reset();
 
             } catch (e) {
+                clearInterval(timerInterval);
                 console.error(e);
                 alert("Vyřazení / Chyba při zpracování fotografií: " + e.message);
             } finally {
+                clearInterval(timerInterval);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "VYTVOŘIT VIDEO";
             }
