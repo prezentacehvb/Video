@@ -291,18 +291,77 @@ def draw_text_overlay(image_np, text_str):
 
     return np.array(img.convert("RGB"))
 
+_MOTION_MODES = [
+    "zoom_in", "zoom_out",
+    "pan_left_to_right", "pan_right_to_left",
+    "pan_top_to_bottom", "pan_bottom_to_top",
+    "zoom_in_left", "zoom_in_right",
+    "zoom_out_left", "zoom_out_right",
+]
+
 def apply_smooth_smart_motion(img_path, duration, text_overlay=""):
     img = Image.open(img_path).convert("RGB")
     img_w, img_h = img.size
 
+    # Vyhodnocení režimu pohybu JEDNOU na klip (ne při každém snímku), aby
+    # "random" dal každé fotce jeden konzistentní typ pohybu po celou dobu.
+    mode = random.choice(_MOTION_MODES) if MOTION_MODE == "random" else MOTION_MODE
+    if mode not in _MOTION_MODES:
+        mode = "zoom_in"
+
+    pan_fraction = max(0.0, min(1.0, PAN_STEP_PERCENT / 100.0))
+
+    def crop_window(zoom, offset_x_frac=0.0, offset_y_frac=0.0):
+        """Vrátí (x, y, w, h) výřezu pro daný zoom a posun (frac -1..1) od středu."""
+        zoom = max(zoom, 1.0)
+        sw = max(1, min(img_w, int(round(TARGET_W / zoom))))
+        sh = max(1, min(img_h, int(round(TARGET_H / zoom))))
+        max_off_x = (img_w - sw) // 2
+        max_off_y = (img_h - sh) // 2
+        cx = (img_w - sw) // 2 + int(round(max_off_x * offset_x_frac))
+        cy = (img_h - sh) // 2 + int(round(max_off_y * offset_y_frac))
+        cx = max(0, min(img_w - sw, cx))
+        cy = max(0, min(img_h - sh, cy))
+        return cx, cy, sw, sh
+
     def make_frame(t):
-        progress = t / duration
-        curr_zoom = 1 + (ZOOM_SPEED * progress)
-        sw = int(TARGET_W / curr_zoom)
-        sh = int(TARGET_H / curr_zoom)
-        x = (img_w - sw) // 2
-        y = (img_h - sh) // 2
-        frame = img.crop((x, y, x + sw, y + sh)).resize((TARGET_W, TARGET_H), Image.Resampling.LANCZOS)
+        progress = 0.0 if duration <= 0 else min(1.0, max(0.0, t / duration))
+
+        if mode == "zoom_in":
+            zoom = 1 + ZOOM_SPEED * progress
+            cx, cy, sw, sh = crop_window(zoom)
+        elif mode == "zoom_out":
+            zoom = 1 + ZOOM_SPEED * (1 - progress)
+            cx, cy, sw, sh = crop_window(zoom)
+        elif mode == "pan_left_to_right":
+            frac = -pan_fraction + 2 * pan_fraction * progress
+            cx, cy, sw, sh = crop_window(PAN_ZOOM_FACTOR, offset_x_frac=frac)
+        elif mode == "pan_right_to_left":
+            frac = pan_fraction - 2 * pan_fraction * progress
+            cx, cy, sw, sh = crop_window(PAN_ZOOM_FACTOR, offset_x_frac=frac)
+        elif mode == "pan_top_to_bottom":
+            frac = -pan_fraction + 2 * pan_fraction * progress
+            cx, cy, sw, sh = crop_window(PAN_ZOOM_FACTOR, offset_y_frac=frac)
+        elif mode == "pan_bottom_to_top":
+            frac = pan_fraction - 2 * pan_fraction * progress
+            cx, cy, sw, sh = crop_window(PAN_ZOOM_FACTOR, offset_y_frac=frac)
+        elif mode == "zoom_in_left":
+            zoom = 1 + ZOOM_SPEED * progress
+            cx, cy, sw, sh = crop_window(zoom, offset_x_frac=-pan_fraction * progress)
+        elif mode == "zoom_in_right":
+            zoom = 1 + ZOOM_SPEED * progress
+            cx, cy, sw, sh = crop_window(zoom, offset_x_frac=pan_fraction * progress)
+        elif mode == "zoom_out_left":
+            zoom = 1 + ZOOM_SPEED * (1 - progress)
+            cx, cy, sw, sh = crop_window(zoom, offset_x_frac=-pan_fraction * (1 - progress))
+        elif mode == "zoom_out_right":
+            zoom = 1 + ZOOM_SPEED * (1 - progress)
+            cx, cy, sw, sh = crop_window(zoom, offset_x_frac=pan_fraction * (1 - progress))
+        else:
+            zoom = 1 + ZOOM_SPEED * progress
+            cx, cy, sw, sh = crop_window(zoom)
+
+        frame = img.crop((cx, cy, cx + sw, cy + sh)).resize((TARGET_W, TARGET_H), Image.Resampling.LANCZOS)
         frame_np = np.array(frame)
         if text_overlay:
             frame_np = draw_text_overlay(frame_np, text_overlay)
