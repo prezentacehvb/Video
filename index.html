@@ -99,6 +99,14 @@
             margin-bottom: 50px;
         }
 
+        .header-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
         .logo-text {
             font-size: 3.5rem;
             font-weight: 800;
@@ -106,17 +114,17 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -2px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
+            margin: 0;
         }
 
-        .logo-text img {
+        .header-logo-img {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
             height: 1em;
             width: auto;
-            vertical-align: middle;
+            font-size: 3.5rem;
         }
 
         .subtitle {
@@ -252,7 +260,7 @@
     <!-- Login Screen -->
     <div id="loginOverlay">
         <div class="login-card">
-            <div class="logo-text" style="font-size: 2rem;">PŘIHLÁŠENÍ</div>
+            <div class="logo-text" style="font-size: 2rem; text-align: center;">PŘIHLÁŠENÍ</div>
             <p style="margin-bottom: 15px; color: rgba(255,255,255,0.7);">Zadejte e-mail</p>
             <input type="email" id="loginEmail" style="width: 100%;" onkeydown="if(event.key === 'Enter') checkLogin()">
             
@@ -268,9 +276,9 @@
 
     <div class="main-card blurred" id="mainCard">
         <header>
-            <div class="logo-text">
-                <span>HVB VIDEO</span>
-                <img src="HVBlogo.png" alt="HVB Logo">
+            <div class="header-logo-container">
+                <div class="logo-text">HVB VIDEO</div>
+                <img src="HVBlogo.png" alt="HVB Logo" class="header-logo-img">
             </div>
             <div class="subtitle">REALITNÍ PREZENTACE</div>
         </header>
@@ -278,7 +286,7 @@
         <div class="instruction-box">
             <p><strong>Návod k použití a pravidla pro vložení fotografií:</strong></p>
             <ul>
-                <li>1. Fotografie (originál či upravené v GEM) připravte do jedné složky.</li>
+                <li>Fotografie (originál či upravené v GEM) připravte do jedné složky.</li>
                 <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
                 <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
                 <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
