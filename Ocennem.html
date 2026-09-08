@@ -11,9 +11,9 @@
             --bg-color: #f8f9fa;
             --card-bg: #ffffff;
             --text-color: #202124;
+            --text-secondary: #5f6368;
             --border-color: #dadce0;
-            --code-bg: #282c34;
-            --code-color: #abb2bf;
+            --code-bg: #f1f3f4;
         }
 
         body {
@@ -26,7 +26,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
             background: var(--card-bg);
             padding: 40px;
@@ -36,75 +36,95 @@
 
         h1 {
             color: var(--primary-color);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
             margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
         }
 
         h2 {
-            color: #3c4043;
+            color: var(--text-color);
+            font-size: 1.3rem;
             margin-top: 30px;
+            margin-bottom: 15px;
         }
 
         .subtitle {
-            font-size: 1.1em;
-            color: #5f6368;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+
+        .link-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
             margin-bottom: 30px;
+            transition: background-color 0.2s;
+        }
+
+        .link-button:hover {
+            background-color: var(--primary-hover);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin-bottom: 30px;
         }
 
         th, td {
             padding: 12px 15px;
             text-align: left;
-            border: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
         th {
-            background-color: #f1f3f4;
+            background-color: var(--bg-color);
             font-weight: 600;
+            color: var(--text-color);
         }
 
-        tr:nth-child(even) {
-            background-color: #f8f9fa;
+        tr:hover {
+            background-color: #f1f3f4;
         }
 
-        .prompt-container {
-            position: relative;
-            margin: 20px 0;
+        .step-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: center;
+            width: 50px;
         }
 
-        pre {
+        .prompt-box {
             background-color: var(--code-bg);
-            color: var(--code-color);
-            padding: 20px;
-            border-radius: 6px;
-            overflow-x: auto;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            font-family: inherit;
             white-space: pre-wrap;
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-            font-size: 0.9em;
+            position: relative;
+            margin-bottom: 30px;
         }
 
         .copy-btn {
             position: absolute;
             top: 10px;
             right: 10px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 4px;
+            padding: 5px 10px;
             cursor: pointer;
-            font-size: 0.85em;
-            transition: background-color 0.2s;
+            font-size: 0.8rem;
         }
 
         .copy-btn:hover {
-            background-color: var(--primary-hover);
+            background: var(--bg-color);
         }
 
         ul {
@@ -112,7 +132,46 @@
         }
 
         li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+            td:before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            td:nth-of-type(1):before { content: "Krok:"; }
+            td:nth-of-type(2):before { content: "Název:"; }
+            td:nth-of-type(3):before { content: "Popis:"; }
         }
     </style>
 </head>
@@ -120,47 +179,47 @@
 
 <div class="container">
     <h1>Návod: Vytvoření Gema pro ocenění nemovitostí</h1>
-    <p class="subtitle">Kompletní průvodce nastavením AI asistentky pro stanovení cen nemovitostí.</p>
+    <p class="subtitle">Kompletní průvodce nastavením AI asistentky pro stanovení tržních cen nemovitostí.</p>
+
+    <a href="https://gemini.google.com/app" target="_blank" class="link-button">Otevřít Gemini (gemini.google.com)</a>
 
     <h2>1. Postup nastavení krok za krokem</h2>
     <table>
         <thead>
             <tr>
-                <th>Krok</th>
-                <th>Název kroku</th>
-                <th>Popis akce</th>
+                <th style="width: 10%;">Krok</th>
+                <th style="width: 30%;">Název kroku</th>
+                <th style="width: 60%;">Popis akce</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><strong>1</strong></td>
-                <td>Otevřete rozhraní Gemů</td>
-                <td>V prostředí Gemini klikněte v levém menu na záložku Roboti Gem a vyberte možnost Nový Gem.</td>
+                <td class="step-number">1</td>
+                <td><strong>Otevřete rozhraní Gemini</strong></td>
+                <td>V prostředí Gemini klikněte v levém menu na záložku <strong>Roboti Gem</strong> a vyberte možnost <strong>Nový Gem</strong>.</td>
             </tr>
             <tr>
-                <td><strong>2</strong></td>
-                <td>Zadejte základní údaje</td>
-                <td>Pojmenujte svého robota (např. Realitní odhadce & Valuátor) a přidejte popis (např. Specialista na výpočet tržní ceny a analýzu nemovitostí).</td>
+                <td class="step-number">2</td>
+                <td><strong>Zadejte základní údaje</strong></td>
+                <td>Pojmenujte svého robota (např. <em>Realitní odhadce & Valuátor</em>) a přidejte popis (např. <em>Specialista na výpočet tržní ceny a analýzu nemovitostí</em>).</td>
             </tr>
             <tr>
-                <td><strong>3</strong></td>
-                <td>Vložte hlavní pokyny</td>
-                <td>Do pole Pokyny (Instructions) zkopírujte kompletní konfigurační text uvedený v sekci nižší a ULOŽTE robota.</td>
+                <td class="step-number">3</td>
+                <td><strong>Vložte hlavní pokyny</strong></td>
+                <td>Do pole <strong>Pokyny (Instructions)</strong> zkopírujte kompletní konfigurační text uvedený v sekci níže a <strong>ULOŽTE</strong> robota.</td>
             </tr>
             <tr>
-                <td><strong>4</strong></td>
-                <td>Testujte a dolaďte</td>
-                <td>V sekci Roboti Gem vyberte svého bota, klikněte na něho, po otevření vložte detaily nemovitosti (můžete přiložit i např. pdf soubor inzerce z Srealit) a spusťte výpočet. Výsledný soubor v pokynech botovi upravte do podoby, která Vám vytvoří dokument dle Vašich preferencí. Dokument uložte přes volbu …/Exportovat do Dokumentů (následně Stáhnout do PDF)</td>
+                <td class="step-number">4</td>
+                <td><strong>Testujte a dolaďte</strong></td>
+                <td>V sekci Roboti Gem vyberte svého bota, klikněte na něho, po otevření vložte detaily nemovitosti (můžete přiložit i např. PDF soubor inzerce z Srealit) a spusťte výpočet. Výsledný soubor v pokynech botovi upravte do podoby, která Vám vytvoří dokument dle Vašich preferencí. Dokument uložte přes volbu <strong>... / Exportovat do Dokumentů</strong> (následně můžete stáhnout do PDF).</td>
             </tr>
         </tbody>
     </table>
 
     <h2>2. Konfigurační text pro pole "Pokyny" (System Prompt) - příklad</h2>
     <p>Tento text zkopírujte přímo do nastavení vašich Pokynů v rozhraní Gema:</p>
-    
-    <div class="prompt-container">
-        <button class="copy-btn" onclick="copyPrompt()">Zkopírovat text</button>
-        <pre id="promptText">Jsi expertní analytik realitního trhu a certifikovaný odhadce nemovitostí. Tvým úkolem je provést strukturované, realistické a podrobné ocenění nemovitosti na základě údajů poskytnutých uživatelem.
+
+    <div class="prompt-box" id="promptText"><button class="copy-btn" onclick="copyPrompt()">Zkopírovat text</button>Jsi expertní analytik realitního trhu a certifikovaný odhadce nemovitostí. Tvým úkolem je provést strukturované, realistické a podrobné ocenění nemovitosti na základě údajů poskytnutých uživatelem.
 
 ### TVŮJ PRACOVNÍ POSTUP:
 1. Pokud uživatel nezadal dostatek informací, vyžádej si chybějící údaje z tohoto seznamu:
@@ -171,7 +230,7 @@
    - Vlastnictví (osobní, družstevní)
    - Příslušenství (balkón, terasa, sklep, parkovací stání/garáž, výtah)
 
-2. Po obdržení dat proveď analýzu ocení metodou srovnávací analýzy trhu (CMA):
+2. Po obdržení dat proveď analýzu ocenění metodou srovnávací analýzy trhu (CMA):
    - Odhadni průměrnou cenu za m² v dané lokalitě a daném stavu.
    - Započítej přirážky/srážky za specifika (předřazené patro, přítomnost výtahu, stav budovy, energetická třída, parkování).
    - Vypočítej indikativní celkovou tržní cenu.
@@ -197,8 +256,7 @@ Vždy odpovídej v následujícím formátu s využitím přehledných nadpisů 
 V dokumentu nepoužívej odkazy.
 
 ### TÓN A STYL:
-Odpovídej profesionálně, věcně, objektivně a v českém jazyce. Vždy zdůrazni, že odhad je orientační a nenahrazuje oficiální znalecký posudek.</pre>
-    </div>
+Odpovídej profesionálně, věcně, objektivně a v českém jazyce. Vždy zdůrazni, že odhad je orientační a nenahrazuje oficiální znalecký posudek.</div>
 
     <h2>3. Doporučené další kroky</h2>
     <ul>
@@ -209,7 +267,7 @@ Odpovídej profesionálně, věcně, objektivně a v českém jazyce. Vždy zdů
 
 <script>
     function copyPrompt() {
-        const promptText = document.getElementById('promptText').innerText;
+        const promptText = document.getElementById('promptText').innerText.replace('Zkopírovat text', '').trim();
         navigator.clipboard.writeText(promptText).then(() => {
             const btn = document.querySelector('.copy-btn');
             btn.innerText = 'Zkopírováno!';
