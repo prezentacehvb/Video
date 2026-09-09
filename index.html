@@ -305,7 +305,7 @@
             </ul>
         </div>
 
-        <div id="limitStatusBox" class="limit-box" style="display: none;"></div>
+        <div id="limitStatusBox" class="limit-box" style="display: none;">Načítám limit...</div>
 
         <form id="videoForm" onsubmit="sendData(event)">
             <div class="form-grid">
@@ -357,13 +357,13 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
 
-        async function fetchUserLimit(email) {
+        function fetchUserLimit(email) {
             const limitBox = document.getElementById('limitStatusBox');
             const submitBtn = document.getElementById('submitBtn');
-            try {
-                const response = await fetch(`${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}`);
-                const data = await response.json();
-                
+            limitBox.style.display = 'block';
+            limitBox.innerText = 'Načítám zbývající limit...';
+
+            window.handleLimitResponse = function(data) {
                 if (data && typeof data.remaining !== 'undefined') {
                     if (data.remaining > 0) {
                         limitBox.style.color = "#a7ffeb";
@@ -376,14 +376,12 @@
                         limitBox.innerText = "Váš dnešní limit tvorby videa byl vyčerpán.";
                         submitBtn.disabled = true;
                     }
-                } else {
-                    limitBox.innerText = "Dnes můžete vytvořit ještě omezený počet videí.";
                 }
-            } catch (err) {
-                console.error("Chyba načítání limitu:", err);
-                limitBox.innerText = "Dnes můžete vytvořit ještě omezený počet videí.";
-            }
-            limitBox.style.display = 'block';
+            };
+
+            const script = document.createElement('script');
+            script.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&callback=handleLimitResponse`;
+            document.body.appendChild(script);
         }
 
         function checkLogin() {
@@ -567,7 +565,7 @@
                 alert(`Data odeslána v ${sentTime}`);
                 document.getElementById("videoForm").reset();
 
-                // Aktualizace stavu limitu po odeslání
+                // Přepočítá zbývající limit po úspěšném odeslání
                 fetchUserLimit(document.getElementById("MAKLER_EMAIL").value);
 
             } catch (e) {
