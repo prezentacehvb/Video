@@ -364,7 +364,7 @@
                     document.getElementById('MAKLER_EMAIL').value = email;
 
                     if (data && data.status === "success") {
-                        showInfoBanner(`Váš denní limit tvorby videí je ${data.remaining} (z celkových ${data.maxLimit}).`);
+                        showInfoBanner(`Váš denní limit tvorby videí je ${data.remaining} z celkových ${data.maxLimit}.`);
                         
                         if (data.remaining <= 0) {
                             const submitBtn = document.getElementById('submitBtn');
@@ -372,6 +372,8 @@
                             submitBtn.innerText = "DENNÍ LIMIT VYČERPÁN";
                             showInfoBanner(`Váš dnešní limit tvorby videí (${data.maxLimit}) byl vyčerpán. Další tvorba bude možná zítra.`);
                         }
+                    } else if (data && data.status === "error") {
+                        showInfoBanner(data.message);
                     } else {
                         showInfoBanner("Nepodařilo se ověřit denní limit. Můžete pokračovat ve vyplňování.");
                     }
@@ -545,7 +547,6 @@
                 alert(`Data odeslána v ${sentTime}`);
                 document.getElementById("videoForm").reset();
 
-                // Po úspěšném odeslání zaktualizujeme limit přes JSONP
                 const email = document.getElementById("MAKLER_EMAIL").value;
                 if (email) {
                     const cbName = "handleLimitResponse_after_" + Math.random().toString(36).substring(2, 9);
@@ -553,7 +554,7 @@
                         delete window[cbName];
                         if (document.body.contains(sTag)) document.body.removeChild(sTag);
                         if (data && data.status === "success") {
-                            showInfoBanner(`Váš zbývající denní limit tvorby videí je nyní ${data.remaining} (z celkových ${data.maxLimit}).`);
+                            showInfoBanner(`Váš zbývající denní limit tvorby videí je nyní ${data.remaining} z celkových ${data.maxLimit}.`);
                             if (data.remaining <= 0) {
                                 submitBtn.disabled = true;
                                 submitBtn.innerText = "DENNÍ LIMIT VYČERPÁN";
