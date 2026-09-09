@@ -340,6 +340,7 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
+        const VERSION_KEY = "HVB_BUILD_2026_09_09_V1"; // Musí se shodovat s kódovým klíčem v Apps Scriptu
 
         function checkLogin() {
             const emailInput = document.getElementById('loginEmail');
@@ -385,7 +386,7 @@
                 };
 
                 const scriptTag = document.createElement('script');
-                scriptTag.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&callback=${callbackName}`;
+                scriptTag.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&vkey=${encodeURIComponent(VERSION_KEY)}&callback=${callbackName}`;
                 
                 scriptTag.onerror = function() {
                     delete window[callbackName];
@@ -569,7 +570,7 @@
                         }
                     };
                     const sTag = document.createElement('script');
-                    sTag.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&callback=${cbName}`;
+                    sTag.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&vkey=${encodeURIComponent(VERSION_KEY)}&callback=${cbName}`;
                     document.body.appendChild(sTag);
                 }
 
