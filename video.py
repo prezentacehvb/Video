@@ -198,8 +198,8 @@ MAX_IMAGE_DURATION = 5 # @param {type:"number"}
 ASPECT_RATIO = "16:9" # @param ["16:9", "4:3"]
 MOTION_MODE = "random" # @param ["random", "zoom_in", "zoom_out", "pan_left_to_right", "pan_right_to_left", "pan_top_to_bottom", "pan_bottom_to_top", "zoom_in_left", "zoom_in_right", "zoom_out_left", "zoom_out_right"]
 
-ZOOM_SPEED = 0.10
-PAN_ZOOM_FACTOR = 1.10   # o kolik se "přizoomuje" navíc u pan/zoom-pan pohybů (musí být > 1.0)
+ZOOM_SPEED = 0.05
+PAN_ZOOM_FACTOR = 1.05   # o kolik se "přizoomuje" navíc u pan/zoom-pan pohybů (musí být > 1.0)
 PAN_STEP_PERCENT = 60    # kolik % dostupného prostoru pro posun (overscan) se využije při pan efektech
 
 # --- Kvalita pohybu (proti "chvění"/blikání při zoomu a panu) ---
