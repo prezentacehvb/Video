@@ -613,7 +613,8 @@ outro_clip = outro_clip.crossfadein(1.0)
 final_clips.append(outro_clip)
 
 if final_clips:
-    final_video = concatenate_videoclips(final_clips, method="compose", padding=-1.0)
+    # Změna metody na 'chain' pro potenciálně čistší přechody a nižší náročnost
+    final_video = concatenate_videoclips(final_clips, method="chain", padding=-1.0)
     total_dur = final_video.duration
 
     if os.path.exists(MUSIC_FILE):
@@ -641,14 +642,14 @@ if final_clips:
                         sys.stdout.flush()
                         self.last_pct = pct
 
-    print(f"🎬 Délka: {total_dur:.1f}s. Zahajuji export s vysokou kvalitou (CRF 18)...")
-    # Přidán CRF a Preset pro lepší kvalitu a stabilitu obrazu
+    print(f"🎬 Délka: {total_dur:.1f}s. Zahajuji export s vyváženou kvalitou (CRF 21)... Project: {OUTPUT_FILE}")
+    # CRF 21 je zlatá střední cesta mezi velikostí a eliminací zrnitosti v detailech
     final_video.write_videofile(
         OUTPUT_FILE,
         fps=TARGET_FPS,
         codec="libx264",
-        preset="slow",
-        ffmpeg_params=["-crf", "18"],
+        preset="medium",
+        ffmpeg_params=["-crf", "21"],
         audio=True if os.path.exists(MUSIC_FILE) else False,
         threads=4,
         logger=SimplePercentageLogger()
