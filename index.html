@@ -15,11 +15,7 @@
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -92,10 +88,7 @@
             transition: filter 0.5s ease;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
+        header { text-align: center; margin-bottom: 50px; }
 
         .header-logo-container {
             display: flex;
@@ -117,11 +110,9 @@
 
         .header-logo-img {
             position: absolute;
-            right: 0;
-            top: 50%;
+            right: 0; top: 50%;
             transform: translateY(-50%);
-            height: 1em;
-            width: auto;
+            height: 1em; width: auto;
             font-size: 3.5rem;
         }
 
@@ -155,10 +146,7 @@
             margin-bottom: 40px;
         }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
+        .input-group { display: flex; flex-direction: column; }
 
         label {
             font-size: 0.8rem;
@@ -198,10 +186,7 @@
             cursor: pointer;
         }
 
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .ai-section {
             background: rgba(255, 255, 255, 0.02);
@@ -220,11 +205,7 @@
             letter-spacing: 1px;
         }
 
-        .ai-links {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .ai-links { display: flex; flex-direction: column; gap: 12px; }
 
         .ai-link {
             display: flex;
@@ -246,12 +227,7 @@
             transform: translateX(5px);
         }
 
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 0.8rem;
-            opacity: 0.4;
-        }
+        footer { text-align: center; margin-top: 40px; font-size: 0.8rem; opacity: 0.4; }
     </style>
 </head>
 <body>
@@ -340,7 +316,7 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
-        const VERSION_KEY = "HVB_BUILD_2026_09_09_V1"; // Musí se shodovat s kódovým klíčem v Apps Scriptu
+        const VERSION_KEY = "HVB_BUILD_2026_09_09_V1";
 
         function checkLogin() {
             const emailInput = document.getElementById('loginEmail');
