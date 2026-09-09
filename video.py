@@ -225,7 +225,7 @@ OUTPUT_FILE = f"{MAKLER_JMENO}.mp4"
 TARGET_FPS = 30
 
 def create_centered_info_card(lines, duration, is_intro=True):
-    """Vytvoří černý snímek s textem nahoře a logem HVB pod ním (50% velikost)."""
+    """Vytvoří černý snímek s textem a bílou čárou vycentrovanou mezi bloky."""
     img = Image.new("RGB", (TARGET_W, TARGET_H), color="black")
     draw = ImageDraw.Draw(img)
 
@@ -238,7 +238,6 @@ def create_centered_info_card(lines, duration, is_intro=True):
         try: return ImageFont.truetype(path, int(size))
         except: return ImageFont.load_default()
 
-    # Hledáme HVBlogo.png pro intro/outro
     hvb_logo_candidates = ["HVBlogo.png", "HVBlogo (1).png"]
     logo_path = next((f for f in hvb_logo_candidates if os.path.exists(f)), None)
 
@@ -246,52 +245,58 @@ def create_centered_info_card(lines, duration, is_intro=True):
     if logo_path:
         logo_img = Image.open(logo_path).convert("RGBA")
         l_w, l_h = logo_img.size
-        new_l_h = 110 # 50% původní velikosti
+        new_l_h = 110
         new_l_w = int(l_w * (new_l_h / l_h))
         logo_img = logo_img.resize((new_l_w, new_l_h), Image.Resampling.LANCZOS)
 
     font_size_main = FONT_SIZE_MAKLER
     font_size_small = FONT_SIZE_MAKLER * 0.8
 
-    content = []
-    content.append((lines[0], get_font(MAKLER_BOLD, MAKLER_ITALIC, font_size_main)))
-    content.append(("&", get_font(True, False, font_size_main)))
-
+    # 1. PŘÍPRAVA BLOKŮ TEXTU
+    header_content = []
+    header_content.append((lines[0], get_font(MAKLER_BOLD, MAKLER_ITALIC, font_size_main)))
+    header_content.append(("&", get_font(True, False, font_size_main)))
     rk_font = get_font(RK_BOLD, RK_ITALIC, font_size_main)
-    content.append((lines[1], rk_font))
+    header_content.append((lines[1], rk_font))
 
-    # Výpočet délky čáry (o 20% delší než RK_NAZEV)
-    rk_text_w = draw.textbbox((0, 0), lines[1], font=rk_font)[2]
-    line_length = rk_text_w * 1.2
-
+    footer_content = []
     if not is_intro:
         for line in lines[2:]:
-            content.append((line, get_font(False, "@" in line, font_size_small)))
+            footer_content.append((line, get_font(False, "@" in line, font_size_small)))
 
-    line_h = draw.textbbox((0, 0), "Ay", font=get_font(True, False, font_size_main))[3] + 25
-    total_text_h = len(content) * line_h
+    # 2. VÝPOČET VÝŠEK
+    line_h = draw.textbbox((0, 0), "Ay", font=rk_font)[3] + 25
+    header_h = len(header_content) * line_h
+    footer_h = len(footer_content) * (line_h * 0.8) # menší řádkování pro kontakty
 
-    # Přidáme prostor pro bílou čáru
-    spacing_for_line = 40
-    total_content_h = total_text_h + spacing_for_line
-    if logo_img: total_content_h += logo_img.height + 60
+    spacing_for_line = 80 # Celkový prostor pro čáru a mezery kolem ní
+    logo_h = (logo_img.height + 40) if logo_img else 0
 
-    curr_y = (TARGET_H - total_content_h) // 2
+    total_h = header_h + spacing_for_line + footer_h + logo_h
+    curr_y = (TARGET_H - total_h) // 2
 
-    for i, (text, font) in enumerate(content):
+    # 3. VYKRESLENÍ HLAVIČKY (Jméno & RK)
+    for text, font in header_content:
         w = draw.textbbox((0, 0), text, font=font)[2]
         draw.text(((TARGET_W - w) // 2, curr_y), text, font=font, fill=TEXT_COLOR)
         curr_y += line_h
 
-        # Vykreslení čáry za názvem RK (který je na indexu 2 v poli content)
-        if i == 2:
-            line_y = curr_y - (line_h // 2) + 5
-            draw.line([(TARGET_W - line_length) // 2, line_y, (TARGET_W + line_length) // 2, line_y], fill="white", width=3)
-            curr_y += spacing_for_line
+    # 4. VYKRESLENÍ ČÁRY (Uprostřed spacing_for_line)
+    rk_text_w = draw.textbbox((0, 0), lines[1], font=rk_font)[2]
+    line_length = rk_text_w * 1.2
+    line_y = curr_y + (spacing_for_line // 2)
+    draw.line([(TARGET_W - line_length) // 2, line_y, (TARGET_W + line_length) // 2, line_y], fill="white", width=3)
+    curr_y += spacing_for_line
 
+    # 5. VYKRESLENÍ KONTAKTŮ (pokud jsou)
+    for text, font in footer_content:
+        w = draw.textbbox((0, 0), text, font=font)[2]
+        draw.text(((TARGET_W - w) // 2, curr_y), text, font=font, fill=TEXT_COLOR)
+        curr_y += (line_h * 0.8)
+
+    # 6. VYKRESLENÍ LOGA
     if logo_img:
-        curr_y += 30
-        img.paste(logo_img, ((TARGET_W - logo_img.width) // 2, curr_y), logo_img)
+        img.paste(logo_img, ((TARGET_W - logo_img.width) // 2, int(curr_y + 20)), logo_img)
 
     return ImageClip(np.array(img)).set_duration(duration)
 
