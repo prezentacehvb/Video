@@ -267,7 +267,7 @@
             </div>
 
             <button onclick="checkLogin()" id="loginBtn" class="submit-btn">VSTOUPIT</button>
-            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 10px; display: none;">Neplatný e-mail nebo nevyplněná kontrola</p>
+            <p id="loginError" style="color: #ff5252; font-size: 0.85rem; margin-top: 15px; display: none; line-height: 1.4; word-break: break-word;"></p>
         </div>
     </div>
 
@@ -359,11 +359,14 @@
                     delete window[callbackName];
                     if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
 
-                    document.getElementById('loginOverlay').style.display = 'none';
-                    document.getElementById('mainCard').classList.remove('blurred');
-                    document.getElementById('MAKLER_EMAIL').value = email;
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = "VSTOUPIT";
 
                     if (data && data.status === "success") {
+                        document.getElementById('loginOverlay').style.display = 'none';
+                        document.getElementById('mainCard').classList.remove('blurred');
+                        document.getElementById('MAKLER_EMAIL').value = email;
+
                         showInfoBanner(`Váš denní limit tvorby videí je ${data.remaining} z celkových ${data.maxLimit}.`);
                         
                         if (data.remaining <= 0) {
@@ -373,27 +376,31 @@
                             showInfoBanner(`Váš dnešní limit tvorby videí (${data.maxLimit}) byl vyčerpán. Další tvorba bude možná zítra.`);
                         }
                     } else if (data && data.status === "error") {
-                        showInfoBanner(data.message);
+                        errorMsg.style.display = 'block';
+                        errorMsg.innerText = data.message;
                     } else {
-                        showInfoBanner("Nepodařilo se ověřit denní limit. Můžete pokračovat ve vyplňování.");
+                        errorMsg.style.display = 'block';
+                        errorMsg.innerText = "Chyba: Neplatný formát odpovědi ze serveru.";
                     }
                 };
 
                 const scriptTag = document.createElement('script');
                 scriptTag.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&callback=${callbackName}`;
+                
                 scriptTag.onerror = function() {
                     delete window[callbackName];
                     if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
-                    document.getElementById('loginOverlay').style.display = 'none';
-                    document.getElementById('mainCard').classList.remove('blurred');
-                    document.getElementById('MAKLER_EMAIL').value = email;
-                    showInfoBanner("Přihlášení proběhlo, ale nepodařilo se načíst denní limit.");
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = "VSTOUPIT";
+                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = "CHYBA SÍTĚ: Spojení se skriptem selhalo.";
                 };
 
                 document.body.appendChild(scriptTag);
 
             } else {
                 errorMsg.style.display = 'block';
+                errorMsg.innerText = "Neplatný e-mail nebo nevyplněná kontrola";
             }
         }
 
