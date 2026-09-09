@@ -150,17 +150,6 @@
             color: rgba(255, 255, 255, 0.85);
         }
 
-        .limit-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 24px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -305,8 +294,6 @@
             </ul>
         </div>
 
-        <div id="limitStatusBox" class="limit-box" style="display: none;">Načítám limit...</div>
-
         <form id="videoForm" onsubmit="sendData(event)">
             <div class="form-grid">
                 <div class="input-group">
@@ -355,35 +342,6 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
-
-        function fetchUserLimit(email) {
-            const limitBox = document.getElementById('limitStatusBox');
-            const submitBtn = document.getElementById('submitBtn');
-            limitBox.style.display = 'block';
-            limitBox.innerText = 'Načítám zbývající limit...';
-
-            window.handleLimitResponse = function(data) {
-                if (data && typeof data.remaining !== 'undefined') {
-                    if (data.remaining > 0) {
-                        limitBox.style.color = "#a7ffeb";
-                        limitBox.style.borderColor = "rgba(0, 230, 118, 0.3)";
-                        limitBox.innerText = `Dnes můžete vytvořit ještě ${data.remaining} videa.`;
-                        submitBtn.disabled = false;
-                    } else {
-                        limitBox.style.color = "#ff8a80";
-                        limitBox.style.borderColor = "rgba(255, 82, 82, 0.3)";
-                        limitBox.innerText = "Váš dnešní limit tvorby videa byl vyčerpán.";
-                        submitBtn.disabled = true;
-                    }
-                }
-            };
-
-            const script = document.createElement('script');
-            script.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&callback=handleLimitResponse`;
-            document.body.appendChild(script);
-        }
-
         function checkLogin() {
             const emailInput = document.getElementById('loginEmail');
             const email = emailInput.value.toLowerCase().trim();
@@ -396,8 +354,6 @@
                 document.getElementById('mainCard').classList.remove('blurred');
                 const formEmail = document.getElementById('MAKLER_EMAIL');
                 formEmail.value = email;
-
-                fetchUserLimit(email);
             } else {
                 errorMsg.style.display = 'block';
             }
@@ -474,6 +430,7 @@
             const prevNotice = document.getElementById("infoNoticeBox");
             if (prevNotice) prevNotice.style.display = "none";
 
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
             const fileInput = document.getElementById("images");
             const files = Array.from(fileInput.files);
 
@@ -565,16 +522,13 @@
                 alert(`Data odeslána v ${sentTime}`);
                 document.getElementById("videoForm").reset();
 
-                // Přepočítá zbývající limit po úspěšném odeslání
-                fetchUserLimit(document.getElementById("MAKLER_EMAIL").value);
-
             } catch (e) {
                 clearInterval(timerInterval);
                 console.error(e);
                 alert("Chyba při zpracování fotografií: " + e.message);
-                submitBtn.disabled = false;
             } finally {
                 clearInterval(timerInterval);
+                submitBtn.disabled = false;
                 submitBtn.innerText = "VYTVOŘIT VIDEO";
             }
         }
