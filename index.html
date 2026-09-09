@@ -33,7 +33,6 @@
             overflow-x: hidden;
         }
 
-        /* Login Overlay */
         #loginOverlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -74,7 +73,6 @@
             margin: 0;
         }
 
-        /* Blur effect for content */
         .main-card.blurred {
             filter: blur(20px);
             pointer-events: none;
@@ -257,7 +255,6 @@
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
     <div id="loginOverlay">
         <div class="login-card">
             <div class="logo-text" style="font-size: 2rem; text-align: center;">PŘIHLÁŠENÍ</div>
@@ -344,7 +341,7 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
 
-        async function checkLogin() {
+        function checkLogin() {
             const emailInput = document.getElementById('loginEmail');
             const email = emailInput.value.toLowerCase().trim();
             const notRobot = document.getElementById('notRobot').checked;
@@ -356,15 +353,15 @@
                 loginBtn.disabled = true;
                 loginBtn.innerText = "OVĚŘOVÁNÍ LIMITU...";
 
-                try {
-                    // Načtení limitu pro uživatele
-                    const response = await fetch(`${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}`);
-                    const data = await response.json();
+                const callbackName = "handleLimitResponse_" + Math.random().toString(36).substring(2, 9);
+
+                window[callbackName] = function(data) {
+                    delete window[callbackName];
+                    if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
 
                     document.getElementById('loginOverlay').style.display = 'none';
                     document.getElementById('mainCard').classList.remove('blurred');
-                    const formEmail = document.getElementById('MAKLER_EMAIL');
-                    formEmail.value = email;
+                    document.getElementById('MAKLER_EMAIL').value = email;
 
                     if (data && data.status === "success") {
                         showInfoBanner(`Váš denní limit tvorby videí je ${data.remaining} (z celkových ${data.maxLimit}).`);
@@ -376,15 +373,23 @@
                             showInfoBanner(`Váš dnešní limit tvorby videí (${data.maxLimit}) byl vyčerpán. Další tvorba bude možná zítra.`);
                         }
                     } else {
-                        showInfoBanner("Nepodařilo se ověřit denní limit. Můžete pokračovat v vyplňování.");
+                        showInfoBanner("Nepodařilo se ověřit denní limit. Můžete pokračovat ve vyplňování.");
                     }
-                } catch (err) {
-                    console.error("Chyba při zjišťování limitu:", err);
+                };
+
+                const scriptTag = document.createElement('script');
+                scriptTag.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&callback=${callbackName}`;
+                scriptTag.onerror = function() {
+                    delete window[callbackName];
+                    if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
                     document.getElementById('loginOverlay').style.display = 'none';
                     document.getElementById('mainCard').classList.remove('blurred');
                     document.getElementById('MAKLER_EMAIL').value = email;
                     showInfoBanner("Přihlášení proběhlo, ale nepodařilo se načíst denní limit.");
-                }
+                };
+
+                document.body.appendChild(scriptTag);
+
             } else {
                 errorMsg.style.display = 'block';
             }
@@ -540,18 +545,24 @@
                 alert(`Data odeslána v ${sentTime}`);
                 document.getElementById("videoForm").reset();
 
-                // Po odeslání automaticky znovu ověříme a zaktualizujeme zbývající limit
+                // Po úspěšném odeslání zaktualizujeme limit přes JSONP
                 const email = document.getElementById("MAKLER_EMAIL").value;
                 if (email) {
-                    const response = await fetch(`${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}`);
-                    const data = await response.json();
-                    if (data && data.status === "success") {
-                        showInfoBanner(`Váš zbývající denní limit tvorby videí je nyní ${data.remaining} (z celkových ${data.maxLimit}).`);
-                        if (data.remaining <= 0) {
-                            submitBtn.disabled = true;
-                            submitBtn.innerText = "DENNÍ LIMIT VYČERPÁN";
+                    const cbName = "handleLimitResponse_after_" + Math.random().toString(36).substring(2, 9);
+                    window[cbName] = function(data) {
+                        delete window[cbName];
+                        if (document.body.contains(sTag)) document.body.removeChild(sTag);
+                        if (data && data.status === "success") {
+                            showInfoBanner(`Váš zbývající denní limit tvorby videí je nyní ${data.remaining} (z celkových ${data.maxLimit}).`);
+                            if (data.remaining <= 0) {
+                                submitBtn.disabled = true;
+                                submitBtn.innerText = "DENNÍ LIMIT VYČERPÁN";
+                            }
                         }
-                    }
+                    };
+                    const sTag = document.createElement('script');
+                    sTag.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&callback=${cbName}`;
+                    document.body.appendChild(sTag);
                 }
 
             } catch (e) {
