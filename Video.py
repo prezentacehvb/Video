@@ -1,0 +1,595 @@
+"""Video09.ipynb
+
+Oprava proti Video08: MOTION_MODE = "random" nyní skutečně střídá všech
+10 definovaných pohybů (dřív reálně existoval jen zoom_in/zoom_out, "pan"
+varianty se vůbec nehýbaly - kamera zůstávala na středu). Fotky se navíc
+zpracovávají v mírně přezoomovaném pracovním rozlišení (MOTION_OVERSCAN) a
+každý snímek videa se počítá v `SUPERSAMPLE`-násobném rozlišení a teprve
+pak zmenšuje zpět - to výrazně omezuje viditelné "chvění"/blikání textur
+při zoomu a panu.
+
+# 🛠 HLAVNÍ NASTAVENÍ: Texty a Hudba
+Zde nastavte texty pro video a nahrajte hudební podkres.
+
+### ⚙️ Detekce prostředí (Colab / headless GitHub Actions)
+Tahle buňka pozná, jestli notebook běží ručně v Colabu, nebo headless v GitHub Actions (`python video.py job.json`). Podle toho se dál řídí chování buněk níže (upload vs. stažení z URL, widgety vs. `job.json`).
+"""
+
+import sys
+import json
+import os
+
+try:
+    import google.colab  # noqa: F401
+    IS_COLAB = True
+except ImportError:
+    IS_COLAB = False
+
+JOB_CONFIG = None
+if not IS_COLAB:
+    if len(sys.argv) < 2:
+        raise SystemExit("Headless běh vyžaduje cestu k job.json: python video.py job.json")
+    with open(sys.argv[1], "r", encoding="utf-8") as _f:
+        JOB_CONFIG = json.load(_f)
+
+# @title 📝 Konfigurace textu, hudby a loga
+
+# --- Nastavení textu (Hlavní popisky) ---
+TEXT_TOP = "Prodej RD 5+kk 160 m², pozemek 359 m²" # @param {type:"string"}
+FONT_SIZE_TOP = 24 # @param {type:"number"}
+TEXT_BOTTOM = "Popovice - okr. Benešov" # @param {type:"string"}
+FONT_SIZE_BOTTOM = 20 # @param {type:"number"}
+TEXT_COLOR = "white" # @param {type:"string"}
+LINE_COLOR = "white" # @param {type:"string"}
+
+# @markdown ### 👤 Informace o makléři (Úvod & Závěr)
+MAKLER_JMENO = "FRANTIŠEK PROCHÁZKA" # @param {type:"string"}
+MAKLER_BOLD = False # @param {type:"boolean"}
+MAKLER_ITALIC = True # @param {type:"boolean"}
+
+RK_NAZEV = "HVB Real Estate " # @param {type:"string"}
+RK_BOLD = True # @param {type:"boolean"}
+RK_ITALIC = False # @param {type:"boolean"}
+
+MAKLER_EMAIL = "fprochazka@hvbreal.cz" # @param {type:"string"}
+MAKLER_TELEFON = "+420 123 456 789" # @param {type:"string"}
+FONT_SIZE_MAKLER = 40 # @param {type:"number"}
+
+# @markdown ### Varianta linky (pro hlavní popisky)
+LINE_VARIANT = "LINE 2" # @param ["LINE 1", "LINE 2"]
+LINE_SPACING = 7 # @param {type:"number"}
+
+# Headless: přepsat výchozí @param hodnoty daty z job.json
+if JOB_CONFIG:
+    _cfg = JOB_CONFIG["config"]
+    TEXT_TOP = _cfg.get("TEXT_TOP", TEXT_TOP)
+    TEXT_BOTTOM = _cfg.get("TEXT_BOTTOM", TEXT_BOTTOM)
+    MAKLER_JMENO = _cfg.get("MAKLER_JMENO", MAKLER_JMENO)
+    MAKLER_EMAIL = _cfg.get("MAKLER_EMAIL", MAKLER_EMAIL)
+    MAKLER_TELEFON = _cfg.get("MAKLER_TELEFON", MAKLER_TELEFON)
+    RK_NAZEV = _cfg.get("RK_NAZEV", RK_NAZEV)
+
+GLOBAL_TEXT = f"{TEXT_TOP};{TEXT_BOTTOM}"
+
+# --- Nastavení hudby ---
+AUDIO_FADE_IN = 8 # @param {type:"number"}
+AUDIO_FADE_OUT = 8 # @param {type:"number"}
+
+# --- Nastavení obrazu ---
+VIDEO_FADE_IN = 6 # @param {type:"number"}
+VIDEO_FADE_OUT = 6 # @param {type:"number"}
+
+import shutil
+
+# Persistentní historie
+LOGO_CONFIG_PATH = "logo_config.txt"
+MUSIC_FILE = "background_music.mp3"
+
+if IS_COLAB:
+    from google.colab import files
+    if 'music_history' not in globals(): globals()['music_history'] = []
+
+    # Načtení loga ze souboru
+    if os.path.exists(LOGO_CONFIG_PATH):
+        with open(LOGO_CONFIG_PATH, 'r') as f:
+            saved_logo = f.read().strip()
+            if os.path.exists(saved_logo):
+                globals()['LOGO_FILE'] = saved_logo
+
+    if 'LOGO_FILE' not in globals(): globals()['LOGO_FILE'] = None
+
+    # @markdown ### 🖼️ LOGO A HUDBA
+    VYBRANA_HUDBA = "hudba 1 (1).mp3" # @param {type:"string"}
+    NAHRAT_NOVE_SOUBORY = True # @param {type:"boolean"}
+
+    # Nahrávání se spustí pouze pokud je zaškrtnuto, nebo pokud chybí základní soubory
+    if NAHRAT_NOVE_SOUBORY or (not globals()['LOGO_FILE'] and not globals()['music_history']):
+        print("📂 Režim nahrávání aktivován. Vyberte soubory...")
+        uploaded_assets = files.upload()
+
+        for name, data in uploaded_assets.items():
+            with open(name, 'wb') as f:
+                f.write(data)
+
+            ext = name.lower().split('.')[-1]
+            if ext in ['png', 'jpg', 'jpeg', 'webp', 'bmp']:
+                globals()['LOGO_FILE'] = name
+                with open(LOGO_CONFIG_PATH, 'w') as f:
+                    f.write(name)
+                print(f"✅ Logo uloženo: {name}")
+            elif ext in ['mp3', 'wav']:
+                if name not in globals()['music_history']:
+                    globals()['music_history'].append(name)
+    else:
+        print("⏭️ Používám uložené nastavení (pro změnu zaškrtněte 'NAHRAT_NOVE_SOUBORY').")
+
+    # Správa historie hudby
+    while len(globals()['music_history']) > 3:
+        oldest = globals()['music_history'].pop(0)
+        if os.path.exists(oldest) and oldest != VYBRANA_HUDBA and oldest != globals().get('LOGO_FILE'):
+            try: os.remove(oldest)
+            except: pass
+
+    # Finální nastavení aktivních souborů
+    active_music = VYBRANA_HUDBA if VYBRANA_HUDBA in globals()['music_history'] else (globals()['music_history'][-1] if globals()['music_history'] else None)
+    if active_music and os.path.exists(active_music):
+        shutil.copy(active_music, MUSIC_FILE)
+        print(f"🎵 Aktivní hudba: {active_music}")
+
+    if globals()['LOGO_FILE'] and os.path.exists(globals()['LOGO_FILE']):
+        print(f"🖼️ Aktivní logo: {globals()['LOGO_FILE']}")
+    else:
+        print("ℹ️ Žádné logo není nastaveno.")
+
+    print("\n✅ Konfigurace připravena.")
+
+else:
+    # Headless (GitHub Actions): logo a hudba se berou přímo z repozitáře,
+    # žádný upload widget. Commitni tyto soubory vedle video.py (v kořeni repa):
+    #   logo.png
+    #   music.mp3
+    globals()['LOGO_FILE'] = "logo.png" if os.path.exists("logo.png") else None
+    _music_src = "music.mp3"
+    if os.path.exists(_music_src):
+        shutil.copy(_music_src, MUSIC_FILE)
+        print(f"🎵 Aktivní hudba (headless): {_music_src}")
+    else:
+        print("ℹ️ music.mp3 nenalezen, video bude bez hudby.")
+
+    if globals()['LOGO_FILE']:
+        print(f"🖼️ Aktivní logo (headless): {globals()['LOGO_FILE']}")
+    else:
+        print("ℹ️ logo.png nenalezen, video bude bez loga.")
+
+"""## 1. Nastavení a Definice Funkcí"""
+
+import os, shutil, random, zipfile, time, json, re, io, numpy as np, cv2, sys
+from PIL import Image, ImageDraw, ImageFont
+from moviepy.editor import ImageClip, VideoFileClip, concatenate_videoclips, AudioFileClip, afx
+from proglog import ProgressBarLogger
+
+if IS_COLAB:
+    from google.colab import files
+
+# @title 🎬 Parametry pohybu a technické nastavení
+MIN_IMAGE_DURATION = 3 # @param {type:"number"}
+MAX_IMAGE_DURATION = 5 # @param {type:"number"}
+ASPECT_RATIO = "16:9" # @param ["16:9", "4:3"]
+MOTION_MODE = "random" # @param ["random", "zoom_in", "zoom_out", "pan_left_to_right", "pan_right_to_left", "pan_top_to_bottom", "pan_bottom_to_top", "zoom_in_left", "zoom_in_right", "zoom_out_left", "zoom_out_right"]
+
+ZOOM_SPEED = 0.12
+PAN_ZOOM_FACTOR = 1.13   # o kolik se "přizoomuje" navíc u pan/zoom-pan pohybů (musí být > 1.0)
+PAN_STEP_PERCENT = 60    # kolik % dostupného prostoru pro posun (overscan) se využije při pan efektech
+
+# --- Kvalita pohybu (proti "chvění"/blikání při zoomu a panu) ---
+MOTION_OVERSCAN = 1.28   # @param {type:"number"}  # kolik navíc rezervy (nad rámec cílového rozlišení) mají zpracované fotky, aby bylo kam "panovat" a zoomovat bez ztráty kvality
+SUPERSAMPLE = 2          # @param {type:"number"}  # každý snímek se počítá v tomto násobku rozlišení a pak se zmenší (anti-aliasing) -> potlačí chvění/moiré. 1 = vypnuto (rychlejší, ale méně stabilní obraz)
+
+# Všechny podporované typy pohybu (používá se, když MOTION_MODE == "random")
+ALL_MOTION_MODES = [
+    "zoom_in", "zoom_out",
+    "pan_left_to_right", "pan_right_to_left",
+    "pan_top_to_bottom", "pan_bottom_to_top",
+    "zoom_in_left", "zoom_in_right",
+    "zoom_out_left", "zoom_out_right",
+]
+
+TARGET_W, TARGET_H = (1920, 1080) if ASPECT_RATIO == "16:9" else (1440, 1080)
+# Pracovní (přezoomované) rozlišení, ve kterém se ukládají zpracované fotky -
+# je větší než cílové video, aby zoom/pan měly "kam sahat" a nedocházelo k
+# opakovanému přeostřování téže bitmapy (hlavní příčina "chvění" obrazu).
+WORK_W, WORK_H = int(round(TARGET_W * MOTION_OVERSCAN)), int(round(TARGET_H * MOTION_OVERSCAN))
+INPUT_DIR, ENHANCED_DIR = "vstupni_media_zgk", "vylepsene_fotografie_zgk"
+OUTPUT_FILE = f"{MAKLER_JMENO}.mp4"
+TARGET_FPS = 30
+
+def create_centered_info_card(lines, duration, is_intro=True):
+    """Vytvoří černý snímek s textem nahoře a logem HVB pod ním (50% velikost)."""
+    img = Image.new("RGB", (TARGET_W, TARGET_H), color="black")
+    draw = ImageDraw.Draw(img)
+
+    def get_font(is_bold, is_italic, size):
+        prefix = "/usr/share/fonts/truetype/liberation/LiberationSans"
+        if is_bold and is_italic: path = f"{prefix}-BoldItalic.ttf"
+        elif is_bold: path = f"{prefix}-Bold.ttf"
+        elif is_italic: path = f"{prefix}-Italic.ttf"
+        else: path = f"{prefix}-Regular.ttf"
+        try: return ImageFont.truetype(path, int(size))
+        except: return ImageFont.load_default()
+
+    # Opravená logika: Hledáme výhradně HVBlogo.png pro intro/outro
+    hvb_logo_candidates = ["HVBlogo.png", "HVBlogo (1).png"]
+    logo_path = next((f for f in hvb_logo_candidates if os.path.exists(f)), None)
+
+    logo_img = None
+    if logo_path:
+        logo_img = Image.open(logo_path).convert("RGBA")
+        l_w, l_h = logo_img.size
+        new_l_h = 110 # 50% původní velikosti
+        new_l_w = int(l_w * (new_l_h / l_h))
+        logo_img = logo_img.resize((new_l_w, new_l_h), Image.Resampling.LANCZOS)
+
+    font_size_main = FONT_SIZE_MAKLER
+    font_size_small = FONT_SIZE_MAKLER * 0.8
+
+    content = []
+    content.append((lines[0], get_font(MAKLER_BOLD, MAKLER_ITALIC, font_size_main)))
+    content.append(("&", get_font(True, False, font_size_main)))
+    content.append((lines[1], get_font(RK_BOLD, RK_ITALIC, font_size_main)))
+
+    if not is_intro:
+        for line in lines[2:]:
+            content.append((line, get_font(False, "@" in line, font_size_small)))
+
+    line_h = draw.textbbox((0, 0), "Ay", font=get_font(True, False, font_size_main))[3] + 25
+    total_text_h = len(content) * line_h
+    total_content_h = total_text_h
+    if logo_img: total_content_h += logo_img.height + 60
+
+    curr_y = (TARGET_H - total_content_h) // 2
+
+    for text, font in content:
+        w = draw.textbbox((0, 0), text, font=font)[2]
+        draw.text(((TARGET_W - w) // 2, curr_y), text, font=font, fill=TEXT_COLOR)
+        curr_y += line_h
+
+    if logo_img:
+        curr_y += 30
+        img.paste(logo_img, ((TARGET_W - logo_img.width) // 2, curr_y), logo_img)
+
+    return ImageClip(np.array(img)).set_duration(duration)
+
+def draw_text_overlay(image_np, text_str):
+    img = Image.fromarray(image_np).convert("RGBA")
+    draw = ImageDraw.Draw(img)
+    margin = 60
+    try:
+        font_top = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", FONT_SIZE_TOP)
+        font_bottom = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", FONT_SIZE_BOTTOM)
+    except:
+        font_top = font_bottom = ImageFont.load_default()
+
+    parts = text_str.split(";")
+    top_text, bottom_text = parts[0].strip(), parts[1].strip() if len(parts) > 1 else ""
+
+    bbox_t = draw.textbbox((0, 0), top_text, font=font_top)
+    bbox_b = draw.textbbox((0, 0), bottom_text, font=font_bottom)
+    w_top, h_top = bbox_t[2]-bbox_t[0], bbox_t[3]-bbox_t[1]
+    w_bottom, h_bottom = bbox_b[2]-bbox_b[0], bbox_b[3]-bbox_b[1]
+    line_length = max(w_top, w_bottom)
+
+    y_bottom_base = TARGET_H - margin - 20
+    line_y_mid = y_bottom_base - h_bottom - LINE_SPACING
+    y_top_base = line_y_mid - h_top - LINE_SPACING
+
+    draw.text((margin, y_bottom_base - h_bottom), bottom_text, font=font_bottom, fill=TEXT_COLOR)
+    draw.text((margin, y_top_base), top_text, font=font_top, fill=TEXT_COLOR)
+
+    y_top_border = y_top_base - 10
+    y_bottom_border = y_bottom_base + 10
+    frame_height = y_bottom_border - y_top_border
+
+    if LINE_VARIANT == "LINE 2":
+        draw.line([(margin - 20, y_top_border), (margin - 20, y_bottom_border)], fill=LINE_COLOR, width=4)
+        draw.line([(margin - 20, y_top_border), (margin - 20 + (line_length * 0.3), y_top_border)], fill=LINE_COLOR, width=4)
+        draw.line([(margin - 20, y_bottom_border), (margin + line_length, y_bottom_border)], fill=LINE_COLOR, width=4)
+
+    logo_path = globals().get('LOGO_FILE')
+    if logo_path and os.path.exists(str(logo_path)):
+        logo = Image.open(str(logo_path)).convert("RGBA")
+        aspect = logo.width / logo.height
+        new_h = frame_height
+        new_w = int(new_h * aspect)
+        logo_resized = logo.resize((new_w, new_h), Image.Resampling.LANCZOS)
+        img.paste(logo_resized, (TARGET_W - margin - new_w, y_top_border), logo_resized)
+
+    return np.array(img.convert("RGB"))
+
+_LAST_MOTION_MODE = None  # sleduje poslední použitý pohyb, aby se stejný typ neopakoval hned dvakrát po sobě
+
+def _ease_in_out(t):
+    """Smoothstep: pomalý rozjezd i doběh pohybu místo lineární rampy.
+    Lineární pohyb vypadá u Ken Burns efektu 'trhaně'/roztřeseně, protože
+    kamera startuje i končí na plnou rychlost - toto ho vizuálně vyhladí."""
+    t = max(0.0, min(1.0, t))
+    return t * t * (3.0 - 2.0 * t)
+
+def _crop_for_mode(mode, e, img_w, img_h):
+    """Vrátí (sw, sh, cx, cy) - rozměr a pozici oříznutí v pracovním obrázku
+    pro daný typ pohybu a fázi průběhu 'e' (0.0 -> 1.0, už po easingu)."""
+    zoom_lo, zoom_hi = 1.0, 1.0 + ZOOM_SPEED
+
+    def centered(zoom):
+        sw, sh = TARGET_W / zoom, TARGET_H / zoom
+        return sw, sh, (img_w - sw) / 2.0, (img_h - sh) / 2.0
+
+    def drifting(zoom, direction):
+        # direction: -1 = doleva, +1 = doprava (těžiště obrazu se posouvá během zoomu)
+        sw, sh = TARGET_W / zoom, TARGET_H / zoom
+        max_shift = max(0.0, (img_w - sw) / 2.0)
+        cx = (img_w - sw) / 2.0 + direction * max_shift * e
+        cx = max(0.0, min(img_w - sw, cx))
+        return sw, sh, cx, (img_h - sh) / 2.0
+
+    def panning(axis, reverse):
+        zoom = max(1.0, PAN_ZOOM_FACTOR)
+        sw, sh = TARGET_W / zoom, TARGET_H / zoom
+        if axis == "x":
+            throw = max(0.0, img_w - sw) * (PAN_STEP_PERCENT / 100.0)
+            c = (img_w - sw) / 2.0
+            start, end = c - throw / 2.0, c + throw / 2.0
+            if reverse: start, end = end, start
+            cx = max(0.0, min(img_w - sw, start + e * (end - start)))
+            return sw, sh, cx, (img_h - sh) / 2.0
+        else:
+            throw = max(0.0, img_h - sh) * (PAN_STEP_PERCENT / 100.0)
+            c = (img_h - sh) / 2.0
+            start, end = c - throw / 2.0, c + throw / 2.0
+            if reverse: start, end = end, start
+            cy = max(0.0, min(img_h - sh, start + e * (end - start)))
+            return sw, sh, (img_w - sw) / 2.0, cy
+
+    if mode == "zoom_in":          return centered(zoom_lo + (zoom_hi - zoom_lo) * e)
+    if mode == "zoom_out":         return centered(zoom_hi - (zoom_hi - zoom_lo) * e)
+    if mode == "pan_left_to_right":  return panning("x", reverse=False)
+    if mode == "pan_right_to_left":  return panning("x", reverse=True)
+    if mode == "pan_top_to_bottom":  return panning("y", reverse=False)
+    if mode == "pan_bottom_to_top":  return panning("y", reverse=True)
+    if mode == "zoom_in_left":     return drifting(zoom_lo + (zoom_hi - zoom_lo) * e, -1)
+    if mode == "zoom_in_right":    return drifting(zoom_lo + (zoom_hi - zoom_lo) * e, +1)
+    if mode == "zoom_out_left":    return drifting(zoom_hi - (zoom_hi - zoom_lo) * e, -1)
+    if mode == "zoom_out_right":   return drifting(zoom_hi - (zoom_hi - zoom_lo) * e, +1)
+    return centered(zoom_lo)  # bezpečný fallback
+
+def _pick_motion_mode():
+    """Vybere typ pohybu podle MOTION_MODE. V režimu 'random' vybírá ze
+    VŠECH definovaných pohybů (viz ALL_MOTION_MODES) a hlídá, aby se stejný
+    typ neopakoval hned u dvou fotek po sobě jdoucích."""
+    global _LAST_MOTION_MODE
+    if MOTION_MODE != "random":
+        return MOTION_MODE
+    choices = ALL_MOTION_MODES
+    mode = random.choice(choices)
+    tries = 0
+    while mode == _LAST_MOTION_MODE and tries < 5 and len(choices) > 1:
+        mode = random.choice(choices)
+        tries += 1
+    _LAST_MOTION_MODE = mode
+    return mode
+
+def apply_smooth_smart_motion(img_path, duration, text_overlay=""):
+    img = Image.open(img_path).convert("RGB")
+    img_w, img_h = img.size
+    mode = _pick_motion_mode()
+
+    ss = max(1, int(SUPERSAMPLE))
+    ss_w, ss_h = TARGET_W * ss, TARGET_H * ss
+
+    def make_frame(t):
+        progress = min(1.0, t / duration) if duration > 0 else 0.0
+        e = _ease_in_out(progress)
+        sw, sh, cx, cy = _crop_for_mode(mode, e, img_w, img_h)
+        # Oříznutí + vykreslení v `ss`-násobném rozlišení a teprve pak zmenšení
+        # zpět na cílovou velikost (LANCZOS) funguje jako anti-aliasing a je
+        # hlavním potlačením viditelného "chvění"/blikání textur při zoomu -
+        # bez toho se každý snímek dopočítává nezávisle a jemné detaily
+        # (spáry dlažby, mřížky oken apod.) mezi snímky "poskakují".
+        frame = img.crop((cx, cy, cx + sw, cy + sh)).resize((ss_w, ss_h), Image.Resampling.LANCZOS)
+        if ss > 1:
+            frame = frame.resize((TARGET_W, TARGET_H), Image.Resampling.LANCZOS)
+        frame_np = np.array(frame)
+        if text_overlay: frame_np = draw_text_overlay(frame_np, text_overlay)
+        return frame_np
+
+    return ImageClip(make_frame(0)).set_duration(duration).set_make_frame(make_frame)
+
+"""## 2. Nahrání fotografií"""
+
+import glob
+
+# 1. Kompletní promazání pracovních složek
+for folder in [INPUT_DIR, ENHANCED_DIR]:
+    if os.path.exists(folder):
+        shutil.rmtree(folder)
+    os.makedirs(folder)
+
+if IS_COLAB:
+    # 2. Odstranění zbytků nahrávání z kořenového adresáře Colabu (/content/)
+    # Toto zabrání automatickému přejmenovávání typu '01 (1).png'
+    old_files = glob.glob("*.png") + glob.glob("*.jpg") + glob.glob("*.jpeg") + glob.glob("*.webp")
+    for f in old_files:
+        try: os.remove(f)
+        except: pass
+
+    print("🧹 Systém vyčištěn. Vyberte nyní svých 11 fotografií k nahrání.")
+
+    uploaded = files.upload()
+
+    for name, data in uploaded.items():
+        # Uložíme pouze s originálním názvem do cílové složky
+        with open(os.path.join(INPUT_DIR, name), 'wb') as f:
+            f.write(data)
+
+    print(f"\n✅ Hotovo: V systému je nyní přesně {len(uploaded)} unikátních souborů.")
+
+else:
+    # Headless: fotky se stahují z URL v job.json (Apps Script je uložil
+    # na Drive a nasdílel odkazy "anyone with link")
+    import requests
+    image_urls = JOB_CONFIG["image_urls"]
+    print(f"📥 Stahuji {len(image_urls)} fotek...")
+    for i, url in enumerate(image_urls):
+        r = requests.get(url, timeout=60)
+        r.raise_for_status()
+        ext = "jpg"
+        ctype = r.headers.get("Content-Type", "")
+        if "png" in ctype: ext = "png"
+        elif "webp" in ctype: ext = "webp"
+        with open(os.path.join(INPUT_DIR, f"foto_{i+1:03d}.{ext}"), "wb") as f:
+            f.write(r.content)
+    print(f"✅ Hotovo: staženo {len(image_urls)} fotek.")
+
+"""## 3. Zpracování snímků (Krok 1 & 2)"""
+
+import re
+
+def natural_sort_key(s):
+    return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
+
+print(f'--> Příprava snímků pro video (cover-fit na pracovní rozlišení {WORK_W}x{WORK_H}, rezerva pro zoom/pan)')
+if os.path.exists(ENHANCED_DIR): shutil.rmtree(ENHANCED_DIR)
+os.makedirs(ENHANCED_DIR)
+
+def cover_resize(img, target_w, target_h):
+    """Zvětší/zmenší obrázek tak, aby beze zbytku vyplnil target_w x target_h
+    (zachová poměr stran, přebytek OŘÍZNE ze středu). Na rozdíl od prostého
+    resize() nedeformuje obraz a navíc dává Ken Burns efektu rezervu pixelů
+    navíc, díky které se při zoomu/panu nemusí opakovaně přeostřovat
+    identická bitmapa - to je hlavní zdroj viditelného "chvění" obrazu."""
+    src_w, src_h = img.size
+    scale = max(target_w / src_w, target_h / src_h)
+    new_w, new_h = int(round(src_w * scale)), int(round(src_h * scale))
+    resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    left = (new_w - target_w) // 2
+    top = (new_h - target_h) // 2
+    return resized.crop((left, top, left + target_w, top + target_h))
+
+# Použití natural_sort_key pro správné číselné pořadí
+image_files = sorted([os.path.join(INPUT_DIR, f) for f in os.listdir(INPUT_DIR) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))], key=natural_sort_key)
+
+for idx, img_path in enumerate(image_files):
+    target_p = os.path.join(ENHANCED_DIR, os.path.basename(img_path).split('.')[0] + ".png")
+    print(f"📸 Snímek ({idx+1}/{len(image_files)}): {os.path.basename(img_path)}")
+
+    img = Image.open(img_path).convert("RGB")
+    img = cover_resize(img, WORK_W, WORK_H)
+    img.save(target_p, "PNG", quality=100)
+
+print("\n✅ Všechny obrázky jsou připraveny k sestříhání.")
+
+"""## 4. Export videa (Krok 3 & 4)"""
+
+import re
+from moviepy.video.fx.all import fadein, fadeout
+
+def natural_sort_key(s):
+    return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
+
+final_image_paths = sorted([os.path.join(ENHANCED_DIR, f) for f in os.listdir(ENHANCED_DIR) if f.endswith('.png')], key=natural_sort_key)
+print(f"\n--> Generování videa z {len(final_image_paths)} snímků s textem...")
+
+final_clips = []
+
+# --- INTRO --- (se znakem &)
+intro_lines = [MAKLER_JMENO, RK_NAZEV]
+intro_clip = create_centered_info_card(intro_lines, duration=VIDEO_FADE_IN, is_intro=True)
+final_clips.append(intro_clip)
+
+# --- FOTOGRAFIE ---
+for idx, img_path in enumerate(final_image_paths):
+    d = random.uniform(MIN_IMAGE_DURATION, MAX_IMAGE_DURATION)
+    clip = apply_smooth_smart_motion(img_path, duration=d, text_overlay=GLOBAL_TEXT)
+    clip = clip.crossfadein(1.0)
+    final_clips.append(clip)
+
+# --- OUTRO --- (s linkou a emailem v kurzivě)
+outro_lines = [MAKLER_JMENO, RK_NAZEV, "Kontakt:"]
+if MAKLER_EMAIL: outro_lines.append(MAKLER_EMAIL)
+if MAKLER_TELEFON: outro_lines.append(MAKLER_TELEFON)
+
+outro_clip = create_centered_info_card(outro_lines, duration=VIDEO_FADE_OUT, is_intro=False)
+outro_clip = outro_clip.crossfadein(1.0)
+final_clips.append(outro_clip)
+
+if final_clips:
+    final_video = concatenate_videoclips(final_clips, method="compose", padding=-1.0)
+    total_dur = final_video.duration
+
+    if os.path.exists(MUSIC_FILE):
+        print("🎵 Přidávám hudbu (smyčka + fade in/out)")
+        audio = AudioFileClip(MUSIC_FILE)
+        if audio.duration < total_dur:
+            audio = audio.fx(afx.audio_loop, duration=total_dur)
+        else:
+            audio = audio.set_duration(total_dur)
+
+        audio = audio.audio_fadein(AUDIO_FADE_IN).audio_fadeout(AUDIO_FADE_OUT)
+        final_video = final_video.set_audio(audio)
+
+    class SimplePercentageLogger(ProgressBarLogger):
+        def __init__(self):
+            super().__init__()
+            self.last_pct = -1
+        def callback(self, **changes):
+            if 't' in self.bars:
+                bar = self.bars['t']
+                if bar['total'] > 0:
+                    pct = int((bar['index'] / bar['total']) * 100)
+                    if pct != self.last_pct:
+                        sys.stdout.write(f"\r🚀 Rendering: {pct}% ({bar['index']}/{bar['total']})")
+                        sys.stdout.flush()
+                        self.last_pct = pct
+
+    print(f"🎬 Délka: {total_dur:.1f}s. Zahajuji export...")
+    final_video.write_videofile(OUTPUT_FILE, fps=TARGET_FPS, codec="libx264", audio=True if os.path.exists(MUSIC_FILE) else False, threads=4, logger=SimplePercentageLogger())
+
+    print("\n\n--> Hotovo!")
+
+    if IS_COLAB:
+        print("--> Stahování...")
+        files.download(OUTPUT_FILE)
+        print("🟢 Hotovo!")
+    else:
+        # Headless: soubor necháváme na disku, GitHub Actions ho v dalším
+        # kroku (notify.py) zveřejní jako Release a pošle makléři e-mail
+        with open("render_result.json", "w", encoding="utf-8") as f:
+            json.dump({
+                "video_file": OUTPUT_FILE,
+                "job_id": JOB_CONFIG.get("job_id", ""),
+                "name": MAKLER_JMENO,
+                "email": MAKLER_EMAIL,
+                "phone": MAKLER_TELEFON,
+                "callback_url": JOB_CONFIG.get("callback_url", "")
+            }, f, ensure_ascii=False, indent=2)
+        print(f"🟢 render_result.json zapsán, video: {OUTPUT_FILE}")
+
+"""## 5. Poznámka k webovému formuláři (index.html)
+
+DŮLEŽITÁ ZMĚNA: tento notebook dřív v této buňce generoval `index.html`
+ze vzoru natvrdo zapsaného v kódu a při běhu v Colabu ho automaticky
+nahrával do GitHub repozitáře - to přepisovalo ruční opravy v
+`index.html` (např. progress bar, JSONP dotazování na stav, zmenšování
+fotek na Full HD) starým vestavěným textem.
+
+Formulář `index.html` se teď udržuje a upravuje PŘÍMO v repozitáři
+(https://github.com/prezentacehvb/Video/blob/main/index.html) a s tímto
+notebookem už vůbec nesouvisí. Pokud budeš měnit vzhled nebo chování
+formuláře, uprav rovnou `index.html` v repozitáři - žádný běh tohoto
+notebooku ho už nepřepíše.
+
+Stejně tak commit připojení Google Disku a instrukce k Apps Scriptu
+níže byly součástí starého ručního postupu při prvním nastavování -
+dnes o Disk i o spuštění GitHub Actions kompletně stará Apps Script
+backend (`Apps_fixed_full.gs`), takže tahle notebooková buňka pro
+běžný provoz už není potřeba.
+"""
