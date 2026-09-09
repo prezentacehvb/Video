@@ -4,564 +4,222 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HVB Video - Moderní Prezentace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #8e24aa;
-            --primary-light: #d1c4e9;
-            --accent: #ffffff;
-            --bg-dark: #0a0a0c;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at top right, #1a0b2e, var(--bg-dark));
-            color: var(--accent);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            overflow-x: hidden;
-        }
-
-        #loginOverlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        .login-card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            padding: 40px;
-            border-radius: 24px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .captcha-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin: 15px 0 20px 0;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-            cursor: pointer;
-        }
-
-        .captcha-box input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-            cursor: pointer;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
             margin: 0;
-        }
-
-        .main-card.blurred {
-            filter: blur(20px);
-            pointer-events: none;
-            user-select: none;
-        }
-
-        .main-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            width: 100%;
-            max-width: 850px;
-            padding: 60px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transition: filter 0.5s ease;
-        }
-
-        header { text-align: center; margin-bottom: 50px; }
-
-        .header-logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            margin-bottom: 8px;
-        }
-
-        .logo-text {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #fff, var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -2px;
-            margin: 0;
-        }
-
-        .header-logo-img {
-            position: absolute;
-            right: 0; top: 50%;
-            transform: translateY(-50%);
-            height: 1em; width: auto;
-            font-size: 3.5rem;
-        }
-
-        .subtitle {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1.1rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-
-        .instruction-box {
-            background: rgba(142, 36, 170, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 40px;
-            border-left: 4px solid var(--primary);
-            line-height: 1.5;
-        }
-
-        .instruction-box ul {
-            margin-top: 8px;
-            margin-left: 20px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.85);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .input-group { display: flex; flex-direction: column; }
-
-        label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            color: var(--primary-light);
-            opacity: 0.8;
-        }
-
-        input[type="text"], input[type="email"], input[type="tel"] {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            padding: 14px 18px;
-            border-radius: 12px;
-            color: white;
-            font-family: inherit;
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-
-        input[readonly] {
-            background: rgba(255, 255, 255, 0.02);
-            color: rgba(255, 255, 255, 0.5);
-            cursor: not-allowed;
-        }
-
-        .submit-btn {
-            width: 100%;
             padding: 20px;
-            background: linear-gradient(135deg, var(--primary), #4a148c);
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1, h2 { text-align: center; color: #2c3e50; margin-top: 0; }
+        h1 { font-size: 24px; margin-bottom: 5px; }
+        h2 { font-size: 18px; color: #7f8c8d; font-weight: normal; margin-bottom: 20px; }
+        
+        .hidden { display: none !important; }
+        
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        input:focus { border-color: #3498db; outline: none; }
+        
+        button {
+            background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 16px;
-            font-size: 1.1rem;
-            font-weight: 700;
             cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background 0.3s;
         }
-
-        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .ai-section {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid var(--glass-border);
+        button:hover { background-color: #2980b9; }
+        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        
+        .rules {
+            background: #e8f4f8;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.5;
         }
-
-        .ai-section h3 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: var(--primary-light);
-            margin-bottom: 20px;
+        .rules ul { margin: 10px 0 0 0; padding-left: 20px; }
+        
+        .footer {
             text-align: center;
-            letter-spacing: 1px;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
         }
-
-        .ai-links { display: flex; flex-direction: column; gap: 12px; }
-
-        .ai-link {
+        .help-links {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .help-links a {
             text-decoration: none;
-            color: white;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-            border: 1px solid transparent;
+            color: #3498db;
+            font-size: 13px;
+            padding: 5px 10px;
+            background: #f0f8ff;
+            border-radius: 4px;
         }
-
-        .ai-link:hover {
-            background: rgba(142, 36, 170, 0.15);
-            border-color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        footer { text-align: center; margin-top: 40px; font-size: 0.8rem; opacity: 0.4; }
+        .help-links a:hover { background: #d6eaf8; }
     </style>
 </head>
 <body>
-    <div id="loginOverlay">
-        <div class="login-card">
-            <div class="logo-text" style="font-size: 2rem; text-align: center;">PŘIHLÁŠENÍ</div>
-            <p style="margin-bottom: 15px; color: rgba(255,255,255,0.7);">Zadejte e-mail</p>
-            <input type="email" id="loginEmail" style="width: 100%;" onkeydown="if(event.key === 'Enter') checkLogin()">
+
+    <div class="container">
+        
+        <!-- ========================================== -->
+        <!-- SEKCE 1: PŘIHLÁŠENÍ (Zobrazena jako první) -->
+        <!-- ========================================== -->
+        <div id="loginSection">
+            <h1>HVB VIDEO</h1>
+            <h2>REALITNÍ PREZENTACE</h2>
+            <p style="text-align:center; color: #555;">Zadejte svůj e-mail pro ověření denního limitu.</p>
             
-            <div class="captcha-box">
-                <input type="checkbox" id="notRobot">
-                <label for="notRobot" style="margin: 0; text-transform: none; font-size: 0.9rem; cursor: pointer; color: white; opacity: 1;">Nejsem robot</label>
+            <input type="email" id="emailInput" placeholder="Zadejte e-mail" required>
+            <!-- Zde by případně mohlo být reCAPTCHA -->
+            <button id="loginBtn">VSTOUPIT</button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SEKCE 2: HLAVNÍ FORMULÁŘ (Skrytá do přihlášení) -->
+        <!-- ========================================== -->
+        <div id="mainFormSection" class="hidden">
+            <h1>NOVÁ PREZENTACE</h1>
+            
+            <div class="rules">
+                <strong>Návod k použití a pravidla:</strong>
+                <ul>
+                    <li>Fotografie (originál či upravené) připravte do jedné složky.</li>
+                    <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
+                    <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
+                    <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
+                    <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
+                </ul>
             </div>
 
-            <button onclick="checkLogin()" id="loginBtn" class="submit-btn">VSTOUPIT</button>
-            <p id="loginError" style="color: #ff5252; font-size: 0.85rem; margin-top: 15px; display: none; line-height: 1.4; word-break: break-word;"></p>
+            <form id="videoForm">
+                <input type="text" id="maklerJmeno" placeholder="Jméno makléře" required>
+                <input type="email" id="maklerEmail" placeholder="E-mail pro doručení" required>
+                <input type="text" id="nazevNemovitosti" placeholder="Název nemovitosti" required>
+                <input type="tel" id="telefon" placeholder="Telefon">
+                <input type="text" id="lokalita" placeholder="Lokalita" required>
+                
+                <label style="font-size: 14px; font-weight: bold; margin-top: 15px; display: block;">Výběr fotografií:</label>
+                <input type="file" id="fotoInput" multiple accept="image/jpeg, image/png, image/webp">
+                
+                <button type="submit" id="submitBtn" style="background-color: #27ae60; margin-top: 15px;">VYTVOŘIT VIDEO</button>
+            </form>
         </div>
+
+        <!-- ========================================== -->
+        <!-- SEKCE 3: PATIČKA A NÁPOVĚDA -->
+        <!-- ========================================== -->
+        <div class="footer">
+            <p><strong>Nápověda:</strong></p>
+            <div class="help-links">
+                <a href="Fotohelp.html">Fotografické minimum →</a>
+                <a href="Upravafoto.html">Úprava fotografie →</a>
+                <a href="Popisnem.html">Popis nemovitosti →</a>
+                <a href="Ocennem.html">Ocenění nemovitosti →</a>
+                <a href="Signhelp.html">Digitální podpis (DigiSign) →</a>
+            </div>
+            <p style="margin-top: 25px;">© 2026 LM HVB VIDEO</p>
+        </div>
+
     </div>
 
-    <div class="main-card blurred" id="mainCard">
-        <header>
-            <div class="header-logo-container">
-                <div class="logo-text">HVB VIDEO</div>
-                <img src="HVBlogo.png" alt="HVB Logo" class="header-logo-img">
-            </div>
-            <div class="subtitle">REALITNÍ PREZENTACE</div>
-        </header>
-
-        <div class="instruction-box">
-            <p><strong>Návod k použití a pravidla pro vložení fotografií:</strong></p>
-            <ul>
-                <li>Fotografie (originál či upravené v GEM) připravte do jedné složky.</li>
-                <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
-                <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
-                <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
-                <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
-            </ul>
-        </div>
-
-        <form id="videoForm" onsubmit="sendData(event)">
-            <div class="form-grid">
-                <div class="input-group">
-                    <label for="MAKLER_JMENO">Jméno makléře</label>
-                    <input type="text" id="MAKLER_JMENO" name="MAKLER_JMENO" placeholder="František Procházka" required>
-                </div>
-                <div class="input-group">
-                    <label for="MAKLER_EMAIL">E-mail pro doručení</label>
-                    <input type="email" id="MAKLER_EMAIL" name="MAKLER_EMAIL" readonly required>
-                </div>
-                <div class="input-group">
-                    <label for="TEXT_TOP">Název nemovitosti</label>
-                    <input type="text" id="TEXT_TOP" name="TEXT_TOP" placeholder="RD 5+kk 100 m², pozemek 400 m²" required>
-                </div>
-                <div class="input-group">
-                    <label for="MAKLER_TELEFON">Telefon</label>
-                    <input type="tel" id="MAKLER_TELEFON" name="MAKLER_TELEFON" placeholder="123 456 789" required>
-                </div>
-                <div class="input-group" style="grid-column: span 2;">
-                    <label for="TEXT_BOTTOM">Lokalita</label>
-                    <input type="text" id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder="Český Brod, okr. Kolín" required>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-bottom: 30px;">
-                <input type="file" id="images" name="images" multiple accept="image/*" required>
-            </div>
-
-            <button type="submit" id="submitBtn" class="submit-btn">VYTVOŘIT VIDEO</button>
-        </form>
-
-        <div class="ai-section">
-            <h3>Nápověda</h3>
-            <div class="ai-links">
-                <a href="Fotohelp.html" class="ai-link"><span>Fotografické minimum</span><span>→</span></a>
-                <a href="Upravafoto.html" class="ai-link"><span>Úprava fotografie</span><span>→</span></a>
-                <a href="Popisnem.html" class="ai-link"><span>Popis nemovitosti</span><span>→</span></a>
-                <a href="Ocennem.html" class="ai-link"><span>Ocenění nemovitosti</span><span>→</span></a>
-                <a href="Signhelp.html" class="ai-link"><span>Digitální podpis dokumentů ( DigiSign )</span><span>→</span></a>
-            </div>
-        </div>
-
-        <footer>
-            © 2026 LM HVB VIDEO
-        </footer>
-    </div>
-
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIKA -->
+    <!-- ========================================== -->
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJMZKSpl0SL5D0NO54E7GbBreUlFDamp0FT-rnUKdA1M0Vz-vzUigQrQ3y_902QxI9_w/exec";
+        // 🚨 DŮLEŽITÉ: Zde vložte URL vašeho nasazení z Google Apps Script (musí končit /exec)
+        const BACKEND_URL = "ZDE_VLOZTE_VASI_URL_DEPLOYMENTU"; 
         const VERSION_KEY = "HVB_BUILD_2026_09_09_V1";
 
-        function checkLogin() {
-            const emailInput = document.getElementById('loginEmail');
-            const email = emailInput.value.toLowerCase().trim();
-            const notRobot = document.getElementById('notRobot').checked;
-            const errorMsg = document.getElementById('loginError');
-            const loginBtn = document.getElementById('loginBtn');
+        document.addEventListener("DOMContentLoaded", function() {
+            const loginBtn = document.getElementById("loginBtn");
+            const emailInput = document.getElementById("emailInput");
+            const loginSection = document.getElementById("loginSection");
+            const mainFormSection = document.getElementById("mainFormSection");
+            const maklerEmailInput = document.getElementById("maklerEmail");
 
-            if (email.endsWith('@hvbreal.cz') && notRobot) {
-                errorMsg.style.display = 'none';
-                loginBtn.disabled = true;
-                loginBtn.innerText = "OVĚŘOVÁNÍ LIMITU...";
+            // 1. OBSLUHA TLAČÍTKA "VSTOUPIT"
+            loginBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                const email = emailInput.value.trim();
 
-                const callbackName = "handleLimitResponse_" + Math.random().toString(36).substring(2, 9);
-
-                window[callbackName] = function(data) {
-                    delete window[callbackName];
-                    if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
-
-                    loginBtn.disabled = false;
-                    loginBtn.innerText = "VSTOUPIT";
-
-                    if (data && data.status === "success") {
-                        document.getElementById('loginOverlay').style.display = 'none';
-                        document.getElementById('mainCard').classList.remove('blurred');
-                        document.getElementById('MAKLER_EMAIL').value = email;
-
-                        showInfoBanner(`Váš denní limit tvorby videí je ${data.remaining} z celkových ${data.maxLimit}.`);
-                        
-                        if (data.remaining <= 0) {
-                            const submitBtn = document.getElementById('submitBtn');
-                            submitBtn.disabled = true;
-                            submitBtn.innerText = "DENNÍ LIMIT VYČERPÁN";
-                            showInfoBanner(`Váš dnešní limit tvorby videí (${data.maxLimit}) byl vyčerpán. Další tvorba bude možná zítra.`);
-                        }
-                    } else if (data && data.status === "error") {
-                        errorMsg.style.display = 'block';
-                        errorMsg.innerText = data.message;
-                    } else {
-                        errorMsg.style.display = 'block';
-                        errorMsg.innerText = "Chyba: Neplatný formát odpovědi ze serveru.";
-                    }
-                };
-
-                const scriptTag = document.createElement('script');
-                scriptTag.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&vkey=${encodeURIComponent(VERSION_KEY)}&callback=${callbackName}`;
-                
-                scriptTag.onerror = function() {
-                    delete window[callbackName];
-                    if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
-                    loginBtn.disabled = false;
-                    loginBtn.innerText = "VSTOUPIT";
-                    errorMsg.style.display = 'block';
-                    errorMsg.innerText = "CHYBA SÍTĚ: Spojení se skriptem selhalo.";
-                };
-
-                document.body.appendChild(scriptTag);
-
-            } else {
-                errorMsg.style.display = 'block';
-                errorMsg.innerText = "Neplatný e-mail nebo nevyplněná kontrola";
-            }
-        }
-
-        function fixM2(text) {
-            return text.replace(/m2/gi, 'm²');
-        }
-
-        function processAndValidateImage(file, maxWidth = 3840, maxHeight = 2160, quality = 0.90) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (height >= width) {
-                            return reject(new Error(`HEIGHT_FILTER`));
-                        }
-
-                        if (width > maxWidth || height > maxHeight) {
-                            if (width / height > maxWidth / maxHeight) {
-                                height = Math.round((height * maxWidth) / width);
-                                width = maxWidth;
-                            } else {
-                                width = Math.round((width * maxHeight) / height);
-                                height = maxHeight;
-                            }
-                        }
-
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-
-                        const dataUrl = canvas.toDataURL('image/jpeg', quality);
-                        const base64Data = dataUrl.split(',')[1];
-                        resolve({ name: file.name, base64: base64Data });
-                    };
-                    img.onerror = () => reject(new Error(`Chyba při načítání souboru ${file.name}`));
-                };
-                reader.onerror = () => reject(new Error(`Chyba při čtení souboru ${file.name}`));
-            });
-        }
-
-        function showInfoBanner(message) {
-            let infoBox = document.getElementById("infoNoticeBox");
-            if (!infoBox) {
-                infoBox = document.createElement("div");
-                infoBox.id = "infoNoticeBox";
-                infoBox.style.cssText = "margin-bottom: 25px; padding: 14px; background: rgba(142, 36, 170, 0.2); border: 1px solid var(--primary); color: #ffffff; border-radius: 12px; font-size: 0.95rem; text-align: center; font-weight: 600;";
-                const form = document.getElementById("videoForm");
-                form.parentNode.insertBefore(infoBox, form);
-            }
-            infoBox.innerText = message;
-            infoBox.style.display = "block";
-        }
-
-        async function sendData(event) {
-            event.preventDefault();
-            const submitBtn = document.getElementById("submitBtn");
-            submitBtn.disabled = true;
-
-            const fileInput = document.getElementById("images");
-            const files = Array.from(fileInput.files);
-
-            const rawTextTop = document.getElementById("TEXT_TOP").value;
-            const rawTextBottom = document.getElementById("TEXT_BOTTOM").value;
-            
-            const textTopFixed = fixM2(rawTextTop);
-            const textBottomFixed = fixM2(rawTextBottom);
-
-            document.getElementById("TEXT_TOP").value = textTopFixed;
-            document.getElementById("TEXT_BOTTOM").value = textBottomFixed;
-
-            let secondsElapsed = 0;
-            
-            const timerInterval = setInterval(() => {
-                secondsElapsed++;
-                const mins = Math.floor(secondsElapsed / 60);
-                const secs = secondsElapsed % 60;
-                const timeStr = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-                submitBtn.innerText = `Odesílám data ke zpracování... (${timeStr})`;
-            }, 1000);
-
-            submitBtn.innerText = `Odesílám data ke zpracování... (0:00)`;
-
-            try {
-                let convertedFiles = [];
-                let removedDueToHeight = false;
-
-                for (let i = 0; i < files.length; i++) {
-                    try {
-                        const processed = await processAndValidateImage(files[i]);
-                        convertedFiles.push(processed);
-                    } catch (err) {
-                        if (err.message === 'HEIGHT_FILTER') {
-                            removedDueToHeight = true;
-                        } else {
-                            throw err;
-                        }
-                    }
-                }
-
-                let removedDueToCount = false;
-                if (convertedFiles.length > 15) {
-                    convertedFiles = convertedFiles.slice(0, 15);
-                    removedDueToCount = true;
-                }
-
-                if (removedDueToHeight || removedDueToCount) {
-                    showInfoBanner("Informace: Některé fotografie přesahující povolený počet (max 15) nebo orientované na výšku byly automaticky vyřazeny.");
-                }
-
-                if (convertedFiles.length === 0) {
-                    alert("Žádná z vybraných fotografií nesplňuje požadavky (orientace na šířku).");
-                    clearInterval(timerInterval);
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "VYTVOŘIT VIDEO";
+                if (!email || !email.includes("@")) {
+                    alert("Prosím, zadejte platný e-mail.");
                     return;
                 }
 
-                const timeStamp = new Date().getTime();
-                const randomPart = Math.random().toString(36).substring(2, 7);
-                const clientJobId = "job_" + timeStamp + "_" + randomPart;
+                // Změna stavu tlačítka
+                loginBtn.innerText = "Ověřování...";
+                loginBtn.disabled = true;
 
-                const payload = {
-                    CLIENT_JOB_ID: clientJobId,
-                    MAKLER_JMENO: document.getElementById("MAKLER_JMENO").value,
-                    MAKLER_EMAIL: document.getElementById("MAKLER_EMAIL").value,
-                    MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
-                    TEXT_TOP: textTopFixed,
-                    TEXT_BOTTOM: textBottomFixed,
-                    images: convertedFiles
-                };
+                // Sestavení URL pro backend (tím vyřešíme problém "Chybí parametr jobId")
+                const fetchUrl = BACKEND_URL + "?email=" + encodeURIComponent(email) + "&vkey=" + VERSION_KEY;
 
-                await fetch(SCRIPT_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: {
-                        "Content-Type": "text/plain;charset=utf-8"
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                clearInterval(timerInterval);
-                const sentTime = new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                alert(`Data odeslána v ${sentTime}`);
-                document.getElementById("videoForm").reset();
-
-                const email = document.getElementById("MAKLER_EMAIL").value;
-                if (email) {
-                    const cbName = "handleLimitResponse_after_" + Math.random().toString(36).substring(2, 9);
-                    window[cbName] = function(data) {
-                        delete window[cbName];
-                        if (document.body.contains(sTag)) document.body.removeChild(sTag);
-                        if (data && data.status === "success") {
-                            showInfoBanner(`Váš zbývající denní limit tvorby videí je nyní ${data.remaining} z celkových ${data.maxLimit}.`);
-                            if (data.remaining <= 0) {
-                                submitBtn.disabled = true;
-                                submitBtn.innerText = "DENNÍ LIMIT VYČERPÁN";
+                fetch(fetchUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            if (data.remaining > 0) {
+                                alert("Přihlášení úspěšné! Dnes vám zbývá " + data.remaining + " videí.");
+                                // Přepnutí zobrazení
+                                loginSection.classList.add("hidden");
+                                mainFormSection.classList.remove("hidden");
+                                // Předvyplnění e-mailu do formuláře
+                                maklerEmailInput.value = email;
+                            } else {
+                                alert("Chyba: Váš dnešní limit pro tvorbu videí (" + data.maxLimit + ") byl vyčerpán.");
                             }
+                        } else {
+                            alert("Chyba: " + (data.message || "Neznámá chyba serveru."));
                         }
-                    };
-                    const sTag = document.createElement('script');
-                    sTag.src = `${SCRIPT_URL}?action=get_limit&email=${encodeURIComponent(email)}&vkey=${encodeURIComponent(VERSION_KEY)}&callback=${cbName}`;
-                    document.body.appendChild(sTag);
-                }
+                    })
+                    .catch(err => {
+                        console.error("Chyba připojení:", err);
+                        alert("Chyba připojení k serveru. Zkontrolujte, zda je BACKEND_URL správně nastavena.");
+                    })
+                    .finally(() => {
+                        // Obnovení tlačítka
+                        loginBtn.innerText = "VSTOUPIT";
+                        loginBtn.disabled = false;
+                    });
+            });
 
-            } catch (e) {
-                clearInterval(timerInterval);
-                console.error(e);
-                alert("Chyba při zpracování fotografií: " + e.message);
-            } finally {
-                clearInterval(timerInterval);
-                if (document.getElementById("submitBtn").innerText !== "DENNÍ LIMIT VYČERPÁN") {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "VYTVOŘIT VIDEO";
-                }
-            }
-        }
+            // 2. OBSLUHA ODESLÁNÍ FORMULÁŘE (Kostra pro budoucí rozšíření)
+            document.getElementById("videoForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                alert("Formulář je připraven. Zde by následoval kód pro převod fotek na base64 a odeslání POST požadavku na backend (funkce handleJobSubmission).");
+                // Zde by se četly soubory z #fotoInput, převedly na base64 a odeslaly fetch() metodou POST na BACKEND_URL
+            });
+        });
     </script>
 </body>
 </html>
