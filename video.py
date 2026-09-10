@@ -11,10 +11,16 @@ Original file is located at
 
 Automatizovaný generátor realitních videí s Ken Burns efektem, supersamplingem (anti-aliasing) a automatickou detekcí prostředí (Colab/GitHub Actions).
 
-import sys, json, os, shutil, random, zipfile, time, re, io, collections, glob
+# Instalace a importy
+import subprocess, sys
+def install(package): subprocess.check_call([sys.executable, "-m", "pip", "install", "-q", package])
+
+try: import requests
+except ImportError: install('requests')
+
+import json, os, shutil, random, zipfile, time, re, io, collections, glob
 import numpy as np
 import cv2
-import requests
 from PIL import Image, ImageDraw, ImageFont
 from moviepy.editor import ImageClip, VideoFileClip, concatenate_videoclips, AudioFileClip, afx
 from proglog import ProgressBarLogger

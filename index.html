@@ -103,12 +103,12 @@
         #loginOverlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 0, 10, 0.85);
+            background: linear-gradient(rgba(5, 0, 10, 0.75), rgba(5, 0, 10, 0.85)), url('fotografka.jpeg') center/cover no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(6px);
         }
 
         .login-card {
@@ -120,6 +120,14 @@
             max-width: 400px;
             width: 90%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .login-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
         }
 
         .captcha-box {
@@ -399,7 +407,7 @@
     <!-- Login Screen Overlay -->
     <div id="loginOverlay">
         <div class="login-card">
-            <h2 style="font-size: 1.5rem; margin-bottom: 20px;">PŘIHLÁŠENÍ MAKLÉŘE</h2>
+            <h2 class="login-title">PŘIHLÁŠENÍ MAKLÉŘE</h2>
             <input type="email" id="loginEmail" style="width: 100%; margin-bottom: 10px;" onkeydown="if(event.key === 'Enter') checkLogin()">
             
             <div class="captcha-box">
@@ -408,7 +416,7 @@
             </div>
 
             <button onclick="checkLogin()" class="submit-btn">VSTOUPIT DO SYSTÉMU</button>
-            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 15px; display: none;">Přístup povolen pouze s e-mailem @hvbreal.cz a zaškrtnutým políčkem.</p>
+            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 15px; display: none;">Chybné heslo</p>
         </div>
     </div>
 
@@ -487,7 +495,6 @@
             <section class="cards-section">
                 <div class="cards-section-title">Nápověda a užitečné návody</div>
                 <div class="cards-grid">
-                    <!-- 1. Karta - Vložený vygenerovaný obrázek (fotografka s fotoaparátem v interiéru) -->
                     <a href="Fotohelp.html" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=600&q=80" alt="Fotografické minimum">
@@ -528,7 +535,6 @@
                         </div>
                     </a>
 
-                    <!-- 5. Karta - Dokumenty s plnicím perem (podpisy smluv) -->
                     <a href="Signhelp.html" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80" alt="Digitální podpis">
