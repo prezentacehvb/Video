@@ -90,22 +90,13 @@ AUDIO_FADE_OUT = 8  # @param {type:"number"} # Dojezd hudby v sekundách
 VYBRANA_HUDBA = "01. Where_the_Sunlight_Lands.mp3"  # @param {type:"string"} # Název souboru nahrané hudby
 NAHRAT_NOVE_SOUBORY = False  # @param {type:"boolean"} # Aktivovat dialog pro nahrání nových medií
 
-# @markdown ### 👤 Informace o makléři (Úvod & Závěr)
-MAKLER_JMENO = "FRANTIŠEK PROCHÁZKA" # @param {type:"string"}
-MAKLER_BOLD = False # @param {type:"boolean"}
-MAKLER_ITALIC = True # @param {type:"boolean"}
+### 👤 Informace o makléři a technické parametry byly sloučeny do hlavní konfigurace výše.
 
-RK_NAZEV = "HVB Real Estate " # @param {type:"string"}
-RK_BOLD = True # @param {type:"boolean"}
-RK_ITALIC = False # @param {type:"boolean"}
+---
 
-MAKLER_EMAIL = "fprochazka@hvbreal.cz" # @param {type:"string"}
-MAKLER_TELEFON = "+420 123 456 789" # @param {type:"string"}
-FONT_SIZE_MAKLER = 40 # @param {type:"number"}
+---
 
-# @markdown ### Varianta linky (pro hlavní popisky)
-LINE_VARIANT = "LINE 2" # @param ["LINE 1", "LINE 2"]
-LINE_SPACING = 7 # @param {type:"number"}
+---
 
 # Headless: přepsat výchozí @param hodnoty daty z job.json
 # Přidána kontrola existence JOB_CONFIG, aby nedocházelo k NameError
@@ -232,11 +223,7 @@ from proglog import ProgressBarLogger
 if IS_COLAB:
     from google.colab import files
 
-# @title 🎬 Parametry pohybu a technické nastavení
-MIN_IMAGE_DURATION = 3 # @param {type:"number"}
-MAX_IMAGE_DURATION = 5 # @param {type:"number"}
-ASPECT_RATIO = "16:9" # @param ["16:9", "4:3"]
-MOTION_MODE = "random" # @param ["random", "zoom_in", "zoom_out", "pan_left_to_right", "pan_right_to_left", "pan_top_to_bottom", "pan_bottom_to_top", "zoom_in_left", "zoom_in_right", "zoom_out_left", "zoom_out_right"]
+### Parametry jsou nyní spravovány v první konfigurační buňce.
 
 ZOOM_SPEED = 0.05
 PAN_ZOOM_FACTOR = 1.05   # o kolik se "přizoomuje" navíc u pan/zoom-pan pohybů (musí být > 1.0)
