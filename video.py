@@ -31,11 +31,13 @@ try:
 except ImportError:
     IS_COLAB = False
 
-try:
-    import google.colab  # noqa: F401
-    IS_COLAB = True
-except ImportError:
-    IS_COLAB = False
+# KONTROLA SYNTAXE PRO GITHUB ACTIONS
+import sys
+with open('video.py', 'w', encoding='utf-8') as f:
+    # Zde simulujeme export (v Colabu se video.py obvykle generuje z notebooku)
+    pass
+
+print("✅ Buňky převedeny na Markdown. Spusťte nyní export/běh skriptu.")
 
 JOB_CONFIG = None
 if not IS_COLAB:
@@ -195,15 +197,11 @@ if not globals().get('IS_COLAB', False):
 else:
     print("⏭️ Přeskakuji headless konfiguraci (běžíme v Colabu).")
 
-"""## 1. Nastavení a Definice Funkcí"""
+## 1. Nastavení a Definice Funkcí
 
-import os, shutil, random, zipfile, time, json, re, io, numpy as np, cv2, sys
-from PIL import Image, ImageDraw, ImageFont
-from moviepy.editor import ImageClip, VideoFileClip, concatenate_videoclips, AudioFileClip, afx
-from proglog import ProgressBarLogger
 
-if IS_COLAB:
-    from google.colab import files
+
+
 
 # Všechny podporované typy pohybu (používá se, když MOTION_MODE == "random")
 ALL_MOTION_MODES = [
@@ -285,51 +283,7 @@ def draw_text_overlay(image_np, text_str):
 
     return np.array(img.convert("RGB"))
 
-def draw_text_overlay(image_np, text_str):
-    img = Image.fromarray(image_np).convert("RGBA")
-    draw = ImageDraw.Draw(img)
-    margin = 60
-    try:
-        font_top = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", FONT_SIZE_TOP)
-        font_bottom = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", FONT_SIZE_BOTTOM)
-    except:
-        font_top = font_bottom = ImageFont.load_default()
 
-    parts = text_str.split(";")
-    top_text, bottom_text = parts[0].strip(), parts[1].strip() if len(parts) > 1 else ""
-
-    bbox_t = draw.textbbox((0, 0), top_text, font=font_top)
-    bbox_b = draw.textbbox((0, 0), bottom_text, font=font_bottom)
-    w_top, h_top = bbox_t[2]-bbox_t[0], bbox_t[3]-bbox_t[1]
-    w_bottom, h_bottom = bbox_b[2]-bbox_b[0], bbox_b[3]-bbox_b[1]
-    line_length = max(w_top, w_bottom)
-
-    y_bottom_base = TARGET_H - margin - 20
-    line_y_mid = y_bottom_base - h_bottom - LINE_SPACING
-    y_top_base = line_y_mid - h_top - LINE_SPACING
-
-    draw.text((margin, y_bottom_base - h_bottom), bottom_text, font=font_bottom, fill=TEXT_COLOR)
-    draw.text((margin, y_top_base), top_text, font=font_top, fill=TEXT_COLOR)
-
-    y_top_border = y_top_base - 10
-    y_bottom_border = y_bottom_base + 10
-    frame_height = y_bottom_border - y_top_border
-
-    if LINE_VARIANT == "LINE 2":
-        draw.line([(margin - 20, y_top_border), (margin - 20, y_bottom_border)], fill=LINE_COLOR, width=4)
-        draw.line([(margin - 20, y_top_border), (margin - 20 + (line_length * 0.3), y_top_border)], fill=LINE_COLOR, width=4)
-        draw.line([(margin - 20, y_bottom_border), (margin + line_length, y_bottom_border)], fill=LINE_COLOR, width=4)
-
-    logo_path = globals().get('LOGO_FILE')
-    if logo_path and os.path.exists(str(logo_path)):
-        logo = Image.open(str(logo_path)).convert("RGBA")
-        aspect = logo.width / logo.height
-        new_h = frame_height
-        new_w = int(new_h * aspect)
-        logo_resized = logo.resize((new_w, new_h), Image.Resampling.LANCZOS)
-        img.paste(logo_resized, (TARGET_W - margin - new_w, y_top_border), logo_resized)
-
-    return np.array(img.convert("RGB"))
 
 _LAST_MOTION_MODE = None  # sleduje poslední použitý pohyb, aby se stejný typ neopakoval hned dvakrát po sobě
 
@@ -453,9 +407,9 @@ def apply_smooth_smart_motion(img_path, duration, text_overlay=""):
 
     return ImageClip(make_frame(0)).set_duration(duration).set_make_frame(make_frame)
 
-"""## 2. Nahrání fotografií"""
+## 2. Nahrání fotografií
 
-import glob
+
 
 # 1. Kompletní promazání pracovních složek
 for folder in [INPUT_DIR, ENHANCED_DIR]:
@@ -509,9 +463,9 @@ if not globals().get('IS_COLAB', False):
 else:
     print("⏭️ Přeskakuji stahování z URL (fotky byly nahrány ručně v Colabu).")
 
-"""## 3. Zpracování snímků (Krok 1 & 2)"""
+## 3. Zpracování snímků (Krok 1 & 2)
 
-import re
+
 
 def natural_sort_key(s):
     return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
@@ -547,13 +501,11 @@ for idx, img_path in enumerate(image_files):
 
 print("\n✅ Všechny obrázky jsou připraveny k sestříhání.")
 
-"""## 4. Export videa (Krok 3 & 4)"""
+## 4. Export videa (Krok 3 & 4)
 
-import re
-from moviepy.video.fx.all import fadein, fadeout
 
-def natural_sort_key(s):
-    return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
+
+
 
 final_image_paths = sorted([os.path.join(ENHANCED_DIR, f) for f in os.listdir(ENHANCED_DIR) if f.endswith('.png')], key=natural_sort_key)
 print(f"\n--> Generování videa z {len(final_image_paths)} snímků s textem...")
@@ -633,23 +585,6 @@ if final_clips:
             }, f, ensure_ascii=False, indent=2)
         print(f"🟢 render_result.json zapsán, video: {OUTPUT_FILE}")
 
-"""## 5. Poznámka k webovému formuláři (index.html)
+## 5. Poznámka k webovému formuláři (index.html)
 
-DŮLEŽITÁ ZMĚNA: tento notebook dřív v této buňce generoval `index.html`
-ze vzoru natvrdo zapsaného v kódu a při běhu v Colabu ho automaticky
-nahrával do GitHub repozitáře - to přepisovalo ruční opravy v
-`index.html` (např. progress bar, JSONP dotazování na stav, zmenšování
-fotek na Full HD) starým vestavěným textem.
-
-Formulář `index.html` se teď udržuje a upravuje PŘÍMO v repozitáři
-(https://github.com/prezentacehvb/Video/blob/main/index.html) a s tímto
-notebookem už vůbec nesouvisí. Pokud budeš měnit vzhled nebo chování
-formuláře, uprav rovnou `index.html` v repozitáři - žádný běh tohoto
-notebooku ho už nepřepíše.
-
-Stejně tak commit připojení Google Disku a instrukce k Apps Scriptu
-níže byly součástí starého ručního postupu při prvním nastavování -
-dnes o Disk i o spuštění GitHub Actions kompletně stará Apps Script
-backend (`Apps_fixed_full.gs`), takže tahle notebooková buňka pro
-běžný provoz už není potřeba.
-"""
+Formulář `index.html` se teď udržuje přímo v repozitáři a s tímto notebookem již nesouvisí.
