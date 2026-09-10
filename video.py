@@ -90,14 +90,6 @@ AUDIO_FADE_OUT = 8  # @param {type:"number"} # Dojezd hudby v sekundách
 VYBRANA_HUDBA = "01. Where_the_Sunlight_Lands.mp3"  # @param {type:"string"} # Název souboru nahrané hudby
 NAHRAT_NOVE_SOUBORY = False  # @param {type:"boolean"} # Aktivovat dialog pro nahrání nových medií
 
-### 👤 Informace o makléři a technické parametry byly sloučeny do hlavní konfigurace výše.
-
----
-
----
-
----
-
 # Headless: přepsat výchozí @param hodnoty daty z job.json
 # Přidána kontrola existence JOB_CONFIG, aby nedocházelo k NameError
 if 'JOB_CONFIG' in globals() and JOB_CONFIG:
@@ -110,16 +102,6 @@ if 'JOB_CONFIG' in globals() and JOB_CONFIG:
     RK_NAZEV = _cfg.get("RK_NAZEV", RK_NAZEV)
 
 GLOBAL_TEXT = f"{TEXT_TOP};{TEXT_BOTTOM}"
-
-# --- Nastavení hudby ---
-AUDIO_FADE_IN = 8 # @param {type:"number"}
-AUDIO_FADE_OUT = 8 # @param {type:"number"}
-
-# --- Nastavení obrazu ---
-VIDEO_FADE_IN = 6 # @param {type:"number"}
-VIDEO_FADE_OUT = 6 # @param {type:"number"}
-
-import shutil
 
 # Persistentní historie
 LOGO_CONFIG_PATH = "logo_config.txt"
@@ -222,16 +204,6 @@ from proglog import ProgressBarLogger
 
 if IS_COLAB:
     from google.colab import files
-
-### Parametry jsou nyní spravovány v první konfigurační buňce.
-
-ZOOM_SPEED = 0.05
-PAN_ZOOM_FACTOR = 1.05   # o kolik se "přizoomuje" navíc u pan/zoom-pan pohybů (musí být > 1.0)
-PAN_STEP_PERCENT = 60    # kolik % dostupného prostoru pro posun (overscan) se využije při pan efektech
-
-# --- Kvalita pohybu (proti "chvění"/blikání při zoomu a panu) ---
-MOTION_OVERSCAN = 1.28   # @param {type:"number"}  # kolik navíc rezervy (nad rámec cílového rozlišení) mají zpracované fotky, aby bylo kam "panovat" a zoomovat bez ztráty kvality
-SUPERSAMPLE = 2          # @param {type:"number"}  # každý snímek se počítá v tomto násobku rozlišení a pak se zmenší (anti-aliasing) -> potlačí chvění/moiré. 1 = vypnuto (rychlejší, ale méně stabilní obraz)
 
 # Všechny podporované typy pohybu (používá se, když MOTION_MODE == "random")
 ALL_MOTION_MODES = [
