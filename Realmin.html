@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realitní minimum — Standardy služeb a komunikační manuál RK</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --code-bg: #f1f3f4;
+            --success-color: #15803d;
+            --danger-color: #b91c1c;
+            --warning-bg: #fefce8;
+            --warning-border: #f59e0b;
+            --warning-text: #78350f;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--text-color);
+            font-size: 1.3rem;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+
+        .intro-box {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+
+        .warning-box {
+            background-color: var(--warning-bg);
+            border-left: 4px solid var(--warning-border);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            margin: 25px 0;
+            color: var(--warning-text);
+        }
+
+        .section-block {
+            margin-bottom: 25px;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--bg-color);
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        tr:hover {
+            background-color: #f1f3f4;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 40%;
+            }
+            td:before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 35%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            .objection-table td:nth-of-type(1):before { content: "Námitka:"; }
+            .objection-table td:nth-of-type(2):before { content: "Reakce:"; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>REALITNÍ MINIMUM</h1>
+    <p class="subtitle">Standardy služeb a komunikační manuál RK</p>
+
+    <div class="intro-box">
+        <strong>Metodický přehled pro makléře a operátory:</strong> Komplexní průvodce standardy služeb, postupy při náboru a prodeji nemovitostí, kvalitou navolání zájemců a efektivním zvládáním klientů v praxi.
+    </div>
+
+    <h2>A. Základní znalostní postup a servis realitní kanceláře</h2>
+
+    <div class="section-block">
+        <h3>1. Příprava a ocenění nemovitosti (Pre-marketing)</h3>
+        <ul>
+            <li><strong>Tržní analýza zdarma:</strong> Zpracování profesionálního odhadu tržní ceny na základě cenových map, reálně realizovaných prodejů z katastru nemovitostí a aktuálního vývoje trhu.</li>
+            <li><strong>Právní prověrka:</strong> Důkladná kontrola listu vlastnictví (LV), prověření věcných břemen, zástavních práv či jiných právních omezení pro hladký průběh obchodu.</li>
+            <li><strong>Home Staging & Dekorování:</strong> Příprava interiéru profesionálním designérem tak, aby nemovitost působila prostorně, světle a maximálně atraktivně pro cílovou skupinu.</li>
+            <li><strong>Příprava podkladů:</strong> Zajištění půdorysů, přesného zaměření nemovitosti a kompletní součinnost při vyřízení Průkazu energetické náročnosti budovy (PENB).</li>
+        </ul>
+    </div>
+
+    <div class="section-block">
+        <h3>2. Profesionální prezentace a marketing</h3>
+        <ul>
+            <li><strong>Foto & Video prezentace:</strong> Využití špičkové techniky, reprezentativních HDR fotografií a videoprohlídek.</li>
+            <li><strong>Letecké záběry z dronu:</strong> Zachycení širšího okolí, pozemku a unikátní lokality nemovitosti z ptačí perspektivy.</li>
+            <li><strong>Cílený digitální marketing:</strong> Výkonnostní reklamní kampaně zaměřené na sociálních sítích (Facebook, Instagram) a vyhledávačích.</li>
+            <li><strong>Inzerce na TOP portálech:</strong> Dominance na hlavních serverech (Sreality.cz, Reality.iDNES.cz aj.) s pravidelným topováním pro udržení předních pozic.</li>
+            <li><strong>Lokální marketing:</strong> Umístění prodejních plachet a bannerů přímo na nemovitosti, uspořádání letákové kampaně v nejbližším okolí.</li>
+        </ul>
+    </div>
+
+    <div class="section-block">
+        <h3>3. Práce se zájemci a organizace prohlídek</h3>
+        <ul>
+            <li><strong>Kvalifikace zájemců:</strong> Důkladné prověření finančních možností zájemců (předschválená hypotéka / vlastní kapitál) ještě před samotnou prohlídkou.</li>
+            <li><strong>Organizace prohlídek:</strong> Kompletní zajištění a profesionální vedení prohlídek certifikovaným makléřem.</li>
+            <li><strong>Pravidelný reporting:</strong> Informování majitele o průběhu prodeje (statistika sledovanosti inzerce, evidované poptávky, zpětná vazba z prohlídek).</li>
+        </ul>
+    </div>
+
+    <div class="section-block">
+        <h3>4. Právní a finanční servis</h3>
+        <ul>
+            <li><strong>Kompletní právní servis:</strong> Příprava rezervačních smluv, kupních smluv i návrhů na vklad do katastru nemovitostí vypracovaných spolupracující advokátní kanceláří.</li>
+            <li><strong>Bezpečná úschova financí:</strong> Garance maximální bezpečnosti transakce prostřednictvím advokátní, bankovní nebo notářské úschovy.</li>
+            <li><strong>Hypoteční servis pro kupující:</strong> Vlastní síť finančních specialistů pomáhá kupujícím zajistit financování i u komplikovanějších obchodů.</li>
+        </ul>
+    </div>
+
+    <div class="section-block">
+        <h3>5. Dokončení obchodu a poprodejní servis</h3>
+        <ul>
+            <li><strong>Správa katastrálního řízení:</strong> Podání dokumentů na Katastr nemovitostí a aktivní sledování průběhu vkladového řízení.</li>
+            <li><strong>Předání nemovitosti:</strong> Vypracování oficiálního předávacího protokolu (stav měřičů, soupis klíčů, technický stav).</li>
+            <li><strong>Přepis energií:</strong> Kompletní vyřízení změny dodavatelů (elektřina, plyn, voda) za původního i nového majitele.</li>
+        </ul>
+    </div>
+
+    <h2>B. Standardy kvality navolání (Call Centrum / Operátor)</h2>
+    <p>Rozhovor operátora slouží jako příprava pro makléře. Aby byl telefonát považován za platný, musí bezvýhradně splňovat následující kritéria:</p>
+    
+    <ol>
+        <li>
+            <strong>Dohoda o dalším kontaktu:</strong>
+            <ul>
+                <li>Prodávající vyjadřuje jasný souhlas s tím, že ho bude kontaktovat konkrétní makléř.</li>
+                <li>Prodávající je ztotožněn s myšlenkou prodeje přes realitní kancelář.</li>
+                <li>Prodávající získal od operátora přehled o základních výhodách a službách RK.</li>
+                <li>Makléř následně řeší již pouze detaily (typ zprostředkovatelské smlouvy, výši provize apod.).</li>
+            </ul>
+        </li>
+        <li><strong>Ověření oprávněnosti:</strong> Ověření, že komunikující osoba je vlastníkem nemovitosti nebo osobou oprávněnou k jejímu prodeji.</li>
+        <li><strong>Zaslání vizitky:</strong> Bezprostřední odeslání kontaktní vizitky makléře prodávajícímu (neplatí pro nabídky zpracovávané přes platformu Telegram).</li>
+    </ol>
+
+    <div class="warning-box">
+        <strong>DŮLEŽITÉ UPOZORNĚNÍ:</strong> Nejsou-li výše uvedené podmínky naplněny, nejedná se o platné navolání. Každý rozhovor je individuální – operátor nesmí postupovat mechanicky. Makléř musí mít před voláním 100% jistotu, že kontaktuje prodávajícího, který tento hovor očekává.
+    </div>
+
+    <h2>C. Argumentační karta (Handling námitek)</h2>
+    <table class="objection-table">
+        <thead>
+            <tr>
+                <th style="width: 35%;">Námitka klienta</th>
+                <th style="width: 65%;">Reakce / Argumentace</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>„Prodám si to sám na Bazoši / Bezrealitky.“</strong></td>
+                <td>Rozumím vám, [Jméno]. Samozřejmě to zvládnete. Naším cílem ale není jen nemovitost vyvěsit na internet, ale dostat z trhu absolutní maximum. Díky profesionálnímu Home Stagingu, videoprohlídkám z dronu a cílené reklamě oslovíme násobně více kupujících. Navíc za vás vyřešíme veškerá právní rizika a prověříme finance kupujících.</td>
+            </tr>
+            <tr>
+                <td><strong>„Chci to prodat přes známého.“</strong></td>
+                <td>To plně chápu. Nicméně prověřený makléř s celorepublikovým doshem na tisíce kupujících vám zajistí reálné konkurenční prostředí, a tím pádem i vyšší konečnou cenu, kterou sám známý nemusí vyjednat.</td>
+            </tr>
+            <tr>
+                <td><strong>„Máte vysokou provizi.“</strong></td>
+                <td>Provize je investice, která se vám vrátí v podstatně vyšší prodejní ceně a v absolutním klidu, že za celý proces ručíme právně i bezpečně. Provizi lze navíc koncipovat jako platbu hrazenou kupujícím.</td>
+            </tr>
+            <tr>
+                <td><strong>„Nechci exkluzivní smlouvu.“</strong></td>
+                <td>Exkluzivita garantuje, že se makléř vaší nemovitosti věnuje na 100 % a investuje do ní maximální rozpočet na marketing, což přináší nejlepší výsledky. Nicméně exkluzivita pro nás není absolutní podmínkou vzájemné spolupráce.</td>
+            </tr>
+            <tr>
+                <td><strong>„Mám kupce sám.“</strong></td>
+                <td>To je skvělá zpráva! I v takovém případě nám můžete proces svěřit. Kupujícího finančně prověříme, zajistíme bezpečné financování i právní servis, tak abyste vy nenesl žádná rizika.</td>
+            </tr>
+            <tr>
+                <td><strong>„Nemáte v mém okolí žádné prodané nemovitosti.“</strong></td>
+                <td>Naše síť má celorepublikový dosah a pracujeme s daty z celého trhu. Lokalitu dokonale známe a pro váš prodej využijeme naše centrální marketingové nástroje i rozsáhlou databázi poptávajících klientů.</td>
+            </tr>
+            <tr>
+                <td><strong>„Nechci, aby mi tu běhali cizí lidé.“</strong></td>
+                <td>Přesně proto každého zájemce předem prověřujeme z hlediska jeho bonity a finančních možností. Na prohlídky vodíme pouze reálné a prověřené zájemce.</td>
+            </tr>
+            <tr>
+                <td><strong>„Počkejme s prodejem, až budou lepší ceny.“</strong></td>
+                <td>Načasování je klíčové. Naši analytici trh denně monitorují a aktuální poptávka je stále velmi vysoká. Nyní je ideální doba prodat za velmi atraktivních podmínek.</td>
+            </tr>
+            <tr>
+                <td><strong>„Makléři jsou podvodníci.“</strong></td>
+                <td>Rozumím vaší ostražitosti, na trhu působí různé subjekty. Zakládáme si na absolutní transparentnosti – veškeré smlouvy připravují nezávislí advokáti a platby probíhají přes vázané úschovy. Rád vám zašlu recenze našich dosavadních klientů.</td>
+            </tr>
+            <tr>
+                <td><strong>„Nemám čas na schůzky.“</strong></td>
+                <td>To je v pořádku, naším cílem je vás od této zátěže zcela osvobodit. Vyřídíme kompletní administrativu i komunikaci a vaši přítomnost vyžadujeme pouze u klíčových úkonů.</td>
+            </tr>
+            <tr>
+                <td><strong>„Proč bych platil, když jen zkopírujete inzerát?“</strong></td>
+                <td>Takto nepracujeme. Inzerát je jen střípek mozaiky. Za naší prací stojí profesionální foto a video z dronu, placené inzertní kampaně na sociálních sítích, aktivní oslovení naší databáze a kompletní právní garance.</td>
+            </tr>
+            <tr>
+                <td><strong>„Zkuste mi nejdřív najít kupce a pak se uvidí.“</strong></td>
+                <td>Do každé nemovitosti investujeme značné finanční prostředky i čas odborníků na marketing a právo. Abyste získal stoprocentní servis a my mohli garantovat výsledky, potřebujeme mít jasně nastavený smluvní rámec.</td>
+            </tr>
+            <tr>
+                <td><strong>„Soused prodal za víc.“</strong></td>
+                <td>Každá nemovitost je originál. Cena závisí na přesném stavu, orientaci, dispozici i konkrétním týdnu prodeje. Rádi pro vás vypracujeme přesnou srovnávací tržní analýzu přímo na míru vašemu bytu/domu.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer-note">
+        Standardy služeb a komunikační manuál RK — Realitní minimum
+    </div>
+</div>
+
+</body>
+</html>
