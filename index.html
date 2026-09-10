@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HVB REAL - Moderní Prezentace & Video</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -22,6 +22,17 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        /* BOD 3: Vynulování iOS vzhledu pro formuláře a tlačítka */
+        input[type="text"], 
+        input[type="email"], 
+        input[type="tel"], 
+        button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: 10px;
         }
 
         body {
@@ -54,7 +65,6 @@
             padding: 15px 20px;
             background: rgba(10, 0, 20, 0.8);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             z-index: 100;
         }
@@ -81,7 +91,6 @@
             color: var(--purple-light);
         }
 
-        /* Nav links & Mobile toggle */
         .hamburger {
             display: none;
             flex-direction: column;
@@ -124,7 +133,7 @@
             color: var(--purple-light);
         }
 
-        /* Login Overlay */
+        /* BOD 3: Login Overlay - Oprava přetékání na iPhone s klávesnicí */
         #loginOverlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -135,6 +144,7 @@
             z-index: 1000;
             backdrop-filter: blur(6px);
             padding: 20px;
+            overflow-y: auto;
         }
 
         .login-card {
@@ -145,6 +155,8 @@
             text-align: center;
             max-width: 400px;
             width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
@@ -168,8 +180,8 @@
         }
 
         .captcha-box input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             accent-color: var(--purple-accent);
             cursor: pointer;
         }
@@ -273,7 +285,6 @@
             background: #f4f4f6;
             border: 1px solid #e0e0e0;
             padding: 12px 15px;
-            border-radius: 10px;
             color: var(--text-dark);
             font-family: inherit;
             font-size: 0.9rem;
@@ -348,6 +359,7 @@
             color: var(--purple-light);
         }
 
+        /* BOD 3: Mřížka karet bez přetékání textu na malých telefonech */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -423,21 +435,12 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Responsive Breakpoints */
         @media (max-width: 900px) {
-            .top-navbar {
-                padding: 15px 20px;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
+            .top-navbar { padding: 15px 20px; }
+            .hamburger { display: flex; }
             .nav-links {
                 position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
+                top: 100%; left: 0; width: 100%;
                 background: rgba(10, 0, 20, 0.95);
                 backdrop-filter: blur(15px);
                 flex-direction: column;
@@ -448,64 +451,29 @@
                 transition: max-height 0.3s ease-out;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
-
-            .nav-links.active {
-                max-height: 300px;
-                padding: 10px 0;
-            }
-
-            .nav-links li {
-                width: 100%;
-                text-align: center;
-            }
-
-            .nav-links a {
-                display: block;
-                padding: 12px 0;
-                font-size: 0.9rem;
-            }
-
-            .hero-section {
-                grid-template-columns: 1fr;
-                padding: 25px 15px;
-                gap: 25px;
-            }
-
-            .form-panel {
-                padding: 20px;
-            }
+            .nav-links.active { max-height: 350px; padding: 10px 0; }
+            .nav-links li { width: 100%; text-align: center; }
+            .nav-links a { display: block; padding: 12px 0; font-size: 0.9rem; }
+            .hero-section { grid-template-columns: 1fr; padding: 25px 15px; gap: 25px; }
+            .form-panel { padding: 20px; }
         }
 
         @media (max-width: 550px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .input-group.full-width {
-                grid-column: span 1;
-            }
-
-            .cards-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            }
-
-            .help-card-img-wrapper {
-                height: 90px;
-            }
-
-            .brand-logo-text {
-                font-size: 1.2rem;
-            }
+            .form-grid { grid-template-columns: 1fr; }
+            .input-group.full-width { grid-column: span 1; }
+            .cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .help-card-img-wrapper { height: 90px; }
+            .brand-logo-text { font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Login Screen Overlay -->
+    <!-- Login Overlay -->
     <div id="loginOverlay">
         <div class="login-card">
             <h2 class="login-title">PŘIHLÁŠENÍ MAKLÉŘE</h2>
-            <input type="email" id="loginEmail" style="margin-bottom: 10px;" onkeydown="if(event.key === 'Enter') checkLogin()">
+            <input type="email" id="loginEmail" placeholder="vas-email@hvbreal.cz" style="margin-bottom: 10px;" onkeydown="if(event.key === 'Enter') checkLogin()">
             
             <div class="captcha-box">
                 <input type="checkbox" id="notRobot">
@@ -519,7 +487,7 @@
 
     <div class="page-wrapper">
         <div class="content-container blurred" id="mainCard">
-            <!-- Navigation Header -->
+            <!-- Header -->
             <header class="top-navbar">
                 <div class="brand-logo">
                     <img src="HVBlogo.png" alt="HVB Logo">
@@ -596,7 +564,7 @@
                 </div>
             </section>
 
-            <!-- Help / Nápověda Cards Section -->
+            <!-- Nápověda Cards Section -->
             <section class="cards-section">
                 <div class="cards-section-title">Nápověda a užitečné návody</div>
                 <div class="cards-grid">
@@ -669,7 +637,6 @@
     </div>
 
     <script>
-        // Mobilní menu toggle
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
 
@@ -698,8 +665,17 @@
             return text.replace(/m2/gi, 'm²');
         }
 
-        function processAndValidateImage(file, maxWidth = 3840, maxHeight = 2160, quality = 0.90) {
+        // BOD 1 & BOD 2: Detekce mobilu (2560px na iPhonu / 3840px 4K na PC) + Čištění paměti (Canvas RAM GC)
+        function processAndValidateImage(file) {
             return new Promise((resolve, reject) => {
+                // Detekce mobilních telefonů/tabletů
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                // Na mobilu bezpečné rozlišení 2560px proti pádu, na PC plné 4K (3840px)
+                const maxWidth = isMobile ? 2560 : 3840;
+                const maxHeight = isMobile ? 1440 : 2160;
+                const quality = 0.90;
+
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = (event) => {
@@ -710,7 +686,7 @@
                         let height = img.height;
 
                         if (height >= width) {
-                            return reject(new Error(`HEIGHT_FILTER`));
+                            return reject(new Error('HEIGHT_FILTER'));
                         }
 
                         if (width > maxWidth || height > maxHeight) {
@@ -731,6 +707,11 @@
 
                         const dataUrl = canvas.toDataURL('image/jpeg', quality);
                         const base64Data = dataUrl.split(',')[1];
+                        
+                        // BOD 2: Uvolnění alokované paměti canvasu pro iOS WebKit
+                        canvas.width = 0;
+                        canvas.height = 0;
+
                         resolve({ name: file.name, base64: base64Data });
                     };
                     img.onerror = () => reject(new Error(`Chyba při načítání souboru ${file.name}`));
@@ -757,6 +738,7 @@
             const submitBtn = document.getElementById("submitBtn");
             submitBtn.disabled = true;
 
+            // BOD 4: Skrytí starého info banneru před odesláním
             const prevNotice = document.getElementById("infoNoticeBox");
             if (prevNotice) prevNotice.style.display = "none";
 
@@ -846,7 +828,11 @@
                 clearInterval(timerInterval);
                 const sentTime = new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 alert(`Data odeslána v ${sentTime}`);
+                
+                // BOD 4: Reset formuláře a schování banneru po dokončení
                 document.getElementById("videoForm").reset();
+                const postNotice = document.getElementById("infoNoticeBox");
+                if (postNotice) postNotice.style.display = "none";
 
             } catch (e) {
                 clearInterval(timerInterval);
