@@ -287,7 +287,44 @@ def draw_text_overlay(image_np, text_str):
 
     return np.array(img.convert("RGB"))
 
+def get_font(is_bold=False, is_italic=False, size=24):
+    """Pomocná funkce pro načtení systémového písma (Montserrat / DejaVu / PIL default)."""
+    # Seznam preferovaných cesty k písmům (Linux / GitHub Actions / Windows / Mac)
+    font_paths = []
 
+    if is_bold and is_italic:
+        font_paths = [
+            "/usr/share/fonts/truetype/montserrat/Montserrat-BoldItalic.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-BoldOblique.ttf"
+        ]
+    elif is_bold:
+        font_paths = [
+            "/usr/share/fonts/truetype/montserrat/Montserrat-Bold.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+        ]
+    elif is_italic:
+        font_paths = [
+            "/usr/share/fonts/truetype/montserrat/Montserrat-Italic.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Oblique.ttf"
+        ]
+    else:
+        font_paths = [
+            "/usr/share/fonts/truetype/montserrat/Montserrat-Regular.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+        ]
+
+    for path in font_paths:
+        if os.path.exists(path):
+            try:
+                return ImageFont.truetype(path, int(size))
+            except Exception:
+                pass
+
+    # Fallback pokud není k dispozici TTF soubor
+    try:
+        return ImageFont.load_default()
+    except Exception:
+        return ImageFont.load_default()
 
 _LAST_MOTION_MODE = None  # sleduje poslední použitý pohyb, aby se stejný typ neopakoval hned dvakrát po sobě
 
