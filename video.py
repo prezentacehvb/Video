@@ -588,7 +588,3 @@ if final_clips:
                 "callback_url": JOB_CONFIG.get("callback_url", "")
             }, f, ensure_ascii=False, indent=2)
         print(f"🟢 render_result.json zapsán, video: {OUTPUT_FILE}")
-
-## 5. Poznámka k webovému formuláři (index.html)
-
-Formulář `index.html` se teď udržuje přímo v repozitáři a s tímto notebookem již nesouvisí.
