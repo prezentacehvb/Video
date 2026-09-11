@@ -87,10 +87,18 @@
             font-weight: 900;
             letter-spacing: -0.5px;
             color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+            text-align: left;
         }
 
-        .brand-logo-text span {
+        .brand-logo-text .hvb-real-estate {
             color: var(--purple-light);
+            text-align: left;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .hamburger {
@@ -194,15 +202,41 @@
             justify-content: space-between;
         }
 
+        .hero-title-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            margin-bottom: 12px;
+        }
+
         .hero-title {
             font-size: clamp(1.6rem, 3.5vw, 2.4rem);
             font-weight: 900;
             line-height: 1.15;
-            margin-bottom: 12px;
             text-transform: uppercase;
         }
 
         .hero-title span {
+            color: var(--purple-light);
+        }
+
+        .hero-title-subline {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 6px;
+        }
+
+        .hero-title-subline .vime {
+            color: #ffffff;
+        }
+
+        .hero-title-subline .jak {
             color: var(--purple-light);
         }
 
@@ -213,6 +247,7 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             font-weight: 600;
+            text-align: left;
         }
 
         .instruction-box {
@@ -224,6 +259,7 @@
             margin-bottom: 15px;
             font-size: 0.82rem;
             line-height: 1.45;
+            text-align: left;
         }
 
         .instruction-box ul {
@@ -241,6 +277,7 @@
             font-size: 0.82rem;
             line-height: 1.45;
             color: rgba(255, 255, 255, 0.9);
+            text-align: left;
         }
 
         .warning-box strong {
@@ -283,6 +320,7 @@
         .input-group {
             display: flex;
             flex-direction: column;
+            text-align: left;
         }
 
         .input-group.full-width {
@@ -373,6 +411,7 @@
             letter-spacing: 1px;
             margin-bottom: 20px;
             color: var(--purple-light);
+            text-align: left;
         }
 
         .cards-grid {
@@ -437,6 +476,7 @@
             font-weight: 700;
             color: var(--text-dark);
             line-height: 1.2;
+            text-align: left;
         }
 
         .help-card-arrow {
@@ -482,7 +522,7 @@
             .form-grid { grid-template-columns: 1fr; }
             .input-group.full-width { grid-column: span 1; }
             .help-card { flex: 1 1 calc(50% - 12px); max-width: none; }
-            .brand-logo-text { font-size: 1.2rem; }
+            .brand-logo-text { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -506,7 +546,9 @@
             <header class="top-navbar">
                 <div class="brand-logo">
                     <img src="HVBlogo.png" alt="HVB Logo">
-                    <div class="brand-logo-text">HVB <span>REAL</span></div>
+                    <div class="brand-logo-text">
+                        <!-- Text HVB vedle loga odstraněn -->
+                    </div>
                 </div>
 
                 <button class="hamburger" id="hamburgerBtn" aria-label="Otevřít menu">
@@ -530,7 +572,12 @@
             <section class="hero-section">
                 <div class="hero-left-column">
                     <div>
-                        <h1 class="hero-title">HVB REAL <span>BUDOUCNOST</span> PREZENTACE</h1>
+                        <div class="hero-title-container">
+                            <h1 class="hero-title"><span style="color: var(--purple-light);">HVB</span> REAL ESTATE</h1>
+                            <div class="hero-title-subline">
+                                <span class="vime">VÍME</span>&nbsp;<span class="jak">JAK.</span>
+                            </div>
+                        </div>
                         <div class="hero-subtitle">Generátor videoprezentací nemovitostí</div>
                         
                         <div class="instruction-box">
