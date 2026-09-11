@@ -27,6 +27,7 @@
         /* Vynulování iOS vzhledu pro formuláře a tlačítka */
         input[type="text"], 
         input[type="email"], 
+        input[type="password"],
         input[type="tel"], 
         button {
             -webkit-appearance: none;
@@ -172,24 +173,6 @@
             margin-bottom: 20px;
         }
 
-        .captcha-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-            cursor: pointer;
-        }
-
-        .captcha-box input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--purple-accent);
-            cursor: pointer;
-        }
-
         .content-container.blurred {
             filter: blur(20px);
             pointer-events: none;
@@ -314,7 +297,7 @@
             color: var(--text-muted);
         }
 
-        input[type="text"], input[type="email"], input[type="tel"] {
+        input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
             background: #f4f4f6;
             border: 1px solid #e0e0e0;
             padding: 10px 12px;
@@ -326,7 +309,7 @@
             width: 100%;
         }
 
-        input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus {
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="tel"]:focus {
             border-color: var(--purple-accent);
         }
 
@@ -509,15 +492,11 @@
     <div id="loginOverlay">
         <div class="login-card">
             <h2 class="login-title">PŘIHLÁŠENÍ MAKLÉŘE</h2>
-            <input type="email" id="loginEmail" placeholder="" style="margin-bottom: 10px;" onkeydown="if(event.key === 'Enter') checkLogin()">
-            
-            <div class="captcha-box">
-                <input type="checkbox" id="notRobot">
-                <label for="notRobot" style="margin: 0; font-size: 0.85rem; cursor: pointer;">Nejsem robot</label>
-            </div>
+            <input type="email" id="loginEmail" placeholder="E-mail (@hvbreal.cz)" style="margin-bottom: 10px;" onkeydown="if(event.key === 'Enter') checkLogin()">
+            <input type="password" id="loginPassword" placeholder="Heslo" style="margin-bottom: 15px;" onkeydown="if(event.key === 'Enter') checkLogin()">
 
-            <button onclick="checkLogin()" class="submit-btn">VSTOUPIT DO SYSTÉMU</button>
-            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 15px; display: none;">Chybné heslo</p>
+            <button onclick="checkLogin()" id="btnLogin" class="submit-btn">VSTOUPIT DO SYSTÉMU</button>
+            <p id="loginError" style="color: #ff5252; font-size: 0.8rem; margin-top: 15px; display: none;"></p>
         </div>
     </div>
 
@@ -692,41 +671,7 @@
     </div>
 
     <script>
-        // Databáze makléřů z webu https://hvbreal.cz/kontakty/makleri
-        const MAKLERI_DB = [
-            { email: "jbesta@hvbreal.cz", name: "Mgr. Jiří Bešta", phone: "603 179 756" },
-            { email: "mflieger@hvbreal.cz", name: "Bc. Martin Flieger", phone: "736 654 360" },
-            { email: "sgorash@hvbreal.cz", name: "Mgr. Sergiy Gorash", phone: "608 945 703" },
-            { email: "shavlik@hvbreal.cz", name: "Šimon Havlík", phone: "604 227 668" },
-            { email: "hhruba@hvbreal.cz", name: "Halina Hrubá", phone: "601 547 524" },
-            { email: "phudecek@hvbreal.cz", name: "Pavel Hudeček", phone: "731 612 374" },
-            { email: "vjanotova@hvbreal.cz", name: "Veronika Janotová", phone: "608 984 290" },
-            { email: "lkaderkova@hvbreal.cz", name: "Lucie Kaderková", phone: "723 087 803" },
-            { email: "mkalalova@hvbreal.cz", name: "Monika Kálalová", phone: "739 685 498" },
-            { email: "tkalkus@hvbreal.cz", name: "Tomáš Kalkus", phone: "603 499 203" },
-            { email: "lmanda@hvbreal.cz", name: "Ing. Libor Manda", phone: "608 116 666" },
-            { email: "nmareskova@hvbreal.cz", name: "Naděžda Marešková", phone: "606 717 928" },
-            { email: "jmatejka@hvbreal.cz", name: "Jiří Matějka", phone: "721 986 407" },
-            { email: "tmodry@hvbreal.cz", name: "Tomáš Modrý", phone: "776 327 118" },
-            { email: "fmotl@hvbreal.cz", name: "Ing. Filip Motl", phone: "730 677 575" },
-            { email: "dnaumov@hvbreal.cz", name: "Dimitri Naumov", phone: "739 281 635" },
-            { email: "jpechanova@hvbreal.cz", name: "Jana Pechanová", phone: "777 225 434" },
-            { email: "aprusa@hvbreal.cz", name: "Adam Průša", phone: "727 897 153" },
-            { email: "asistentka4@hvbreal.cz", name: "Adam Průša", phone: "+420 792 775 033" },
-            { email: "jreindlova@hvbreal.cz", name: "Jana Reindlová", phone: "603 580 845" },
-            { email: "pseidel@hvbreal.cz", name: "Ing. Petr Seidel", phone: "607 871 494" },
-            { email: "eseidelova@hvbreal.cz", name: "Eliška Seidelová", phone: "728 755 057" },
-            { email: "jseman@hvbreal.cz", name: "Josef Seman", phone: "608 949 480" },
-            { email: "lsousedova@hvbreal.cz", name: "Leona Sousedová", phone: "731 448 202" },
-            { email: "isuchankova@hvbreal.cz", name: "Ing. Irina Suchánková", phone: "774 191 209" },
-            { email: "bsiskova@hvbreal.cz", name: "Blanka Šišková", phone: "739 038 874" },
-            { email: "rtalkner@hvbreal.cz", name: "Ing. Roman Talkner", phone: "737 750 253" },
-            { email: "ptaus@hvbreal.cz", name: "Ing. Petr Tauš", phone: "605 040 701" },
-            { email: "mvecerek@hvbreal.cz", name: "Martin Večerek", phone: "605 761 031" },
-            { email: "mvrabelova@hvbreal.cz", name: "Bc. Mariana Vrabelová", phone: "733 529 560" },
-            { email: "pzvonicek@hvbreal.cz", name: "Pavel Zvoníček", phone: "+420 244 470 367" },
-            { email: "ezdanska@hvbreal.cz", name: "Eva Žďánská", phone: "720 425 252" }
-        ];
+        const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwugmkW_YELL8Y0e38jF1WuecK4T42RIJECPTvtRIvXTSg1bYVJ3UweIfovKGhWoHTNiQ/exec";
 
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
@@ -735,34 +680,56 @@
             navLinks.classList.toggle('active');
         });
 
-        function checkLogin() {
+        async function checkLogin() {
             const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
             const email = emailInput.value.toLowerCase().trim();
-            const notRobot = document.getElementById('notRobot').checked;
+            const password = passwordInput.value.trim();
             const errorMsg = document.getElementById('loginError');
+            const btn = document.getElementById('btnLogin');
 
-            if (email.endsWith('@hvbreal.cz') && notRobot) {
-                errorMsg.style.display = 'none';
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('mainCard').classList.remove('blurred');
-                
-                const formEmail = document.getElementById('MAKLER_EMAIL');
-                formEmail.value = email;
-
-                // Vyhledání makléře v databázi z hvbreal.cz
-                const makler = MAKLERI_DB.find(m => m.email === email);
-                if (makler) {
-                    const jmenoInput = document.getElementById('MAKLER_JMENO');
-                    const telInput = document.getElementById('MAKLER_TELEFON');
-
-                    if (jmenoInput) jmenoInput.value = makler.name;
-                    if (telInput) {
-                        telInput.value = makler.phone;
-                        telInput.readOnly = true; // Zákaz editace telefonního čísla
-                    }
-                }
-            } else {
+            if (!email || !password) {
+                errorMsg.innerText = "Vyplňte e-mail i heslo.";
                 errorMsg.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Ověřuji...";
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch(AUTH_SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const res = await response.json();
+
+                if (res.success) {
+                    document.getElementById('loginOverlay').style.display = 'none';
+                    document.getElementById('mainCard').classList.remove('blurred');
+                    
+                    document.getElementById('MAKLER_EMAIL').value = email;
+                    if (res.name) document.getElementById('MAKLER_JMENO').value = res.name;
+                    if (res.phone) {
+                        const telInput = document.getElementById('MAKLER_TELEFON');
+                        telInput.value = res.phone;
+                        telInput.readOnly = true;
+                    }
+                } else {
+                    errorMsg.innerText = res.message || "Chybný e-mail nebo heslo.";
+                    errorMsg.style.display = 'block';
+                }
+            } catch (e) {
+                errorMsg.innerText = "Chyba při přihlašování.";
+                errorMsg.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "VSTOUPIT DO SYSTÉMU";
             }
         }
 
