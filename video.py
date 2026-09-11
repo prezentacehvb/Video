@@ -172,7 +172,6 @@ import re
 def natural_sort_key(s):
     return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
 
-# Tato část byla přesunuta níže, aby se seznam vytvořil až po stažení/nahrání souborů.
 image_files = []
 
 def get_auto_aspect_ratio():
@@ -186,7 +185,6 @@ def get_auto_aspect_ratio():
     except:
         return "16:9"
 
-# Inicializace prvků, které se nastaví později
 DETECTED_RATIO = "16:9"
 TARGET_W, TARGET_H = (1920, 1080)
 WORK_W, WORK_H = 1920, 1080
@@ -268,34 +266,39 @@ def draw_text_overlay(image_np, text_str):
         draw.line([(margin-20, line_y_mid - h_top - 20), (margin-20 + max(w_top, w_bottom)*0.3, line_y_mid - h_top - 20)], fill=LINE_COLOR, width=4)
         draw.line([(margin-20, TARGET_H - margin - 10), (margin + max(w_top, w_bottom), TARGET_H - margin - 10)], fill=LINE_COLOR, width=4)
 
-    logo_path = globals().get('LOGO_FILE')
-    if logo_path and os.path.exists(str(logo_path)):
-        logo = Image.open(str(logo_path)).convert("RGBA")
-        logo.thumbnail((500, h_top + h_bottom + 40), Image.Resampling.LANCZOS)
-        img.paste(logo, (TARGET_W - margin - logo.width, line_y_mid - h_top - 10), logo)
+    logo_path = "logo.png" if os.path.exists("logo.png") else None
+    if logo_path:
+        logo = Image.open(logo_path).convert("RGBA")
+        # Dynamická výška loga podle textového bloku
+        target_h = h_top + h_bottom + 40
+        logo.thumbnail((500, target_h), Image.Resampling.LANCZOS)
+
+        logo_x = TARGET_W - margin - logo.width
+        logo_y = line_y_mid - h_top - 10
+        text_right_edge = margin + max(w_top, w_bottom) + 20
+
+        # Oprava bod 3: Pokud se logo nevejde (kolize s textem), nevykresluj ho
+        if logo_x >= text_right_edge:
+            img.paste(logo, (logo_x, logo_y), logo)
 
     return np.array(img.convert("RGB"))
 
 _LAST_MOTION_MODE = None
-
 def _ease_in_out(t):
     t = max(0.0, min(1.0, t))
     return t * t * (3.0 - 2.0 * t)
 
 def _crop_for_mode(mode, e, img_w, img_h):
     zoom_lo, zoom_hi = 1.0, 1.0 + ZOOM_SPEED
-
     def centered(zoom):
         sw, sh = TARGET_W / zoom, TARGET_H / zoom
         return sw, sh, (img_w - sw) / 2.0, (img_h - sh) / 2.0
-
     def drifting(zoom, direction):
         sw, sh = TARGET_W / zoom, TARGET_H / zoom
         max_shift = max(0.0, (img_w - sw) / 2.0)
         cx = (img_w - sw) / 2.0 + direction * max_shift * e
         cx = max(0.0, min(img_w - sw, cx))
         return sw, sh, cx, (img_h - sh) / 2.0
-
     def panning(axis, reverse):
         zoom = max(1.0, PAN_ZOOM_FACTOR)
         sw, sh = TARGET_W / zoom, TARGET_H / zoom
@@ -314,22 +317,21 @@ def _crop_for_mode(mode, e, img_w, img_h):
             cy = max(0.0, min(img_h - sh, start + e * (end - start)))
             return sw, sh, (img_w - sw) / 2.0, cy
 
-    if mode == "zoom_in":          return centered(zoom_lo + (zoom_hi - zoom_lo) * e)
-    if mode == "zoom_out":         return centered(zoom_hi - (zoom_hi - zoom_lo) * e)
-    if mode == "pan_left_to_right":  return panning("x", reverse=False)
-    if mode == "pan_right_to_left":  return panning("x", reverse=True)
-    if mode == "pan_top_to_bottom":  return panning("y", reverse=False)
-    if mode == "pan_bottom_to_top":  return panning("y", reverse=True)
-    if mode == "zoom_in_left":     return drifting(zoom_lo + (zoom_hi - zoom_lo) * e, -1)
-    if mode == "zoom_in_right":    return drifting(zoom_lo + (zoom_hi - zoom_lo) * e, +1)
-    if mode == "zoom_out_left":    return drifting(zoom_hi - (zoom_hi - zoom_lo) * e, -1)
-    if mode == "zoom_out_right":   return drifting(zoom_hi - (zoom_hi - zoom_lo) * e, +1)
+    if mode == "zoom_in": return centered(zoom_lo + (zoom_hi - zoom_lo) * e)
+    if mode == "zoom_out": return centered(zoom_hi - (zoom_hi - zoom_lo) * e)
+    if mode == "pan_left_to_right": return panning("x", reverse=False)
+    if mode == "pan_right_to_left": return panning("x", reverse=True)
+    if mode == "pan_top_to_bottom": return panning("y", reverse=False)
+    if mode == "pan_bottom_to_top": return panning("y", reverse=True)
+    if mode == "zoom_in_left": return drifting(zoom_lo + (zoom_hi - zoom_lo) * e, -1)
+    if mode == "zoom_in_right": return drifting(zoom_lo + (zoom_hi - zoom_lo) * e, +1)
+    if mode == "zoom_out_left": return drifting(zoom_hi - (zoom_hi - zoom_lo) * e, -1)
+    if mode == "zoom_out_right": return drifting(zoom_hi - (zoom_hi - zoom_lo) * e, +1)
     return centered(zoom_lo)
 
 def _pick_motion_mode():
     global _LAST_MOTION_MODE
-    if MOTION_MODE != "random":
-        return MOTION_MODE
+    if MOTION_MODE != "random": return MOTION_MODE
     choices = ALL_MOTION_MODES
     mode = random.choice(choices)
     tries = 0
@@ -345,18 +347,15 @@ def apply_smooth_smart_motion(img_path, duration, text_overlay=""):
     mode = _pick_motion_mode()
     ss = max(1, int(SUPERSAMPLE))
     ss_w, ss_h = TARGET_W * ss, TARGET_H * ss
-
     def make_frame(t):
         progress = min(1.0, t / duration) if duration > 0 else 0.0
         e = _ease_in_out(progress)
         sw, sh, cx, cy = _crop_for_mode(mode, e, img_w, img_h)
         frame = img.crop((cx, cy, cx + sw, cy + sh)).resize((ss_w, ss_h), Image.Resampling.LANCZOS)
-        if ss > 1:
-            frame = frame.resize((TARGET_W, TARGET_H), Image.Resampling.LANCZOS)
+        if ss > 1: frame = frame.resize((TARGET_W, TARGET_H), Image.Resampling.LANCZOS)
         frame_np = np.array(frame)
         if text_overlay: frame_np = draw_text_overlay(frame_np, text_overlay)
         return frame_np
-
     return ImageClip(make_frame(0)).set_duration(duration).set_make_frame(make_frame)
 
 def cover_resize(img, target_w, target_h):
@@ -364,8 +363,7 @@ def cover_resize(img, target_w, target_h):
     scale = max(target_w / src_w, target_h / src_h)
     new_w, new_h = int(round(src_w * scale)), int(round(src_h * scale))
     resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
-    left = (new_w - target_w) // 2
-    top = (new_h - target_h) // 2
+    left, top = (new_w - target_w) // 2, (new_h - target_h) // 2
     return resized.crop((left, top, left + target_w, top + target_h))
 
 # Zpracování snímků a export videa
