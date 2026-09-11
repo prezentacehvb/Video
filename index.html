@@ -113,14 +113,14 @@
 
         .nav-links {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             list-style: none;
         }
 
         .nav-links a {
             color: #ffffff;
             text-decoration: none;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -342,9 +342,9 @@
             cursor: not-allowed;
         }
 
-        /* Cards Section */
+        /* Cards Section - Přizpůsobení velikosti tak, aby se vešly vedle sebe */
         .cards-section {
-            padding: 30px 20px;
+            padding: 25px 20px;
             background: rgba(0, 0, 0, 0.25);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             flex-grow: 1;
@@ -360,16 +360,17 @@
         }
 
         .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: flex-start;
         }
 
         .help-card {
             background: #ffffff;
             color: var(--text-dark);
-            border-radius: var(--border-radius);
-            padding: 12px;
+            border-radius: 12px;
+            padding: 8px;
             text-decoration: none;
             display: flex;
             flex-direction: column;
@@ -377,20 +378,23 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             border: 2px solid transparent;
+            flex: 1 1 150px;
+            max-width: 185px;
+            min-width: 130px;
         }
 
         .help-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             border-color: var(--purple-accent);
-            box-shadow: 0 15px 30px rgba(142, 36, 170, 0.4);
+            box-shadow: 0 12px 22px rgba(142, 36, 170, 0.4);
         }
 
         .help-card-img-wrapper {
             width: 100%;
-            height: 120px;
-            border-radius: 10px;
+            height: 80px;
+            border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             position: relative;
         }
 
@@ -409,21 +413,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 4px 6px;
+            padding: 2px 4px;
         }
 
         .help-card-title {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: var(--text-dark);
-            line-height: 1.3;
+            line-height: 1.2;
         }
 
         .help-card-arrow {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             color: var(--purple-accent);
             font-weight: 800;
-            margin-left: 8px;
+            margin-left: 4px;
         }
 
         footer {
@@ -450,7 +454,7 @@
                 transition: max-height 0.3s ease-out;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
-            .nav-links.active { max-height: 350px; padding: 10px 0; }
+            .nav-links.active { max-height: 380px; padding: 10px 0; }
             .nav-links li { width: 100%; text-align: center; }
             .nav-links a { display: block; padding: 12px 0; font-size: 0.9rem; }
             .hero-section { grid-template-columns: 1fr; padding: 25px 15px; gap: 25px; }
@@ -460,8 +464,7 @@
         @media (max-width: 550px) {
             .form-grid { grid-template-columns: 1fr; }
             .input-group.full-width { grid-column: span 1; }
-            .cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-            .help-card-img-wrapper { height: 90px; }
+            .help-card { flex: 1 1 calc(50% - 12px); max-width: none; }
             .brand-logo-text { font-size: 1.2rem; }
         }
     </style>
@@ -506,6 +509,7 @@
                     <li><a href="Popisnem.html">Popis Nemovitosti</a></li>
                     <li><a href="Ocennem.html">Ocenění</a></li>
                     <li><a href="Signhelp.html">DigiSign</a></li>
+                    <li><a href="Poskihelp.html">Poski</a></li>
                 </ul>
             </header>
 
@@ -627,6 +631,16 @@
                             <div class="help-card-arrow">→</div>
                         </div>
                     </a>
+
+                    <a href="Poskihelp.html" class="help-card">
+                        <div class="help-card-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80" alt="Poski">
+                        </div>
+                        <div class="help-card-content">
+                            <div class="help-card-title">Poski Real</div>
+                            <div class="help-card-arrow">→</div>
+                        </div>
+                    </a>
                 </div>
             </section>
 
@@ -637,6 +651,42 @@
     </div>
 
     <script>
+        // Databáze makléřů z webu https://hvbreal.cz/kontakty/makleri
+        const MAKLERI_DB = [
+            { email: "jbesta@hvbreal.cz", name: "Mgr. Jiří Bešta", phone: "603 179 756" },
+            { email: "mflieger@hvbreal.cz", name: "Bc. Martin Flieger", phone: "736 654 360" },
+            { email: "sgorash@hvbreal.cz", name: "Mgr. Sergiy Gorash", phone: "608 945 703" },
+            { email: "shavlik@hvbreal.cz", name: "Šimon Havlík", phone: "604 227 668" },
+            { email: "hhruba@hvbreal.cz", name: "Halina Hrubá", phone: "601 547 524" },
+            { email: "phudecek@hvbreal.cz", name: "Pavel Hudeček", phone: "731 612 374" },
+            { email: "vjanotova@hvbreal.cz", name: "Veronika Janotová", phone: "608 984 290" },
+            { email: "lkaderkova@hvbreal.cz", name: "Lucie Kaderková", phone: "723 087 803" },
+            { email: "mkalalova@hvbreal.cz", name: "Monika Kálalová", phone: "739 685 498" },
+            { email: "tkalkus@hvbreal.cz", name: "Tomáš Kalkus", phone: "603 499 203" },
+            { email: "lmanda@hvbreal.cz", name: "Ing. Libor Manda", phone: "608 116 666" },
+            { email: "nmareskova@hvbreal.cz", name: "Naděžda Marešková", phone: "606 717 928" },
+            { email: "jmatejka@hvbreal.cz", name: "Jiří Matějka", phone: "721 986 407" },
+            { email: "tmodry@hvbreal.cz", name: "Tomáš Modrý", phone: "776 327 118" },
+            { email: "fmotl@hvbreal.cz", name: "Ing. Filip Motl", phone: "730 677 575" },
+            { email: "dnaumov@hvbreal.cz", name: "Dimitri Naumov", phone: "739 281 635" },
+            { email: "jpechanova@hvbreal.cz", name: "Jana Pechanová", phone: "777 225 434" },
+            { email: "aprusa@hvbreal.cz", name: "Adam Průša", phone: "727 897 153" },
+            { email: "asistentka4@hvbreal.cz", name: "Adam Průša", phone: "+420 792 775 033" },
+            { email: "jreindlova@hvbreal.cz", name: "Jana Reindlová", phone: "603 580 845" },
+            { email: "pseidel@hvbreal.cz", name: "Ing. Petr Seidel", phone: "607 871 494" },
+            { email: "eseidelova@hvbreal.cz", name: "Eliška Seidelová", phone: "728 755 057" },
+            { email: "jseman@hvbreal.cz", name: "Josef Seman", phone: "608 949 480" },
+            { email: "lsousedova@hvbreal.cz", name: "Leona Sousedová", phone: "731 448 202" },
+            { email: "isuchankova@hvbreal.cz", name: "Ing. Irina Suchánková", phone: "774 191 209" },
+            { email: "bsiskova@hvbreal.cz", name: "Blanka Šišková", phone: "739 038 874" },
+            { email: "rtalkner@hvbreal.cz", name: "Ing. Roman Talkner", phone: "737 750 253" },
+            { email: "ptaus@hvbreal.cz", name: "Ing. Petr Tauš", phone: "605 040 701" },
+            { email: "mvecerek@hvbreal.cz", name: "Martin Večerek", phone: "605 761 031" },
+            { email: "mvrabelova@hvbreal.cz", name: "Bc. Mariana Vrabelová", phone: "733 529 560" },
+            { email: "pzvonicek@hvbreal.cz", name: "Pavel Zvoníček", phone: "+420 244 470 367" },
+            { email: "ezdanska@hvbreal.cz", name: "Eva Žďánská", phone: "720 425 252" }
+        ];
+
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
 
@@ -654,8 +704,22 @@
                 errorMsg.style.display = 'none';
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.getElementById('mainCard').classList.remove('blurred');
+                
                 const formEmail = document.getElementById('MAKLER_EMAIL');
                 formEmail.value = email;
+
+                // Vyhledání makléře v databázi z hvbreal.cz
+                const makler = MAKLERI_DB.find(m => m.email === email);
+                if (makler) {
+                    const jmenoInput = document.getElementById('MAKLER_JMENO');
+                    const telInput = document.getElementById('MAKLER_TELEFON');
+
+                    if (jmenoInput) jmenoInput.value = makler.name;
+                    if (telInput) {
+                        telInput.value = makler.phone;
+                        telInput.readOnly = true; // Zákaz editace telefonního čísla
+                    }
+                }
             } else {
                 errorMsg.style.display = 'block';
             }

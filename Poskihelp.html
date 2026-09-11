@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Návod: Vložení nové nemovitosti v Poski REAL</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --code-bg: #f1f3f4;
+            --highlight-orange: #e65100;
+            --highlight-bg: #fff3e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+
+        .intro-box {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+
+        .tip-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--highlight-orange);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--bg-color);
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        tr:hover {
+            background-color: #f1f3f4;
+        }
+
+        .step-num {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 24px;
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .orange-note {
+            color: var(--highlight-orange);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Návod pro makléře: Vložení nové nemovitosti v Poski REAL</h1>
+    <p class="subtitle">Metodický postup zadávání a správy zakázek v realitním softwaru Poski REAL.</p>
+
+    <div class="intro-box">
+        Vložení nové nemovitosti v realitním softwaru <strong>Poski REAL</strong> probíhá v několika navazujících krocích. Pro správné vyexportování na realitní portály věnujte pozornost pečlivému vyplnění všech údajů.
+    </div>
+
+    <h2><span class="step-num">1</span> Založení nové zakázky (Základní typologie a zařazení)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Navigace & Umístění</th>
+                <th style="width: 50%;">Klasifikace nemovitosti</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <ul>
+                        <li><strong>Cesta v menu:</strong> V levém menu přejděte do sekce <em>Nabídky &rarr; Nová &rarr; Založím nabídku klasicky</em>.</li>
+                        <li><strong>Adresa:</strong> Zadejte adresu nebo číslo pozemku a lokalitu.</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li><strong>Typ smlouvy:</strong> Zvolte Prodej, Pronájem nebo Dražba.</li>
+                        <li><strong>Typ & Druh nemovitosti:</strong> Vyberte Typ (Byty, Domy, Pozemky, Komerční apod.) a konkrétní Druh (např. 2+1, Rodinný dům).</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2><span class="step-num">2</span> Vlastnosti (Specifikace nemovitosti)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Plochy & Vlastnictví <span class="orange-note">(vyplňte oranžová pole)</span></th>
+                <th style="width: 50%;">Technické parametry & Vybavení</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <ul>
+                        <li><strong>Plochy:</strong> Vyplňte užitnou, podlahovou, zastavěnou plochu, plochu pozemku či balkónu/terasy.</li>
+                        <li><strong>Vlastnictví:</strong> Nastavte Osobní, Družstevní nebo Státní/Městské.</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li><strong>Stav & Konstrukce:</strong> Doplňte Stav objektu (Velmi dobrý, Po rekonstrukci, Před rekonstrukcí, Novostavba) a konstrukci budovy (Cihlová, Panelová).</li>
+                        <li><strong>PENB:</strong> Zadává se energetická náročnost. Pokud ji nevíte, uvádějte třídu <strong>G</strong>.</li>
+                        <li><strong>Specifikace:</strong> Doplňte Vybavení, Inženýrské sítě a ostatní parametry dle výběru.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2><span class="step-num">3</span> Cena a provize (Popis a finanční náležitosti)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Cena & Nastavení provize</th>
+                <th style="width: 50%;">Nadpis & Popis inzerátu</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <ul>
+                        <li><strong>Nabídková cena:</strong> Zadejte požadovanou částku a zvolte měnu.</li>
+                        <li><strong>Náležitosti ceny:</strong> Zkontrolujte, zda cena zahrnuje provizi, právní servis a DPH (případně nastavte výši provize pro interní přehled).</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li><strong>Nadpis nemovitosti:</strong> Napište výstižný titul (např. <em>Prodej bytu 2+1/B 60m2, Praha - Strašnice</em>).</li>
+                        <li><strong>Popisek:</strong> Vložte text inzerátu (možno vygenerovat dle Nápovědy na tomto webu). Lze přepnout Česky/Anglicky a vygenerovat překlad (např. pro Expats.cz).</li>
+                        <li><strong>Kontrola textu:</strong> Ověřte formátování i obsah pro dobrou čitelnost na realitních portálech.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2><span class="step-num">4</span> Média a přílohy (Foto, video a nábor)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Fotografie & Podklady</th>
+                <th style="width: 50%;">Video & Aktivace</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <ul>
+                        <li><strong>Nahraní fotografií:</strong> Přetáhněte nebo vyberte soubory. Správné focení a úprava viz Nápověda na tomto webu.</li>
+                        <li><strong>Seřazení:</strong> První snímek automaticky slouží jako titulní náhledová fotografie.</li>
+                        <li><strong>Půdorys:</strong> Přidejte soubor s půdorysem nemovitosti.</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li><strong>Videoprohlídka:</strong> Vložte vlastní video (viz návod Tvorba videí na tomto webu).</li>
+                        <li><strong>Zdroj náboru:</strong> Vyplňte příslušný zdroj náboru zakázky.</li>
+                        <li><strong>Aktivace:</strong> Aktivujte nabídku pro další práci.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2><span class="step-num">5</span> Exporty a souhrn</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Interní web RK (hvbreal.cz)</th>
+                <th style="width: 50%;">Realitní portály</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <ul>
+                        <li><strong>Export RK:</strong> Vyberte Poski Real a vyexportujte jej na web RK (hvbreal.cz).</li>
+                        <li><strong>Kontrola:</strong> Za několik minut zkontrolujte obsah přímo na webu RK a případné chyby opravte v Poski.</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li><strong>Výběr portálů:</strong> Zaškrtněte servery, na které chcete zakázku vyexportovat (Sreality, Reality.iDNES, ČeskéReality atd.), případně zvolte <em>Zapnout vše</em>.</li>
+                        <li><strong>Uložení:</strong> Všechny nastavené exporty uložte.</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="tip-box">
+        <strong>Užitečný tip — Kontrola exportů:</strong>
+        Po uložení zkontrolujte v přehledu exportů stav synchronizace s portály (zda nevzniklachyba z důvodu chybějícího povinného údaje).
+    </div>
+
+    <div class="footer-note">
+        Metodická příručka pro makléře — Vkládání nemovitostí do systému Poski REAL
+    </div>
+</div>
+
+</body>
+</html>
