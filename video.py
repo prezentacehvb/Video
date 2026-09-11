@@ -97,7 +97,8 @@ if not IS_COLAB and JOB_CONFIG:
     RK_NAZEV = _cfg.get("RK_NAZEV", RK_NAZEV)
 
 GLOBAL_TEXT = f"{TEXT_TOP};{TEXT_BOTTOM}"
-OUTPUT_FILE = f"{MAKLER_JMENO}.mp4"
+# Fix: OUTPUT_FILE nastaven na požadovaný název
+OUTPUT_FILE = "Prezentace.mp4"
 
 # Příprava složek a nahrání/stažení fotografií
 for folder in [INPUT_DIR, ENHANCED_DIR]:
