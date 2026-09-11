@@ -97,8 +97,8 @@ if not IS_COLAB and JOB_CONFIG:
     RK_NAZEV = _cfg.get("RK_NAZEV", RK_NAZEV)
 
 GLOBAL_TEXT = f"{TEXT_TOP};{TEXT_BOTTOM}"
-# Fix: OUTPUT_FILE nastaven na požadovaný název
-OUTPUT_FILE = "Prezentace.mp4"
+# KRITICKÉ: Musí být 'output.mp4', aby fungoval notify.py v GitHub Actions
+OUTPUT_FILE = "output.mp4"
 
 # Příprava složek a nahrání/stažení fotografií
 for folder in [INPUT_DIR, ENHANCED_DIR]:
