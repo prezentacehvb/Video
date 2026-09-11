@@ -59,10 +59,11 @@
 
         /* Top Navbar */
         .top-navbar {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+            gap: 30px;
             align-items: center;
-            padding: 15px 20px;
+            padding: 15px 30px;
             background: rgba(10, 0, 20, 0.8);
             backdrop-filter: blur(10px);
             position: relative;
@@ -111,10 +112,13 @@
             transition: all 0.3s ease;
         }
 
+        /* Odkazy přiblíženy k sobě (gap: 10px) */
         .nav-links {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             list-style: none;
+            justify-content: space-between;
+            width: 100%;
         }
 
         .nav-links a {
@@ -192,20 +196,26 @@
             user-select: none;
         }
 
-        /* Hero Section */
+        /* Hero Section - Zúžená levá část (0.85fr) a zarovnaná výška (stretch) */
         .hero-section {
-            padding: 40px 20px;
+            padding: 30px 30px;
             display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
+            grid-template-columns: 0.85fr 1.15fr;
             gap: 30px;
-            align-items: start;
+            align-items: stretch;
+        }
+
+        .hero-left-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .hero-title {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
             font-weight: 900;
             line-height: 1.15;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-transform: uppercase;
         }
 
@@ -214,9 +224,9 @@
         }
 
         .hero-subtitle {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             letter-spacing: 1px;
             text-transform: uppercase;
             font-weight: 600;
@@ -227,10 +237,10 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-left: 4px solid var(--purple-accent);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            font-size: 0.85rem;
-            line-height: 1.5;
+            padding: 18px;
+            margin-bottom: 15px;
+            font-size: 0.82rem;
+            line-height: 1.45;
         }
 
         .instruction-box ul {
@@ -239,19 +249,42 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
-        /* Form Panel */
+        .warning-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ffb74d;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .warning-box strong {
+            color: #ffb74d;
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Form Panel - Vyplňuje celou výšku sloupce */
         .form-panel {
             background: #ffffff;
             color: var(--text-dark);
             border-radius: 24px;
             padding: 25px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .form-panel h2 {
             font-size: 1.2rem;
             font-weight: 800;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: var(--bg-purple);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -260,8 +293,8 @@
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         .input-group {
@@ -274,20 +307,20 @@
         }
 
         label {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: var(--text-muted);
         }
 
         input[type="text"], input[type="email"], input[type="tel"] {
             background: #f4f4f6;
             border: 1px solid #e0e0e0;
-            padding: 12px 15px;
+            padding: 10px 12px;
             color: var(--text-dark);
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             outline: none;
             transition: border-color 0.2s;
             width: 100%;
@@ -304,8 +337,8 @@
         }
 
         .file-input-container {
-            margin: 15px 0 20px 0;
-            padding: 15px;
+            margin: 10px 0 15px 0;
+            padding: 12px;
             background: #f9f8fc;
             border: 2px dashed #d1c4e9;
             border-radius: 12px;
@@ -318,12 +351,12 @@
 
         .submit-btn {
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             background: var(--purple-gradient);
             color: white;
             border: none;
             border-radius: 30px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -342,9 +375,9 @@
             cursor: not-allowed;
         }
 
-        /* Cards Section - Přizpůsobení velikosti tak, aby se vešly vedle sebe */
+        /* Cards Section */
         .cards-section {
-            padding: 25px 20px;
+            padding: 25px 30px;
             background: rgba(0, 0, 0, 0.25);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             flex-grow: 1;
@@ -439,7 +472,7 @@
         }
 
         @media (max-width: 900px) {
-            .top-navbar { padding: 15px 20px; }
+            .top-navbar { display: flex; justify-content: space-between; padding: 15px 20px; }
             .hamburger { display: flex; }
             .nav-links {
                 position: absolute;
@@ -457,7 +490,8 @@
             .nav-links.active { max-height: 380px; padding: 10px 0; }
             .nav-links li { width: 100%; text-align: center; }
             .nav-links a { display: block; padding: 12px 0; font-size: 0.9rem; }
-            .hero-section { grid-template-columns: 1fr; padding: 25px 15px; gap: 25px; }
+            .hero-section { grid-template-columns: 1fr; padding: 25px 20px; gap: 25px; }
+            .cards-section { padding: 25px 20px; }
             .form-panel { padding: 20px; }
         }
 
@@ -515,20 +549,27 @@
 
             <!-- Hero Section -->
             <section class="hero-section">
-                <div>
-                    <h1 class="hero-title">HVB REAL <span>BUDOUCNOST</span> PREZENTACE</h1>
-                    <div class="hero-subtitle">Generátor videoprezentací nemovitostí</div>
-                    
-                    <div class="instruction-box">
-                        <strong>Návod k použití a pravidla pro vložení fotografií:</strong>
-                        <ul>
-                            <li>Fotografie připravte do jedné složky.</li>
-                            <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
-                            <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
-                            <li>Podporovány jsou klasické formáty i fotografie typu HEIC / HEIF z iPhonu.</li>
-                            <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
-                            <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
-                        </ul>
+                <div class="hero-left-column">
+                    <div>
+                        <h1 class="hero-title">HVB REAL <span>BUDOUCNOST</span> PREZENTACE</h1>
+                        <div class="hero-subtitle">Generátor videoprezentací nemovitostí</div>
+                        
+                        <div class="instruction-box">
+                            <strong>Návod k použití a pravidla pro vložení fotografií:</strong>
+                            <ul>
+                                <li>Fotografie připravte do jedné složky.</li>
+                                <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
+                                <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
+                                <li>Podporovány jsou klasické formáty i fotografie typu HEIC / HEIF z iPhonu.</li>
+                                <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
+                                <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>Upozornění:</strong>
+                        Formát videa je generován dle formátu první fotografie. Optimální je fotografovat v širokoúhlém režimu 16:9.
                     </div>
                 </div>
 
