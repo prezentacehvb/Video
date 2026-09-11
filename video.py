@@ -66,17 +66,17 @@ LINE_SPACING = 7  # @param {type:"number"} # Mezera mezi textem a linkou
 
 # --- Makléř & RK (Intro/Outro) ---
 MAKLER_JMENO = "FRANTIŠEK PROCHÁZKA"  # @param {type:"string"} # Jméno makléře
-MAKLER_BOLD = False  # @param {type:"boolean"} # Tučné jméno
-MAKLER_ITALIC = True  # @param {type:"boolean"} # Kurzíva jméno
+MAKLER_BOLD = True  # @param {type:"boolean"} # Tučné jméno
+MAKLER_ITALIC = False  # @param {type:"boolean"} # Kurzíva jméno
 RK_NAZEV = "HVB Real Estate "  # @param {type:"string"} # Název RK
 RK_BOLD = True  # @param {type:"boolean"} # Tučný název RK
 RK_ITALIC = False  # @param {type:"boolean"} # Kurzíva název RK
 MAKLER_EMAIL = "fprochazka@hvbreal.cz"  # @param {type:"string"}
 MAKLER_TELEFON = "+420 123 456 789"  # @param {type:"string"}
-FONT_SIZE_MAKLER = 40  # @param {type:"number"} # Velikost písma pro vizitku
+FONT_SIZE_MAKLER = 26  # @param {type:"number"} # Velikost písma pro vizitku
 
 # --- Technické nastavení obrazu ---
-ASPECT_RATIO = "16:9"  # @param ["16:9", "4:3"] # Poměrt stran videa
+# ASPECT_RATIO je detekováno automaticky níže
 MIN_IMAGE_DURATION = 3  # @param {type:"number"} # Minimální délka zobrazení jedné fotky (sekundy)
 MAX_IMAGE_DURATION = 5  # @param {type:"number"} # Maximální délka zobrazení jedné fotky (sekundy)
 MOTION_MODE = "random"  # @param ["random", "zoom_in", "zoom_out", "pan_left_to_right", "pan_right_to_left", "pan_top_to_bottom", "pan_bottom_to_top", "zoom_in_left", "zoom_in_right", "zoom_out_left", "zoom_out_right"]
@@ -84,17 +84,17 @@ VIDEO_FADE_IN = 6  # @param {type:"number"} # Délka úvodního zatmívačky
 VIDEO_FADE_OUT = 6  # @param {type:"number"} # Délka závěrečné zatmívačky
 
 # --- Kvalita a Pohyb (Anti-jitter) ---
-MOTION_OVERSCAN = 1.28  # @param {type:"number"} # Rezerva pro pohyb (zabraňuje pixelizaci při zoomu)
-SUPERSAMPLE = 2  # @param {type:"number"} # Vyhlazování hran (1=vypnuto, 2+=lepší obraz, pomalejší export)
-ZOOM_SPEED = 0.05 # Rychlost přiblížení
-PAN_ZOOM_FACTOR = 1.05 # Základní zoom pro pan efekty
-PAN_STEP_PERCENT = 60 # Rozsah pohybu kamery v %
+MOTION_OVERSCAN = 1.28  # @param {type:"number"} # Rezerva pro pohyb
+SUPERSAMPLE = 2  # @param {type:"number"} # Vyhlazování hran
+ZOOM_SPEED = 0.05
+PAN_ZOOM_FACTOR = 1.05
+PAN_STEP_PERCENT = 60
 
 # --- Hudba ---
-AUDIO_FADE_IN = 8  # @param {type:"number"} # Náběrak hudby v sekundách
+VOLUME = 50  # @param {type:"slider", min:0, max:100, step:1} # Hlasitost hudby v %
+AUDIO_FADE_IN = 8  # @param {type:"number"} # Náběh hudby v sekundách
 AUDIO_FADE_OUT = 8  # @param {type:"number"} # Dojezd hudby v sekundách
-VYBRANA_HUDBA = "01. Where_the_Sunlight_Lands.mp3"  # @param {type:"string"} # Název souboru nahrané hudby
-NAHRAT_NOVE_SOUBORY = False  # @param {type:"boolean"} # Aktivovat dialog pro nahrání nových medií
+NAHRAT_NOVE_SOUBORY = False  # @param {type:"boolean"}
 
 # Headless: přepsat výchozí @param hodnoty daty z job.json
 # Přidána kontrola existence JOB_CONFIG, aby nedocházelo k NameError
@@ -182,24 +182,25 @@ if IS_COLAB:
 
     print("\n✅ Konfigurace připravena.")
 
-# Oprava: Logika byla sloučena nebo ošetřena tak, aby 'else' neviselo ve vzduchu.
-# Pokud IS_COLAB není True, provede se tato část.
+# Výběr hudby
 if not globals().get('IS_COLAB', False):
-    # Headless (GitHub Actions): logo a hudba se berou přímo z repozitáře
-    globals()['LOGO_FILE'] = "logo.png" if os.path.exists("logo.png") else None
-    _music_src = "music.mp3"
-    if os.path.exists(_music_src):
-        shutil.copy(_music_src, MUSIC_FILE)
-        print(f"🎵 Aktivní hudba (headless): {_music_src}")
+    # Headless (GitHub Actions): výběr náhodné skladby ze složky 'hudba'
+    hudba_dir = "hudba"
+    if os.path.exists(hudba_dir):
+        available_music = [os.path.join(hudba_dir, f) for f in os.listdir(hudba_dir) if f.lower().endswith('.mp3')]
+        if available_music:
+            _music_src = random.choice(available_music)
+            shutil.copy(_music_src, MUSIC_FILE)
+            print(f"🎵 Náhodně vybraná hudba (GitHub): {_music_src}")
+        else:
+            print("ℹ️ Ve složce 'hudba' nebyly nalezeny žádné MP3 soubory.")
     else:
-        print("ℹ️ music.mp3 nenalezen, video bude bez hudby.")
-
-    if globals()['LOGO_FILE']:
-        print(f"🖼️ Aktivní logo (headless): {globals()['LOGO_FILE']}")
-    else:
-        print("ℹ️ logo.png nenalezen, video bude bez loga.")
+        # Fallback na starý soubor, pokud složka neexistuje
+        if os.path.exists("music.mp3"):
+            shutil.copy("music.mp3", MUSIC_FILE)
+            print("🎵 Používám music.mp3 (složka 'hudba' nenalezena)")
 else:
-    print("⏭️ Přeskakuji headless konfiguraci (běžíme v Colabu).")
+    print("⏭️ Přeskakuji headless výběr hudby (běžíme v Colabu).")
 
 ## 1. Nastavení a Definice Funkcí
 
@@ -216,10 +217,28 @@ ALL_MOTION_MODES = [
     "zoom_out_left", "zoom_out_right",
 ]
 
-TARGET_W, TARGET_H = (1920, 1080) if ASPECT_RATIO == "16:9" else (1440, 1080)
-# Pracovní (přezoomované) rozlišení, ve kterém se ukládají zpracované fotky -
-# je větší než cílové video, aby zoom/pan měly "kam sahat" a nedocházelo k
-# opakovanému přeostřování téže bitmapy (hlavní příčina "chvění" obrazu).
+# Detekce formátu z první fotografie
+def get_auto_aspect_ratio():
+    if not image_files:
+        return "16:9"
+    try:
+        with Image.open(image_files[0]) as first_img:
+            w, h = first_img.size
+            ratio = w / h
+            # 16:9 is ~1.77, 4:3 is ~1.33. We check if it's closer to 16:9.
+            if abs(ratio - (16/9)) < abs(ratio - (4/3)):
+                return "16:9"
+            else:
+                return "4:3"
+    except:
+        return "16:9"
+
+DETECTED_RATIO = get_auto_aspect_ratio()
+print(f"📌 Automaticky detekovaný poměr stran: {DETECTED_RATIO}")
+
+TARGET_W, TARGET_H = (1920, 1080) if DETECTED_RATIO == "16:9" else (1440, 1080)
+
+# Pracovní (přezoomované) rozlišení
 WORK_W, WORK_H = int(round(TARGET_W * MOTION_OVERSCAN)), int(round(TARGET_H * MOTION_OVERSCAN))
 INPUT_DIR, ENHANCED_DIR = "vstupni_media_zgk", "vylepsene_fotografie_zgk"
 OUTPUT_FILE = f"{MAKLER_JMENO}.mp4"
@@ -597,8 +616,12 @@ if final_clips:
     total_dur = final_video.duration
 
     if os.path.exists(MUSIC_FILE):
-        print("🎵 Přidávám hudbu (smyčka + fade in/out)")
+        print(f"🎵 Přidávám hudbu (hlasitost: {VOLUME}%, fade in/out)")
         audio = AudioFileClip(MUSIC_FILE)
+
+        # Aplikace hlasitosti (převod z % na koeficient 0.0 - 1.0)
+        audio = audio.volumex(VOLUME / 100.0)
+
         if audio.duration < total_dur:
             audio = audio.fx(afx.audio_loop, duration=total_dur)
         else:
@@ -630,16 +653,3 @@ if final_clips:
         print("--> Stahování...")
         files.download(OUTPUT_FILE)
         print("🟢 Hotovo!")
-    else:
-        # Headless: soubor necháváme na disku, GitHub Actions ho v dalším
-        # kroku (notify.py) zveřejní jako Release a pošle makléři e-mail
-        with open("render_result.json", "w", encoding="utf-8") as f:
-            json.dump({
-                "video_file": OUTPUT_FILE,
-                "job_id": JOB_CONFIG.get("job_id", ""),
-                "name": MAKLER_JMENO,
-                "email": MAKLER_EMAIL,
-                "phone": MAKLER_TELEFON,
-                "callback_url": JOB_CONFIG.get("callback_url", "")
-            }, f, ensure_ascii=False, indent=2)
-        print(f"🟢 render_result.json zapsán, video: {OUTPUT_FILE}")
