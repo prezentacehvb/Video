@@ -514,7 +514,15 @@ from PIL import Image
 def generate_video_commentary():
     global gemini_output_text
     try:
-        api_key = userdata.get('GOOGLE_API_KEY')
+        if IS_COLAB:
+            api_key = userdata.get('GOOGLE_API_KEY')
+        else:
+            api_key = os.environ.get('GOOGLE_API_KEY')
+            if not api_key:
+                raise RuntimeError(
+                    "Chybí GOOGLE_API_KEY (v GitHub Actions musí být nastaven jako "
+                    "env proměnná ze secrets ve kroku 'Render video')."
+                )
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel(GEMINI_MODEL)
 
