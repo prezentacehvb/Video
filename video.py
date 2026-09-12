@@ -101,6 +101,7 @@ TEXT_TOP = "Prodej RD 5+kk 160 m², pozemek 359 m²"  # @param {type:"string"}
 FONT_SIZE_TOP = 24  # @param {type:"number"}
 TEXT_BOTTOM = "Popovice - okr. Benešov"  # @param {type:"string"}
 FONT_SIZE_BOTTOM = 20  # @param {type:"number"}
+TEXT_KOMENTAR = "" # @param {type:"string"}
 TEXT_COLOR = "white"  # @param {type:"string"}
 LINE_COLOR = "white"  # @param {type:"string"}
 LINE_VARIANT = "LINE 2"  # @param ["LINE 1", "LINE 2"]
