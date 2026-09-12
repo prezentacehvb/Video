@@ -4,3 +4,6 @@ numpy
 requests
 opencv-python-headless
 proglog
+edge-tts
+pydub
+google-generativeai
