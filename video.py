@@ -710,7 +710,20 @@ async def create_pro_voiceover_async(text_to_speak, video_in_path):
 
         if video.audio:
             v_start, v_end = start_delay, current_time
-            music = video.audio.fl(lambda gf, t: gf(t) * (0.15 if v_start <= t <= v_end else 1.0))
+
+            def _duck_music(gf, t):
+                # MoviePy volá tuhle funkci i s "t" jako polem časů (chunk),
+                # ne jen jedním číslem - proto porovnání musí být přes numpy
+                # (np.where), ne přes "if v_start <= t <= v_end", což na poli
+                # skončí chybou "truth value of an array is ambiguous".
+                frame = gf(t)
+                t_arr = np.asarray(t)
+                factor = np.where((t_arr >= v_start) & (t_arr <= v_end), 0.15, 1.0)
+                if isinstance(frame, np.ndarray) and frame.ndim > np.ndim(factor):
+                    factor = factor.reshape(factor.shape + (1,) * (frame.ndim - factor.ndim))
+                return frame * factor
+
+            music = video.audio.fl(_duck_music)
             final_audio = CompositeAudioClip([music, voice_group.volumex(1.4)])
         else:
             final_audio = voice_group
