@@ -28,7 +28,8 @@
         input[type="text"], 
         input[type="email"], 
         input[type="password"],
-        input[type="tel"], 
+        input[type="tel"],
+        textarea, 
         button {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -336,7 +337,7 @@
             font-family: 'General Sans', sans-serif;
         }
 
-        input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+        input[type="text"], input[type="email"], input[type="password"], input[type="tel"], textarea {
             background: #f4f4f6;
             border: 1px solid #e0e0e0;
             padding: 10px 12px;
@@ -348,7 +349,7 @@
             width: 100%;
         }
 
-        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="tel"]:focus {
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="tel"]:focus, textarea:focus {
             border-color: var(--purple-accent);
         }
 
@@ -627,6 +628,10 @@
                             <div class="input-group full-width">
                                 <label for="TEXT_BOTTOM">Lokalita</label>
                                 <input type="text" id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder="Český Brod, okr. Kolín" required>
+                            </div>
+                            <div class="input-group full-width">
+                                <label for="TEXT_KOMENTAR">Doplňující informace o nemovitosti (komentář)</label>
+                                <textarea id="TEXT_KOMENTAR" name="TEXT_KOMENTAR" rows="3" placeholder="Zde můžete uvést doplňující informace ke komentáři..."></textarea>
                             </div>
                         </div>
 
@@ -931,6 +936,7 @@
                     MAKLER_TELEFON: document.getElementById("MAKLER_TELEFON").value,
                     TEXT_TOP: textTopFixed,
                     TEXT_BOTTOM: textBottomFixed,
+                    TEXT_KOMENTAR: document.getElementById("TEXT_KOMENTAR").value,
                     images: convertedFiles
                 };
 
@@ -945,11 +951,12 @@
 
                 clearInterval(timerInterval);
                 const sentTime = new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                alert(`Data odeslána v ${sentTime}`);
                 
+                const savedEmail = document.getElementById("MAKLER_EMAIL").value;
                 document.getElementById("videoForm").reset();
-                const postNotice = document.getElementById("infoNoticeBox");
-                if (postNotice) postNotice.style.display = "none";
+                document.getElementById("MAKLER_EMAIL").value = savedEmail;
+
+                showInfoBanner(`Fotografie byly odeslány ke zpracování v ${sentTime}. S mírným časovým odstupem obdržíte odkaz na stažení 2 videoprezentací , první s hudebním doprovodem, druhou se zvukovým komentářem a anglickými titulky.`);
 
             } catch (e) {
                 clearInterval(timerInterval);
