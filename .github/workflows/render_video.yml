@@ -32,7 +32,8 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ffmpeg fonts-liberation
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-liberation imagemagick
+          sudo sed -i 's/domain="path" rights="none" pattern="@\*"/domain="path" rights="read|write" pattern="@*"/g' /etc/ImageMagick-6/policy.xml
 
       - name: Write job payload
         env:
@@ -44,12 +45,6 @@ jobs:
 
       - name: Render video
         run: python video.py job.json
-
-      - name: Publish release and notify broker
-        if: success()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python notify.py --status success --job job.json --result render_result.json
 
       - name: Notify broker of failure
         if: failure()
