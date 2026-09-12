@@ -44,6 +44,8 @@ jobs:
         run: python -c "import json; json.load(open('job.json', encoding='utf-8')); print('job.json OK')"
 
       - name: Render video
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: python video.py job.json
 
       - name: Notify broker of failure
