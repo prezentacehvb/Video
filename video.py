@@ -140,7 +140,7 @@ NAHRAT_NOVE_SOUBORY = False  # @param {type:"boolean"}
 
 # --- Nastavení hlasitosti komentáře ---
 VOICE_VOLUME = 0.5 # @param {type:"number"}
-DUCKING_LEVEL = 0.15 # @param {type:"number"}
+DUCKING_LEVEL = 0.25 # @param {type:"number"}
 
 if not IS_COLAB and JOB_CONFIG:
     _cfg = JOB_CONFIG.get("config", {})
