@@ -122,7 +122,7 @@
             transition: all 0.3s ease;
         }
 
-        /* Odkazy přiblíženy k sobě (gap: 10px) */
+        /* Odkazy v horní liště */
         .nav-links {
             display: flex;
             gap: 10px;
@@ -139,22 +139,12 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            opacity: 0.8;
-            transition: opacity 0.2s, color 0.2s;
+            opacity: 1;
+            transition: color 0.2s;
         }
 
         .nav-links a:hover {
-            opacity: 1;
             color: var(--purple-light);
-        }
-
-        .nav-links a.nav-purple {
-            color: var(--purple-light);
-            opacity: 1;
-        }
-
-        .nav-links a.nav-purple:hover {
-            color: #ffffff;
         }
 
         /* Login Overlay */
@@ -198,7 +188,7 @@
             user-select: none;
         }
 
-        /* Hero Section - Zúžená levá část (0.85fr) a zarovnaná výška (stretch) */
+        /* Hero Section */
         .hero-section {
             padding: 30px 30px;
             display: grid;
@@ -300,7 +290,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Form Panel - Vyplňuje celou výšku sloupce */
+        /* Form Panel */
         .form-panel {
             background: #ffffff;
             color: var(--text-dark);
@@ -572,12 +562,11 @@
                 </button>
 
                 <ul class="nav-links" id="navLinks">
-                    <li><a href="https://makleri.hvbreal.cz/" style="color: var(--purple-light);">Makléři</a></li>
-                    <li><a href="Realmin.html">Realitní Minimum</a></li>
-                    <li><a href="Fotohelp.html">Foto Minimum</a></li>
-                    <li><a href="https://docs.google.com/spreadsheets/d/169G2ZBV1z4oAbq956Brbby8kaYqNFGdXlIxemXjMbCU/edit?gid=0#gid=0" target="_blank" class="nav-purple">Evidence zakázek</a></li>
-                    <li><a href="https://web.telegram.org/k/#-5465557150" target="_blank" class="nav-purple">HVB Poptávky</a></li>
-                    <li><a href="https://webmail.hvbreal.cz/?_task=mail&_mbox=INBOX" target="_blank" class="nav-purple">Email</a></li>
+                    <li><a href="https://makleri.hvbreal.cz/" target="_blank">Makléři</a></li>
+                    <li><a href="https://hvbreal.cz/kontakty/makleri" target="_blank">WEB RK</a></li>
+                    <li><a href="https://docs.google.com/spreadsheets/d/169G2ZBV1z4oAbq956Brbby8kaYqNFGdXlIxemXjMbCU/edit?gid=0#gid=0" target="_blank">Evidence zakázek</a></li>
+                    <li><a href="https://web.telegram.org/k/#-5465557150" target="_blank">HVB Poptávky</a></li>
+                    <li><a href="https://webmail.hvbreal.cz/?_task=mail&_mbox=INBOX" target="_blank">Email</a></li>
                 </ul>
             </header>
 
@@ -656,7 +645,7 @@
             <section class="cards-section">
                 <div class="cards-section-title">Nápověda a užitečné návody</div>
                 <div class="cards-grid">
-                    <a href="Realmin.html" class="help-card">
+                    <a href="Realmin.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" alt="Realitní minimum">
                         </div>
@@ -666,7 +655,7 @@
                         </div>
                     </a>
 
-                    <a href="Fotohelp.html" class="help-card">
+                    <a href="Fotohelp.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=600&q=80" alt="Fotografické minimum">
                         </div>
@@ -676,7 +665,7 @@
                         </div>
                     </a>
                     
-                    <a href="Upravafoto.html" class="help-card">
+                    <a href="Upravafoto.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" alt="Úprava fotografie">
                         </div>
@@ -686,7 +675,7 @@
                         </div>
                     </a>
 
-                    <a href="Popisnem.html" class="help-card">
+                    <a href="Popisnem.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" alt="Popis nemovitosti">
                         </div>
@@ -696,7 +685,7 @@
                         </div>
                     </a>
 
-                    <a href="Ocennem.html" class="help-card">
+                    <a href="Ocennem.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=600&q=80" alt="Ocenění nemovitosti">
                         </div>
@@ -706,7 +695,7 @@
                         </div>
                     </a>
 
-                    <a href="Signhelp.html" class="help-card">
+                    <a href="Signhelp.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80" alt="Digitální podpis">
                         </div>
@@ -716,7 +705,7 @@
                         </div>
                     </a>
 
-                    <a href="Poskihelp.html" class="help-card">
+                    <a href="Poskihelp.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80" alt="Poski">
                         </div>
