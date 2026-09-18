@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HVB REAL - Moderní Prezentace & Video</title>
+
+    <!-- Optimalizace rychlosti načítání připojení ke vzdáleným serverům -->
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://api.fontshare.com">
+    <link rel="preconnect" href="https://script.google.com" crossorigin>
+    <link rel="dns-prefetch" href="https://script.google.com">
+
     <link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600,700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -200,7 +207,7 @@
         .hero-left-column {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 15px;
         }
 
         .hero-title-container {
@@ -208,7 +215,7 @@
             flex-direction: column;
             align-items: flex-start;
             text-align: left;
-            margin-bottom: 12px;
+            margin-bottom: 5px;
         }
 
         .hero-title {
@@ -244,20 +251,20 @@
         .hero-subtitle {
             font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             letter-spacing: 1px;
             text-transform: uppercase;
             font-weight: 600;
             text-align: left;
         }
 
+        /* Section 1: Návod k použití */
         .instruction-box {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-left: 4px solid var(--purple-accent);
             border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 15px;
+            padding: 16px;
             font-size: 0.82rem;
             line-height: 1.45;
             text-align: left;
@@ -269,12 +276,13 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
+        /* Section 2: Nápověda */
         .warning-box {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-left: 4px solid #ffb74d;
             border-radius: 12px;
-            padding: 18px;
+            padding: 16px;
             font-size: 0.82rem;
             line-height: 1.45;
             color: rgba(255, 255, 255, 0.9);
@@ -290,6 +298,39 @@
             letter-spacing: 0.5px;
         }
 
+        /* Section 3: Tip dne */
+        .tip-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--purple-light);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .tip-box-header {
+            color: var(--purple-light);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .tip-namitka {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .tip-reakce {
+            color: rgba(255, 255, 255, 0.85);
+            font-style: italic;
+        }
+
         /* Form Panel */
         .form-panel {
             background: #ffffff;
@@ -299,7 +340,7 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            height: 100%;
         }
 
         .form-panel h2 {
@@ -311,11 +352,20 @@
             letter-spacing: 0.5px;
         }
 
+        /* Flexibilní formulář pro rovnoměrné vertikální rozložení prvků */
+        #videoForm {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 15px;
+            flex-grow: 1;
         }
 
         .input-group {
@@ -326,6 +376,12 @@
 
         .input-group.full-width {
             grid-column: span 2;
+        }
+
+        .input-group.full-width:last-child {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
 
         label {
@@ -340,13 +396,19 @@
         input[type="text"], input[type="email"], input[type="password"], input[type="tel"], textarea {
             background: #f4f4f6;
             border: 1px solid #e0e0e0;
-            padding: 10px 12px;
+            padding: 9px 12px;
             color: var(--text-dark);
             font-family: 'General Sans', sans-serif;
             font-size: 0.88rem;
             outline: none;
             transition: border-color 0.2s;
             width: 100%;
+        }
+
+        textarea {
+            flex-grow: 1;
+            resize: none;
+            min-height: 70px;
         }
 
         input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="tel"]:focus, textarea:focus {
@@ -360,8 +422,8 @@
         }
 
         .file-input-container {
-            margin: 10px 0 15px 0;
-            padding: 12px;
+            margin: 4px 0;
+            padding: 10px;
             background: #f9f8fc;
             border: 2px dashed #d1c4e9;
             border-radius: 12px;
@@ -375,7 +437,7 @@
 
         .submit-btn {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             background: var(--purple-gradient);
             color: white;
             border: none;
@@ -572,6 +634,7 @@
 
             <!-- Hero Section -->
             <section class="hero-section">
+                <!-- Levé sloupce (1. Návod k použití, 2. Nápověda, 3. Tip dne) -->
                 <div class="hero-left-column">
                     <div>
                         <div class="hero-title-container">
@@ -581,27 +644,36 @@
                             </div>
                         </div>
                         <div class="hero-subtitle">Generátor videoprezentací nemovitostí</div>
-                        
-                        <div class="instruction-box">
-                            <strong>Návod k použití a pravidla pro vložení fotografií:</strong>
-                            <ul>
-                                <li>Fotografie připravte do jedné složky.</li>
-                                <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
-                                <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
-                                <li>Podporovány jsou klasické formáty i fotografie typu HEIC / HEIF z iPhonu.</li>
-                                <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
-                                <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
-                            </ul>
-                        </div>
                     </div>
 
+                    <!-- 1. Návod k použití -->
+                    <div class="instruction-box">
+                        <strong>1. Návod k použití a pravidla pro vložení fotografií:</strong>
+                        <ul>
+                            <li>Fotografie připravte do jedné složky.</li>
+                            <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
+                            <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
+                            <li>Podporovány jsou klasické formáty i fotografie typu HEIC / HEIF z iPhonu.</li>
+                            <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
+                            <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
+                        </ul>
+                    </div>
+
+                    <!-- 2. Nápověda -->
                     <div class="warning-box">
-                        <strong>Upozornění:</strong>
+                        <strong>2. Nápověda:</strong>
                         Formát videa je generován dle formátu první fotografie. Optimální je fotografovat v širokoúhlém režimu 16:9.
+                    </div>
+
+                    <!-- 3. Tip dne -->
+                    <div class="tip-box" id="tipBox">
+                        <div class="tip-box-header">3. Tip dne</div>
+                        <div class="tip-namitka" id="tipNamitka">Námitka: Načítám tip...</div>
+                        <div class="tip-reakce" id="tipReakce">Reakce: Načítám tip...</div>
                     </div>
                 </div>
 
-                <!-- Form Panel -->
+                <!-- Form Panel (Pravé sloupce) -->
                 <div class="form-panel">
                     <h2>Vytvořit prezentaci</h2>
                     <form id="videoForm" onsubmit="sendData(event)">
@@ -647,7 +719,7 @@
                 <div class="cards-grid">
                     <a href="Realmin.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" alt="Realitní minimum">
+                            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" alt="Realitní minimum" loading="lazy">
                         </div>
                         <div class="help-card-content">
                             <div class="help-card-title">Realitní minimum</div>
@@ -657,7 +729,7 @@
 
                     <a href="Fotohelp.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=600&q=80" alt="Fotografické minimum">
+                            <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=600&q=80" alt="Fotografické minimum" loading="lazy">
                         </div>
                         <div class="help-card-content">
                             <div class="help-card-title">Fotografické minimum</div>
@@ -667,7 +739,7 @@
                     
                     <a href="Upravafoto.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" alt="Úprava fotografie">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" alt="Úprava fotografie" loading="lazy">
                         </div>
                         <div class="help-card-content">
                             <div class="help-card-title">Úprava fotografie</div>
@@ -677,7 +749,7 @@
 
                     <a href="Popisnem.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" alt="Popis nemovitosti">
+                            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" alt="Popis nemovitosti" loading="lazy">
                         </div>
                         <div class="help-card-content">
                             <div class="help-card-title">Popis nemovitosti</div>
@@ -687,7 +759,7 @@
 
                     <a href="Ocennem.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=600&q=80" alt="Ocenění nemovitosti">
+                            <img src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=600&q=80" alt="Ocenění nemovitosti" loading="lazy">
                         </div>
                         <div class="help-card-content">
                             <div class="help-card-title">Ocenění nemovitosti</div>
@@ -697,7 +769,7 @@
 
                     <a href="Signhelp.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80" alt="Digitální podpis">
+                            <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80" alt="Digitální podpis" loading="lazy">
                         </div>
                         <div class="help-card-content">
                             <div class="help-card-title">Digitální podpis (DigiSign)</div>
@@ -707,7 +779,7 @@
 
                     <a href="Poskihelp.html" target="_blank" class="help-card">
                         <div class="help-card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80" alt="Poski">
+                            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80" alt="Poski" loading="lazy">
                         </div>
                         <div class="help-card-content">
                             <div class="help-card-title">Poski Real</div>
@@ -732,6 +804,34 @@
         hamburgerBtn.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
+
+        // Náhradní (defaultní) prvotní tip pro případ selhání načtení souboru Tips.json
+        const defaultTip = {
+            "namitka": "Nechci RK",
+            "reakce": "Chápu vaše obavy z RK. Naši nabídku lze nastavit i tak, že provizi hradí kupující k vaší ceně. Výsledek? Prodáte bez starostí, kompletní právní servis i inzerci hradíme my a na účtu vám zůstane minimálně o 50 000 Kč více, než při prodeji na vlastní pěst. Rád/a vám to nezávazně vysvětlím osobně. (Uvedená suma zahrnuje přibližnou cenu za právní servis s notářskou úschovou a inzerci, kterou prodávající hradí i při samostatném prodeji)"
+        };
+
+        // Funkce pro načtení a zobrazení náhodného tipu z tips.json s fallbackem na první tip v pořadí
+        async function loadRandomTip() {
+            try {
+                const response = await fetch('tips.json');
+                if (!response.ok) throw new Error('Nepodařilo se načíst tips.json');
+                const tips = await response.json();
+                if (tips && tips.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * tips.length);
+                    const selectedTip = tips[randomIndex];
+                    document.getElementById('tipNamitka').innerText = "Námitka: " + selectedTip.namitka;
+                    document.getElementById('tipReakce').innerText = "Reakce: " + selectedTip.reakce;
+                } else {
+                    throw new Error('Prázdný soubor tips.json');
+                }
+            } catch (err) {
+                console.error("Chyba při načítání tipů, dosazuji prvotní tip:", err);
+                // Dosažení 1. tipu v pořadí
+                document.getElementById('tipNamitka').innerText = "Námitka: " + defaultTip.namitka;
+                document.getElementById('tipReakce').innerText = "Reakce: " + defaultTip.reakce;
+            }
+        }
 
         async function checkLogin() {
             const emailInput = document.getElementById('loginEmail');
@@ -773,6 +873,9 @@
                         telInput.value = res.phone;
                         telInput.readOnly = true;
                     }
+
+                    // Při úspěšném přihlášení načíst náhodný tip
+                    loadRandomTip();
                 } else {
                     errorMsg.innerText = res.message || "Chybný e-mail nebo heslo.";
                     errorMsg.style.display = 'block';
@@ -862,7 +965,6 @@
             const prevNotice = document.getElementById("infoNoticeBox");
             if (prevNotice) prevNotice.style.display = "none";
 
-            // AKTUALIZOVANÁ ADRESA NASAZENÍ
             const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5_URQ2H9HgDF9VGmWF0MkU9-gmCPdfTZ4K485K6CYfPDqdwyK1IbuOowdCeWCdxs/exec";
             const fileInput = document.getElementById("images");
             const files = Array.from(fileInput.files);
