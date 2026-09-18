@@ -665,11 +665,11 @@
                         Formát videa je generován dle formátu první fotografie. Optimální je fotografovat v širokoúhlém režimu 16:9.
                     </div>
 
-                    <!-- 3. Tip dne -->
+                    <!-- 3. Tip dne (Statický výchozí kód pro okamžité načtení bez čekání) -->
                     <div class="tip-box" id="tipBox">
                         <div class="tip-box-header">3. Tip dne</div>
-                        <div class="tip-namitka" id="tipNamitka">Námitka: Načítám tip...</div>
-                        <div class="tip-reakce" id="tipReakce">Reakce: Načítám tip...</div>
+                        <div class="tip-namitka" id="tipNamitka">Námitka: Nechci RK</div>
+                        <div class="tip-reakce" id="tipReakce">Reakce: Chápu vaše obavy z RK. Naši nabídku lze nastavit i tak, že provizi hradí kupující k vaší ceně. Výsledek? Prodáte bez starostí, kompletní právní servis i inzerci hradíme my a na účtu vám zůstane minimálně o 50 000 Kč více, než při prodeji na vlastní pěst. Rád/a vám to nezávazně vysvětlím osobně. (Uvedená suma zahrnuje přibližnou cenu za právní servis s notářskou úschovou a inzerci, kterou prodávající hradí i při samostatném prodeji)</div>
                     </div>
                 </div>
 
@@ -805,13 +805,7 @@
             navLinks.classList.toggle('active');
         });
 
-        // Náhradní (defaultní) prvotní tip pro případ selhání načtení souboru Tips.json
-        const defaultTip = {
-            "namitka": "Nechci RK",
-            "reakce": "Chápu vaše obavy z RK. Naši nabídku lze nastavit i tak, že provizi hradí kupující k vaší ceně. Výsledek? Prodáte bez starostí, kompletní právní servis i inzerci hradíme my a na účtu vám zůstane minimálně o 50 000 Kč více, než při prodeji na vlastní pěst. Rád/a vám to nezávazně vysvětlím osobně. (Uvedená suma zahrnuje přibližnou cenu za právní servis s notářskou úschovou a inzerci, kterou prodávající hradí i při samostatném prodeji)"
-        };
-
-        // Funkce pro načtení a zobrazení náhodného tipu z tips.json s fallbackem na první tip v pořadí
+        // Funkce pro načtení a zobrazení náhodného tipu ze souboru tips.json až po přihlášení
         async function loadRandomTip() {
             try {
                 const response = await fetch('tips.json');
@@ -822,14 +816,9 @@
                     const selectedTip = tips[randomIndex];
                     document.getElementById('tipNamitka').innerText = "Námitka: " + selectedTip.namitka;
                     document.getElementById('tipReakce').innerText = "Reakce: " + selectedTip.reakce;
-                } else {
-                    throw new Error('Prázdný soubor tips.json');
                 }
             } catch (err) {
-                console.error("Chyba při načítání tipů, dosazuji prvotní tip:", err);
-                // Dosažení 1. tipu v pořadí
-                document.getElementById('tipNamitka').innerText = "Námitka: " + defaultTip.namitka;
-                document.getElementById('tipReakce').innerText = "Reakce: " + defaultTip.reakce;
+                console.error("Chyba při načítání náhodného tipu:", err);
             }
         }
 
@@ -874,7 +863,7 @@
                         telInput.readOnly = true;
                     }
 
-                    // Při úspěšném přihlášení načíst náhodný tip
+                    // Po úspěšném přihlášení nahradíme výchozí tip v pozadí náhodným z tips.json
                     loadRandomTip();
                 } else {
                     errorMsg.innerText = res.message || "Chybný e-mail nebo heslo.";
