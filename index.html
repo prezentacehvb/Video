@@ -1041,6 +1041,17 @@ Pokud klient nemůže dorazit osobně k advokátovi, musí při návštěvě Cze
                 const res = await response.json();
 
                 if (res.success) {
+                    // Odeslání přihlášení na Formspree (čas + email)
+                    const timestamp = new Date().toLocaleString('cs-CZ');
+                    fetch('https://formspree.io/f/xaenjgrq', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: email,
+                            čas: timestamp
+                        })
+                    }).catch(err => console.log('Formspree log zaznamenán'));
+
                     // Okamžité odkrytí rozhraní
                     document.getElementById('loginOverlay').style.display = 'none';
                     document.getElementById('mainCard').classList.remove('blurred');
