@@ -139,7 +139,7 @@
             width: 100%;
         }
 
-        .nav-links a {
+        .nav-links a, .dropdown-btn {
             color: #ffffff;
             text-decoration: none;
             font-size: 0.75rem;
@@ -148,9 +148,59 @@
             letter-spacing: 0.5px;
             opacity: 1;
             transition: color 0.2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            padding: 0;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover, .dropdown-btn:hover {
+            color: var(--purple-light);
+        }
+
+        /* Dropdown Styl */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: rgba(18, 0, 36, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            z-index: 1000;
+            margin-top: 10px;
+            list-style: none;
+            padding: 8px 0;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu li {
+            width: 100%;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 16px;
+            text-transform: none;
+            font-size: 0.85rem;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(255, 255, 255, 0.1);
             color: var(--purple-light);
         }
 
@@ -187,6 +237,71 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             margin-bottom: 20px;
+        }
+
+        /* News Modal Overlay */
+        .news-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 0, 10, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+
+        .news-modal-card {
+            background: rgba(25, 10, 40, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px 25px 25px 25px;
+            border-radius: 24px;
+            text-align: left;
+            max-width: 550px;
+            width: 100%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .news-modal-close-icon {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .news-modal-close-icon:hover {
+            color: #ffffff;
+        }
+
+        .news-modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--purple-light);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .news-modal-body {
+            font-size: 0.88rem;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.9);
+            white-space: pre-line;
+            overflow-y: auto;
+            padding-right: 5px;
+            flex-grow: 1;
         }
 
         .content-container.blurred {
@@ -576,9 +691,26 @@
                 transition: max-height 0.3s ease-out;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
-            .nav-links.active { max-height: 380px; padding: 10px 0; }
+            .nav-links.active { max-height: 480px; padding: 10px 0; }
             .nav-links li { width: 100%; text-align: center; }
-            .nav-links a { display: block; padding: 12px 0; font-size: 0.9rem; }
+            .nav-links a, .dropdown-btn { display: block; padding: 12px 0; font-size: 0.9rem; width: 100%; text-align: center; }
+            .dropdown-menu {
+                position: static;
+                display: none;
+                background: rgba(0, 0, 0, 0.3);
+                box-shadow: none;
+                border: none;
+                border-radius: 0;
+                margin-top: 0;
+                width: 100%;
+            }
+            .dropdown-menu.show {
+                display: block;
+            }
+            .dropdown-menu a {
+                padding: 10px 0;
+                text-align: center;
+            }
             .hero-section { grid-template-columns: 1fr; padding: 25px 20px; gap: 25px; }
             .cards-section { padding: 25px 20px; }
             .form-panel { padding: 20px; }
@@ -606,6 +738,16 @@
         </div>
     </div>
 
+    <!-- Vyskakovací okno s Novinkami -->
+    <div id="newsModal" class="news-modal-overlay" style="display: none;">
+        <div class="news-modal-card">
+            <button class="news-modal-close-icon" onclick="closeNewsModal()" aria-label="Zavřít">&times;</button>
+            <h3 class="news-modal-title">AKTUALITA</h3>
+            <div id="newsContent" class="news-modal-body"></div>
+            <button onclick="closeNewsModal()" class="submit-btn" style="margin-top: 20px;">ZAVŘÍT OKNO</button>
+        </div>
+    </div>
+
     <div class="page-wrapper">
         <div class="content-container blurred" id="mainCard">
             <!-- Header -->
@@ -629,6 +771,14 @@
                     <li><a href="https://docs.google.com/spreadsheets/d/169G2ZBV1z4oAbq956Brbby8kaYqNFGdXlIxemXjMbCU/edit?gid=0#gid=0" target="_blank">Evidence zakázek</a></li>
                     <li><a href="https://web.telegram.org/k/#-5465557150" target="_blank">HVB Poptávky</a></li>
                     <li><a href="https://webmail.hvbreal.cz/?_task=mail&_mbox=INBOX" target="_blank">Email</a></li>
+                    <li class="dropdown">
+                        <button class="dropdown-btn" onclick="toggleDropdown(event)">Oblíbené ▾</button>
+                        <ul class="dropdown-menu" id="favoritesDropdown">
+                            <li><a href="https://nahlizenidokn.cuzk.gov.cz/default.aspx" target="_blank">Katastr nemovitostí</a></li>
+                            <li><a href="https://floorplanner.com/login" target="_blank">Floorplanner</a></li>
+                            <li><a href="https://mapy.cz" target="_blank">Mapy</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </header>
 
@@ -798,12 +948,51 @@
     <script>
         const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwugmkW_YELL8Y0e38jF1WuecK4T42RIJECPTvtRIvXTSg1bYVJ3UweIfovKGhWoHTNiQ/exec";
 
+        // Text novinek vložený přímo v index.html
+        const NEWS_TEXT = `Upozornění na důležité zpřísnění pravidel a nové povinnosti (v souladu s pokyny České advokátní komory a AML legislativou), které se týkají situací, kdy klienti nepodepisují smlouvu o advokátní úschově osobně v advokátní kanceláři či u nás v kanceláři.
+
+Pokud smluvní strana (kupující či prodávající) podepisuje smlouvu jinde (pošta, matrika, notář) a podpis úředně ověřuje, samotné ověření podpisu již nestačí. Je nutné splnit také zákonnou povinnost identifikace klienta.
+
+Jak přesně je nutné postupovat na Czech Pointu?
+Pokud klient nemůže dorazit osobně k advokátovi, musí při návštěvě Czech Pointu (příp. matriky / notáře) výslovně požádat o dva samostatné kroky:
+
+1. Úřední ověření podpisu na smlouvě o úschově.
+2. Zprostředkování identifikace – osoba provádějící ověření potvrdí advokátovi, že podepisující osoba byla řádně ztotožněna (tento úkon je zpoplatněn částkou cca 200 Kč).`;
+
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
 
         hamburgerBtn.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
+
+        // Funkce pro přepínání rozbalovací nabídky Oblíbené
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdownMenu = document.getElementById('favoritesDropdown');
+            dropdownMenu.classList.toggle('show');
+        }
+
+        // Zavření dropdownu při kliknutí mimo
+        window.addEventListener('click', (event) => {
+            const dropdownMenu = document.getElementById('favoritesDropdown');
+            if (dropdownMenu && dropdownMenu.classList.contains('show')) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+
+        // Zobrazení okna s novinkami bez zpomalení přihlášení
+        function showNewsModal() {
+            const newsContent = document.getElementById('newsContent');
+            if (newsContent && NEWS_TEXT.trim() !== "") {
+                newsContent.innerText = NEWS_TEXT;
+                document.getElementById('newsModal').style.display = 'flex';
+            }
+        }
+
+        function closeNewsModal() {
+            document.getElementById('newsModal').style.display = 'none';
+        }
 
         // Funkce pro načtení a zobrazení náhodného tipu ze souboru tips.json až po přihlášení
         async function loadRandomTip() {
@@ -852,6 +1041,7 @@
                 const res = await response.json();
 
                 if (res.success) {
+                    // Okamžité odkrytí rozhraní
                     document.getElementById('loginOverlay').style.display = 'none';
                     document.getElementById('mainCard').classList.remove('blurred');
                     
@@ -863,8 +1053,12 @@
                         telInput.readOnly = true;
                     }
 
-                    // Po úspěšném přihlášení nahradíme výchozí tip v pozadí náhodným z tips.json
-                    loadRandomTip();
+                    // Načtení tipu a zobrazení okna novinek na pozadí, bez blokování UI
+                    setTimeout(() => {
+                        loadRandomTip();
+                        showNewsModal();
+                    }, 100);
+
                 } else {
                     errorMsg.innerText = res.message || "Chybný e-mail nebo heslo.";
                     errorMsg.style.display = 'block';
