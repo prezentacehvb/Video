@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uživatelský návod: Floorplanner</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --code-bg: #f1f3f4;
+            --success-color: #15803d;
+            --danger-color: #b91c1c;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--text-color);
+            font-size: 1.3rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .meta-info {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .link-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: background-color 0.2s;
+        }
+
+        .link-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .intro-box {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--bg-color);
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        tr:hover {
+            background-color: #f1f3f4;
+        }
+
+        .prompt-box {
+            background-color: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 0 4px 4px 0;
+            font-family: inherit;
+            margin-bottom: 30px;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 45%;
+            }
+            td:before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 40%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            .tool-table td:nth-of-type(1):before { content: "Nástroj:"; }
+            .tool-table td:nth-of-type(2):before { content: "Zkratka:"; }
+            .tool-table td:nth-of-type(3):before { content: "Funkce:"; }
+            
+            .export-table td:nth-of-type(1):before { content: "Formát:"; }
+            .export-table td:nth-of-type(2):before { content: "Kvalita:"; }
+            .export-table td:nth-of-type(3):before { content: "Využití:"; }
+            
+            .mode-table td:nth-of-type(1):before { content: "Empty Plan:"; }
+            .mode-table td:nth-of-type(2):before { content: "Upload Image:"; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Uživatelský návod: Floorplanner</h1>
+    <p class="subtitle">Průvodce tvorbou 2D a 3D půdorysů, interiérového designu a architektonických vizualizací</p>
+    
+    <div class="meta-info">
+        <strong>Verze:</strong> 2.4 &nbsp;|&nbsp; 
+        <strong>Určeno pro:</strong> Začátečníky i pokročilé &nbsp;|&nbsp; 
+        <strong>Typ dokumentu:</strong> Kompletní příručka
+    </div>
+
+    <a href="https://floorplanner.com" target="_blank" class="link-button">Otevřít Floorplanner (floorplanner.com)</a>
+
+    <h2>1. Úvod a založení prvního projektu</h2>
+    <div class="intro-box">
+        <strong>Floorplanner</strong> je online nástroj pro snadnou tvorbu 2D půdorysů a jejich okamžitou vizualizaci ve 3D. Nevyžaduje instalaci žádného softwaru a funguje přímo ve webovém prohlížeči.
+    </div>
+
+    <p><strong>Postup vytvoření projektu:</strong></p>
+    <ol>
+        <li>Přejděte na stránky <strong>Floorplanner.com</strong> a přihlaste se k účtu (nebo se zaregistrujte).</li>
+        <li>Na hlavní stránce (Dashboard) klikněte na tlačítko <strong>Create Project</strong>.</li>
+        <li>Zadejte název projektu, adresu nebo typ nemovitosti (např. <em>Residential - Obytný</em>) a zvolte úroveň plánu.</li>
+        <li>Zvolte startovací režim podle vaší situace:</li>
+    </ol>
+
+    <table class="mode-table" style="margin-top: 15px;">
+        <thead>
+            <tr>
+                <th style="width: 50%;">Empty Plan (Prázdný plán)</th>
+                <th style="width: 50%;">Upload Image (Nahrání podkladu)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    Vhodné pro kreslení novostavby nebo návrhu od nuly. Začínáte na čistém plátně bez jakýchkoliv předloh.
+                </td>
+                <td>
+                    Doporučený postup pro rekonstrukce. Nahrajete stávající skicovaný nebo skenovaný půdorys (PDF, JPG, PNG).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="prompt-box">
+        <strong>DŮLEŽITÝ KROK: Správná kalibrace podkladu</strong><br>
+        Po nahrání obrázku zvolte v nástrojové liště funkci <strong>Calibrate</strong> (ikona pravítka). Nakreslete úsečku přes zeď, jejíž reálnou délku znáte (např. 4 000 mm), a zadejte přesný rozměr. Celý podklad se automaticky naškáluje v poměru 1:1.
+    </div>
+
+    <h2>2. Kreslení konstrukce ve 2D režimu</h2>
+    <p>Kreslení probíhá v záložce <strong>2D</strong>, kterou najdete v levém horním rohu obrazovky. Veškeré stavební prvky se nacházejí v nabídce pod ikonou kladívka (<strong>Build</strong>).</p>
+
+    <table class="tool-table">
+        <thead>
+            <tr>
+                <th style="width: 25%;">Nástroj</th>
+                <th style="width: 20%;">Klávesová zkratka</th>
+                <th style="width: 55%;">Funkce a doporučený postup</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Draw Room</strong></td>
+                <td><code style="background:var(--code-bg); padding:2px 6px; border-radius:3px;">R</code></td>
+                <td>Kreslí celé uzamčené místnosti najednou ve tvaru obdélníku. Floorplanner automaticky vytvoří stěny i podlahu.</td>
+            </tr>
+            <tr>
+                <td><strong>Draw Wall</strong></td>
+                <td><code style="background:var(--code-bg); padding:2px 6px; border-radius:3px;">W</code></td>
+                <td>Umožňuje kreslit jednotlivé stěny klikáním. Vhodné pro nepravidelné úhly. Před kreslením nastavte tloušťku zdi (<em>Thickness</em>).</td>
+            </tr>
+            <tr>
+                <td><strong>Place Doors / Windows</strong></td>
+                <td>—</td>
+                <td>Přetahování oken a dveří z knihovny přímo na stěny. Otvory se automaticky vyřežou a přizpůsobí tloušťce zdi.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="intro-box">
+        <strong>Úprava parametrů zdi:</strong> Kliknutím na jakoukoliv nakreslenou zeď otevřete kontextové menu, kde můžete upravit její délku, tloušťku, výšku i barvu/materiál.
+    </div>
+
+    <h2>3. Úprava povrchů, textur a materiálů</h2>
+    <p>Jakmile máte uzavřený obvod místnosti, Floorplanner vytvoří podlahovou plochu. Každý povrch (podlahy, stěny vnitřní i vnější) lze individuálně dekorovat.</p>
+
+    <ol>
+        <li>Klikněte na plochu místnosti nebo konkrétní stěnu.</li>
+        <li>V levém menu vyberte ikonu válečku (<strong>Materials & Colors</strong>).</li>
+        <li>Procházejte kategorie: <em>Wood</em> (dřevo), <em>Tiles</em> (dlažba), <em>Carpet</em> (koberce), nebo vyberte barvu ze vzorníku RAL.</li>
+        <li>Přetáhněte (Drag & Drop) vybraný materiál přímo na podlahu nebo konkrétní část stěny.</li>
+    </ol>
+
+    <div class="prompt-box" style="margin-top: 15px;">
+        <strong>Tip pro rozdělení podlahy v jedné místnosti:</strong><br>
+        Pokud potřebujete v jedné otevřené místnosti (např. obývací pokoj s kuchyní) použít dva různé typy podlahy, použijte nástroj <strong>Draw surface</strong> v menu <em>Build</em>. Nakreslete hranici nové plochy — tím vytvoříte samostatnou zónu pro odlišný materiál bez nutnosti stavět zeď.
+    </div>
+
+    <h2>4. Zařizování interiéru nábytkem</h2>
+    <p>Knihovna Floorplanneru obsahuje desítky tisíc 3D modelů nábytku a dekorací. Vše se nachází pod ikonou kresílka (<strong>Decorate</strong>).</p>
+
+    <p><strong>Práce s objektem:</strong></p>
+    <ul>
+        <li><strong>Přidání:</strong> Vyhledejte nábytek v angličtině (např. <em>sofa</em>, <em>bed</em>, <em>dining table</em>) a přetáhněte jej do místnosti.</li>
+        <li><strong>Kótování a rozměry:</strong> Po kliknutí na předmět zadejte v levém panelu přesné hodnoty pro <em>Width</em> (šířka), <em>Depth</em> (hloubka) a <em>Height</em> (výška).</li>
+        <li><strong>Rotace:</strong> Použijte zakřivené šipky u objektu nebo zadejte úhel ve stupních.</li>
+        <li><strong>Raise (Výška nad podlahou):</strong> Klíčová vlastnost pro zavěšení obrazů, instalaci zrcadel, stropních světel nebo položení dekorací na stůl.</li>
+    </ul>
+
+    <h2>5. Vícepatrové budovy a střechy</h2>
+    <p>Floorplanner podporuje kompletní návrhy vícepodlažních domů v rámci jednoho projektu.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%;">Správa pater (Level Manager)</th>
+                <th style="width: 50%;">Schodiště a propojení</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    V horní liště klikněte na rozevírací menu s názvem aktuálního podlaží (např. <em>Ground Floor</em>). Zvolte <strong>Add level</strong>. Můžete vytvořit zrcadlovou kopii spodního patra nebo začít čisté podlaží s viditelným obrysem spodní stavby.
+                </td>
+                <td>
+                    V sekci <strong>Build > Stairs</strong> vyberte požadovaný typ schodiště a vložte jej do projektu. Vyříznutí otvoru ve stropu spodního patra provedete úpravou konstrukce v horním patře.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="prompt-box">
+        <strong>Tvorba střechy:</strong> Pro vytvoření střechy přidejte nejvyšší podlaží (např. <em>Roof Level</em>). Zvolte nástroj <strong>Roof</strong> a vyberte typ (sedlová, pultová, valbová). Přetáhněte střešní konstrukci přes obvodové zdi a nastavte jejím parametrům sklon (<em>Pitch</em>) a přesah (<em>Eaves</em>).
+    </div>
+
+    <h2>6. Kótování, popisy a technické výkresy</h2>
+    <p>Před exportem do PDF je nutné půdorys doplnit o potřebné technické údaje, rozměry a názvy místností.</p>
+
+    <ul>
+        <li><strong>Automatické kótování:</strong> V pravém menu klikněte na ikonu nastavení zobrazení a zapněte možnost <strong>Show Dimensions</strong>. Aplikace zobrazí vnitřní rozměry všech místností.</li>
+        <li><strong>Manuální kóty (Dimension Tool):</strong> V menu <strong>Build > Draw dimension</strong> klikněte na počáteční bod, potáhněte myší ke koncovému bodu a klikněte znovu. Vhodné pro kótování nábytkových mezer nebo celkových rozměrů budovy.</li>
+        <li><strong>Pojmenování místností:</strong> Klikněte na střed místnosti (kde se zobrazuje m²). V levém panelu vyberte typ místnosti (např. <em>Living Room</em>, <em>Bathroom</em>). Můžete zapnout zobrazení výměry plochy v metrech čtverečních nebo upravit název na český ekvivalent.</li>
+    </ul>
+
+    <h2>7. 3D vizualizace a renderování</h2>
+    <p>Floorplanner umožňuje plynulý přechod mezi 2D výkresem a 3D modelem kdykoliv během práce.</p>
+
+    <ol>
+        <li>V pravém horním rohu přepněte zobrazení z <strong>2D</strong> na <strong>3D</strong>.</li>
+        <li><strong>Pohyb v prostoru:</strong> Levé tlačítko myši otáčí kameru, pravé tlačítko posouvá pohled (Pan), kolečko přibližuje/oddaluje.</li>
+        <li><strong>Nastavení kamery:</strong> Klikněte na ikonu kamery. Zvolte výšku očí (<em>Person view</em>) nebo ptačí perspektivu (<em>Isometric / Top view</em>).</li>
+        <li><strong>Osvětlení a slunce:</strong> V nastavení 3D prostředí lze upravit denní dobu, pozici slunce a intenzitu světel pro realistické stíny.</li>
+    </ol>
+
+    <h2>8. Export dokumentu a tisk do PDF</h2>
+    <p>Export hotového projektu provedete přes tlačítko <strong>Export</strong> v horní liště nabídky.</p>
+
+    <table class="export-table">
+        <thead>
+            <tr>
+                <th style="width: 25%;">Formát exportu</th>
+                <th style="width: 25%;">Rozlišení / Kvalita</th>
+                <th style="width: 50%;">Využití a vlastnosti</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>2D Image / PDF Plan</strong></td>
+                <td>SD (Zdarma) / HD (Kredity)</td>
+                <td>Oficiální výkres v měřítku. Obsahuje kóty, popisy místností, legendu a plošné výměry. Ideální pro stavební úřady nebo klienty.</td>
+            </tr>
+            <tr>
+                <td><strong>3D Render</strong></td>
+                <td>SD / HD / Photorealistic</td>
+                <td>Fotorealistický snímek interiéru s dopočítanými odrazy a světly. Zašle se přímo na váš registrovaný e-mail.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="prompt-box">
+        <strong>Jak uložit tento návod jako PDF?</strong><br>
+        V prohlížeči stiskněte klávesovou zkratku <kbd>Ctrl + P</kbd> (Windows) nebo <kbd>Cmd + P</kbd> (Mac). Jako tiskárnu zvolte <em>Uložit jako PDF</em>. V pokročilém nastavení se ujistěte, že máte zapnutou možnost <em>Grafika na pozadí (Background graphics)</em> a okraje nastaveny na <em>Žádné (None)</em>.
+    </div>
+
+    <div class="footer-note">
+        Návod k aplikaci Floorplanner — Verze 2.4 — Kompletní příručka
+    </div>
+</div>
+
+</body>
+</html>
