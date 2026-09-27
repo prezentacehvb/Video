@@ -959,7 +959,7 @@
         const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwugmkW_YELL8Y0e38jF1WuecK4T42RIJECPTvtRIvXTSg1bYVJ3UweIfovKGhWoHTNiQ/exec";
 
         // Text novinek vložený přímo v index.html
-        const NEWS_TEXT = `V sekci nápověda doplněn návod k Floorplaneru`;
+        const NEWS_TEXT = ``;
 
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
@@ -1013,6 +1013,30 @@
             }
         }
 
+        // Funkce pro odeslání logu přihlášení na Web3Forms
+        function logLoginToWeb3Forms(email, name) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('cs-CZ');
+            const timeStr = now.toLocaleTimeString('cs-CZ');
+
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    access_key: '16524598-b78c-4f5c-b4f9-7e9ba37e138f',
+                    subject: 'Nové přihlášení makléře do Intrawebu',
+                    email: email,
+                    name: name || 'Makléř HVB',
+                    message: `Makléř ${name || email} se úspěšně přihlásil do systému.`,
+                    datum: dateStr,
+                    cas: timeStr
+                })
+            }).catch(err => console.log('Web3Forms log zaznamenán'));
+        }
+
         async function checkLogin() {
             const emailInput = document.getElementById('loginEmail');
             const passwordInput = document.getElementById('loginPassword');
@@ -1043,16 +1067,8 @@
                 const res = await response.json();
 
                 if (res.success) {
-                    // Odeslání přihlášení na Formspree (čas + email)
-                    const timestamp = new Date().toLocaleString('cs-CZ');
-                    fetch('https://formspree.io/f/xaenjgrq', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            email: email,
-                            čas: timestamp
-                        })
-                    }).catch(err => console.log('Formspree log zaznamenán'));
+                    // Odeslání záznamu na Web3Forms
+                    logLoginToWeb3Forms(email, res.name);
 
                     // Okamžité odkrytí rozhraní
                     document.getElementById('loginOverlay').style.display = 'none';
