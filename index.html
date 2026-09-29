@@ -819,7 +819,7 @@
                     <div class="tip-box" id="tipBox">
                         <div class="tip-box-header">3. Tip dne</div>
                         <div class="tip-namitka" id="tipNamitka">Námitka: Nechci RK</div>
-                        <div class="tip-reakce" id="tipReakce">Reakce: Chápu vaše obavy z RK. Naši nabídku lze nastavit i tak, že provizi hradí kupující k vaší ceně. Výsledek? Prodáte bez starostí, kompletní právní servis i inzerci hradíme my a na účtu vám zůstane minimálně o 50 000 Kč více, než při prodeji na vlastní pěst. Rád/a vám to nezávazně vysvětlím osobně. (Uvedená suma zahrnuje přibližnou cenu za právní servis s notářskou úschovou a inzerci, kterou prodávající hradí i při samostatném prodeji)</div>
+                        <div class="tip-reakce" id="tipReakce">Reakce: Chápu vaše obavy z RK. Naši nabídku lze nastavit i tak, že provizi hradí kupující k vaší ceně. Výsledek? Prodáte bez starostí, kompletní právní servis i inzerci hradíme my a na účtu vám zůstane minimálně o 50 000 Kč více, než při prodeji na vlastní pěst. Rád/a vám to nezávazně vysvělím osobně. (Uvedená suma zahrnuje přibližnou cenu za právní servis s notářskou úschovou a inzerci, kterou prodávající hradí i při samostatném prodeji)</div>
                     </div>
                 </div>
 
@@ -1150,7 +1150,7 @@
 
                         resolve({ name: file.name, base64: base64Data });
                     };
-                    img.onerror = () => reject(new Error(`Chyba při načítání souboru ${file.name}`.replace(/\.heic/i, '. (Formát HEIC nemusí být v tomto prohlížeči podporován, použijte prosím JPG).')));
+                    img.onerror = () => reject(new Error(`Chyba při načítání souboru ${file.name}`));
                 };
                 reader.onerror = () => reject(new Error(`Chyba při čtení souboru ${file.name}`));
             });
