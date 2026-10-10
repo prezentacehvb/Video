@@ -190,18 +190,34 @@
             width: 100%;
         }
 
-        .dropdown-menu a {
+        .dropdown-menu a, .dropdown-item-btn {
             display: block;
+            width: 100%;
             padding: 10px 16px;
             text-transform: none;
             font-size: 0.85rem;
             color: #ffffff;
             white-space: nowrap;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
         }
 
-        .dropdown-menu a:hover {
+        .dropdown-menu a:hover, .dropdown-item-btn:hover {
             background: rgba(255, 255, 255, 0.1);
             color: var(--purple-light);
+        }
+
+        .dropdown-submenu {
+            display: none;
+            padding-left: 12px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .dropdown-submenu.show {
+            display: block;
         }
 
         /* Login Overlay */
@@ -707,9 +723,12 @@
             .dropdown-menu.show {
                 display: block;
             }
-            .dropdown-menu a {
+            .dropdown-menu a, .dropdown-item-btn {
                 padding: 10px 0;
                 text-align: center;
+            }
+            .dropdown-submenu {
+                padding-left: 0;
             }
             .hero-section { grid-template-columns: 1fr; padding: 25px 20px; gap: 25px; }
             .cards-section { padding: 25px 20px; }
@@ -777,6 +796,13 @@
                             <li><a href="https://nahlizenidokn.cuzk.gov.cz/default.aspx" target="_blank">Katastr nemovitostí</a></li>
                             <li><a href="https://floorplanner.com/login" target="_blank">Floorplanner</a></li>
                             <li><a href="https://mapy.cz" target="_blank">Mapy</a></li>
+                            <li>
+                                <button class="dropdown-item-btn" onclick="toggleSubmenu(event)">Inženýrské sítě ▾</button>
+                                <div class="dropdown-submenu" id="isSubmenu">
+                                    <a href="https://map.dtm-praha-sck.cz/" target="_blank">Praha</a>
+                                    <a href="https://app.gisonline.cz/chytre-mapy/" target="_blank">ČR</a>
+                                </div>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -959,7 +985,7 @@
         const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwugmkW_YELL8Y0e38jF1WuecK4T42RIJECPTvtRIvXTSg1bYVJ3UweIfovKGhWoHTNiQ/exec";
 
         // Text novinek vložený přímo v index.html
-        const NEWS_TEXT = ``;
+        const NEWS_TEXT = `V sekci Oblíbené doplněno vyhledávání IS - Inženýrské sítě`;
 
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
@@ -975,11 +1001,20 @@
             dropdownMenu.classList.toggle('show');
         }
 
+        // Funkce pro přepínání podnabídky Inženýrské sítě
+        function toggleSubmenu(event) {
+            event.stopPropagation();
+            const submenu = document.getElementById('isSubmenu');
+            submenu.classList.toggle('show');
+        }
+
         // Zavření dropdownu při kliknutí mimo
         window.addEventListener('click', (event) => {
             const dropdownMenu = document.getElementById('favoritesDropdown');
             if (dropdownMenu && dropdownMenu.classList.contains('show')) {
                 dropdownMenu.classList.remove('show');
+                const submenu = document.getElementById('isSubmenu');
+                if (submenu) submenu.classList.remove('show');
             }
         });
 
