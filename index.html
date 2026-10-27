@@ -174,7 +174,7 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 8px;
-            min-width: 200px;
+            min-width: 220px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.5);
             z-index: 1000;
             margin-top: 10px;
@@ -214,6 +214,8 @@
             display: none;
             padding-left: 12px;
             background: rgba(0, 0, 0, 0.2);
+            max-height: 300px;
+            overflow-y: auto;
         }
 
         .dropdown-submenu.show {
@@ -793,14 +795,40 @@
                     <li class="dropdown">
                         <button class="dropdown-btn" onclick="toggleDropdown(event)">Oblíbené ▾</button>
                         <ul class="dropdown-menu" id="favoritesDropdown">
-                            <li><a href="https://nahlizenidokn.cuzk.gov.cz/default.aspx" target="_blank">Katastr nemovitostí</a></li>
+                            <li>
+                                <button class="dropdown-item-btn" onclick="toggleSubmenu(event, 'knSubmenu')">Katastr nemovitostí ▾</button>
+                                <div class="dropdown-submenu" id="knSubmenu">
+                                    <a href="https://nahlizenidokn.cuzk.gov.cz/default.aspx" target="_blank">Nahlížení</a>
+                                    <a href="https://katastr.cuzk.gov.cz/LoginDPWEB/login/Login.do?PAR_DestinateApplication=DalkovyPristup&PAR_RequestedPage=" target="_blank">Dálkový přístup</a>
+                                </div>
+                            </li>
                             <li><a href="https://floorplanner.com/login" target="_blank">Floorplanner</a></li>
                             <li><a href="https://mapy.cz" target="_blank">Mapy</a></li>
                             <li>
-                                <button class="dropdown-item-btn" onclick="toggleSubmenu(event)">Inženýrské sítě ▾</button>
+                                <button class="dropdown-item-btn" onclick="toggleSubmenu(event, 'isSubmenu')">Inženýrské sítě ▾</button>
                                 <div class="dropdown-submenu" id="isSubmenu">
                                     <a href="https://map.dtm-praha-sck.cz/" target="_blank">Praha</a>
                                     <a href="https://app.gisonline.cz/chytre-mapy/" target="_blank">ČR</a>
+                                </div>
+                            </li>
+                            <li>
+                                <button class="dropdown-item-btn" onclick="toggleSubmenu(event, 'upSubmenu')">Územní plány ▾</button>
+                                <div class="dropdown-submenu" id="upSubmenu">
+									<a href="https://uzemniplanovani.gov.cz/" target="_blank">Národní geoportál</a>
+                                    <a href="https://plan.praha.eu/" target="_blank">Praha</a>
+                                    <a href="https://geoportal.kraj-jihocesky.gov.cz/portal/up/obce" target="_blank">Jihočeský kraj</a>
+                                    <a href="https://uap.kr-kralovehradecky.cz/" target="_blank">Královéhradecký kraj</a>
+                                    <a href="https://dtm.kr-karlovarsky.cz/-/public#z=10&x=-854604&y=-1015607" target="_blank">Karlovarský kraj</a>
+                                    <a href="https://maps.kr-vysocina.cz/pupo_pfa/apps/experiencebuilder/experience/?id=5fdc126f04c749c5b2a7a8f892c6a93e" target="_blank">Kraj Vysočina</a>
+                                    <a href="https://maparcgis.kraj-lbc.cz/portal/apps/experiencebuilder/experience/?id=447246bc061e40cc9d891a93caba5993" target="_blank">Liberecký kraj</a>
+                                    <a href="https://www.msk.cz/temata/uzemni_plan/index.html" target="_blank">Moravskoslezský kraj</a>
+                                    <a href="https://uap.olkraj.cz/dmvs-gateway/" target="_blank">Olomoucký kraj</a>
+                                    <a href="https://www.pardubickykraj.cz/uzemni-plany-mest-a-obci" target="_blank">Pardubický kraj</a>
+                                    <a href="https://www.plzensky-kraj.cz/uzemni-planovani" target="_blank">Plzeňský kraj</a>
+                                    <a href="https://gis.kr-stredocesky.cz/js/reg_up/" target="_blank">Středočeský kraj</a>
+                                    <a href="https://geoportal.kr-ustecky.cz/portal/up/obce" target="_blank">Ústecký kraj</a>
+                                    <a href="https://juapzk.geostore.cz/portal/Default.aspx" target="_blank">Zlínský kraj</a>
+                                    <a href="https://mapy.jmk.cz/geoportal/home/Dotacni_UP_ukonceni_provozu.aspx" target="_blank">Jihomoravský kraj</a>
                                 </div>
                             </li>
                         </ul>
@@ -985,7 +1013,7 @@
         const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwugmkW_YELL8Y0e38jF1WuecK4T42RIJECPTvtRIvXTSg1bYVJ3UweIfovKGhWoHTNiQ/exec";
 
         // Text novinek vložený přímo v index.html
-        const NEWS_TEXT = `V sekci Oblíbené doplněno vyhledávání IS - Inženýrské sítě`;
+        const NEWS_TEXT = `V sekci Oblíbené doplněny Územní plány ČR`;
 
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
@@ -1001,11 +1029,22 @@
             dropdownMenu.classList.toggle('show');
         }
 
-        // Funkce pro přepínání podnabídky Inženýrské sítě
-        function toggleSubmenu(event) {
+        // Funkce pro přepínání konkrétních podnabídek
+        function toggleSubmenu(event, submenuId) {
             event.stopPropagation();
-            const submenu = document.getElementById('isSubmenu');
-            submenu.classList.toggle('show');
+            const targetSubmenu = document.getElementById(submenuId);
+            
+            // Zavřít ostatní podnabídky v menu
+            const allSubmenus = document.querySelectorAll('.dropdown-submenu');
+            allSubmenus.forEach(sub => {
+                if (sub.id !== submenuId) {
+                    sub.classList.remove('show');
+                }
+            });
+
+            if (targetSubmenu) {
+                targetSubmenu.classList.toggle('show');
+            }
         }
 
         // Zavření dropdownu při kliknutí mimo
@@ -1013,8 +1052,8 @@
             const dropdownMenu = document.getElementById('favoritesDropdown');
             if (dropdownMenu && dropdownMenu.classList.contains('show')) {
                 dropdownMenu.classList.remove('show');
-                const submenu = document.getElementById('isSubmenu');
-                if (submenu) submenu.classList.remove('show');
+                const submenus = document.querySelectorAll('.dropdown-submenu');
+                submenus.forEach(sub => sub.classList.remove('show'));
             }
         });
 
