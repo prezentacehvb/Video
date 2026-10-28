@@ -328,19 +328,48 @@
             user-select: none;
         }
 
-        /* Hero Section */
+        /* Hero Section (Main Frame Container) */
         .hero-section {
             padding: 30px 30px;
+            height: 620px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        /* Mřížky obsahu ve frame */
+        .intro-frame-grid, .default-frame-grid {
             display: grid;
             grid-template-columns: 0.85fr 1.15fr;
             gap: 30px;
             align-items: stretch;
+            width: 100%;
+            height: 100%;
+            flex-grow: 1;
         }
 
-        .hero-left-column {
+        /* Container pro vnořené iFrame stránky z fotoodkazů */
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            display: none;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .hero-left-column, .intro-left-column {
             display: flex;
             flex-direction: column;
             gap: 15px;
+            justify-content: space-between;
         }
 
         .hero-title-container {
@@ -389,6 +418,128 @@
             text-transform: uppercase;
             font-weight: 600;
             text-align: left;
+        }
+
+        /* SEZNÁMENÍ S PORTÁLEM (EDITOVATELNÝ BLOK DLE FRAME 02) */
+        .guide-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-left: 4px solid var(--purple-light);
+            border-radius: 16px;
+            padding: 18px 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .guide-header {
+            color: var(--purple-light);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+        }
+
+        .guide-content {
+            font-size: 0.83rem;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.9);
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .guide-section {
+            margin-bottom: 12px;
+        }
+
+        .guide-section-title {
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .guide-section ul {
+            margin-left: 18px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .guide-section li {
+            margin-bottom: 3px;
+        }
+
+        /* Pravé okno: Rychlé přístupy */
+        .action-panel {
+            background: #ffffff;
+            color: var(--text-dark);
+            border-radius: 24px;
+            padding: 25px 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .action-panel h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--bg-purple);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .action-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-align: left;
+        }
+
+        /* Rovnoměrná mřížka rychlých přístupů */
+        .quick-grid-equal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+            flex-grow: 1;
+            align-content: center;
+        }
+
+        .quick-card-equal {
+            background: #f4f4f6;
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            padding: 16px 14px;
+            text-decoration: none;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .quick-card-equal:hover {
+            background: #ede7f6;
+            border-color: var(--purple-accent);
+            color: var(--bg-purple);
+            transform: translateY(-2px);
+        }
+
+        .quick-icon-equal {
+            font-size: 1.3rem;
+            line-height: 1;
         }
 
         /* Section 1: Návod k použití */
@@ -635,6 +786,7 @@
             flex: 1 1 150px;
             max-width: 185px;
             min-width: 130px;
+            cursor: pointer;
         }
 
         .help-card:hover {
@@ -732,9 +884,12 @@
             .dropdown-submenu {
                 padding-left: 0;
             }
-            .hero-section { grid-template-columns: 1fr; padding: 25px 20px; gap: 25px; }
+            .hero-section { height: auto; padding: 25px 20px; gap: 25px; }
+            .intro-frame-grid, .default-frame-grid { grid-template-columns: 1fr; gap: 20px; }
+            .quick-grid-equal { grid-template-columns: 1fr; }
             .cards-section { padding: 25px 20px; }
             .form-panel { padding: 20px; }
+            .iframe-container { height: 550px; }
         }
 
         @media (max-width: 550px) {
@@ -772,7 +927,7 @@
     <div class="page-wrapper">
         <div class="content-container blurred" id="mainCard">
             <!-- Header -->
-            <header class="top-navbar">
+            <header class="top-navbar" id="topNavbar">
                 <div class="brand-logo">
                     <img src="HVBlogo.png" alt="HVB Logo">
                     <div class="brand-logo-text">
@@ -787,6 +942,8 @@
                 </button>
 
                 <ul class="nav-links" id="navLinks">
+                    <li><a href="javascript:void(0)" onclick="showIntroFrame()">Úvod</a></li>
+                    <li><a href="javascript:void(0)" onclick="showVideoFrame()">Video</a></li>
                     <li><a href="https://makleri.hvbreal.cz/" target="_blank">Makléři</a></li>
                     <li><a href="https://hvbreal.cz/kontakty/makleri" target="_blank">WEB RK</a></li>
                     <li><a href="https://docs.google.com/spreadsheets/d/169G2ZBV1z4oAbq956Brbby8kaYqNFGdXlIxemXjMbCU/edit?gid=0#gid=0" target="_blank">Evidence zakázek</a></li>
@@ -800,6 +957,7 @@
                                 <div class="dropdown-submenu" id="knSubmenu">
                                     <a href="https://nahlizenidokn.cuzk.gov.cz/default.aspx" target="_blank">Nahlížení</a>
                                     <a href="https://katastr.cuzk.gov.cz/LoginDPWEB/login/Login.do?PAR_DestinateApplication=DalkovyPristup&PAR_RequestedPage=" target="_blank">Dálkový přístup</a>
+									<a href="https://n.strazcekatastru.cz/prihlaseni?backlink=xfn0a" target="_blank">Strážce katastru</a>
                                 </div>
                             </li>
                             <li><a href="https://floorplanner.com/login" target="_blank">Floorplanner</a></li>
@@ -814,7 +972,7 @@
                             <li>
                                 <button class="dropdown-item-btn" onclick="toggleSubmenu(event, 'upSubmenu')">Územní plány ▾</button>
                                 <div class="dropdown-submenu" id="upSubmenu">
-									<a href="https://uzemniplanovani.gov.cz/" target="_blank">Národní geoportál</a>
+                                    <a href="https://uzemniplanovani.gov.cz/" target="_blank">Národní geoportál</a>
                                     <a href="https://plan.praha.eu/" target="_blank">Praha</a>
                                     <a href="https://geoportal.kraj-jihocesky.gov.cz/portal/up/obce" target="_blank">Jihočeský kraj</a>
                                     <a href="https://uap.kr-kralovehradecky.cz/" target="_blank">Královéhradecký kraj</a>
@@ -823,7 +981,7 @@
                                     <a href="https://maparcgis.kraj-lbc.cz/portal/apps/experiencebuilder/experience/?id=447246bc061e40cc9d891a93caba5993" target="_blank">Liberecký kraj</a>
                                     <a href="https://www.msk.cz/temata/uzemni_plan/index.html" target="_blank">Moravskoslezský kraj</a>
                                     <a href="https://uap.olkraj.cz/dmvs-gateway/" target="_blank">Olomoucký kraj</a>
-                                    <a href="https://www.pardubickykraj.cz/uzemni-plany-mest-a-obci" target="_blank">Pardubický kraj</a>
+                                    <a href="https://www.pardubickykraj.cz/uzemni-plany-mest-a-obci" target="_blank">Pardubickykraj</a>
                                     <a href="https://www.plzensky-kraj.cz/uzemni-planovani" target="_blank">Plzeňský kraj</a>
                                     <a href="https://gis.kr-stredocesky.cz/js/reg_up/" target="_blank">Středočeský kraj</a>
                                     <a href="https://geoportal.kr-ustecky.cz/portal/up/obce" target="_blank">Ústecký kraj</a>
@@ -836,84 +994,191 @@
                 </ul>
             </header>
 
-            <!-- Hero Section -->
-            <section class="hero-section">
-                <!-- Levé sloupce (1. Návod k použití, 2. Nápověda, 3. Tip dne) -->
-                <div class="hero-left-column">
-                    <div>
-                        <div class="hero-title-container">
-                            <h1 class="hero-title"><span style="color: var(--purple-light);">HVB</span> REAL ESTATE</h1>
-                            <div class="hero-title-subline">
-                                <span class="vime">VÍME</span>&nbsp;<span class="jak">JAK.</span>
+            <!-- Hero Section (FRAME Container) -->
+            <section class="hero-section" id="mainFrame">
+                
+                <!-- 1. ÚVODNÍ FRAME (OBSAH DLE FRAME 02 - VÝCHOZÍ STAV) -->
+                <div class="intro-frame-grid" id="introFrameContent">
+                    <!-- LEVÝ SLOUPEC: Název & Průvodce portálem -->
+                    <div class="intro-left-column">
+                        <div>
+                            <div class="hero-title-container">
+                                <h1 class="hero-title"><span style="color: var(--purple-light);">HVB</span> REAL ESTATE</h1>
+                                <div class="hero-title-subline">
+                                    <span style="color: #fff;">VÍME</span>&nbsp;<span style="color: var(--purple-light);">JAK.</span>
+                                </div>
+                            </div>
+                            <div class="hero-subtitle">Vítejte v interním portálu RK</div>
+                        </div>
+
+                        <!-- SEZNÁMENÍ S PORTÁLEM (EDITOVATELNÝ TEXT) -->
+                        <div class="guide-box">
+                            <div class="guide-header">
+                                🧭 Průvodce portálem
+                            </div>
+                            <div class="guide-content">
+                                <div class="guide-section">
+                                    <div class="guide-section-title">🎬 Prezentace & Video</div>
+                                    <ul>
+                                        <li><strong>Generátor videí:</strong> Automatická tvorba videoprezentací z fotografií nemovitosti.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="guide-section">
+                                    <div class="guide-section-title">📋 Práce se zakázkami & Komunikace</div>
+                                    <ul>
+                                        <li><strong>Evidence zakázek:</strong> Kompletní přehled a stav aktivních nabídek.</li>
+                                        <li><strong>HVB Poptávky:</strong> Přímý kanál pro distribuci poptávek klientů.</li>
+                                        <li><strong>Email RK:</strong> Přístup do služebního webmailu HVB.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="guide-section">
+                                    <div class="guide-section-title">📚 Užitečné nástroje & Nápověda</div>
+                                    <ul>
+                                        <li><strong>Oblíbené:</strong> Nahlížení a Dálkový přístup do Katastru nemovitostí, Inženýrské sítě a Územní plány všech krajů ČR.</li>
+                                        <li><strong>Návody:</strong> Vzdělávací minima (realitní, foto, ocenění) a návody k systémům DigiSign, Poski i Floorplanner.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                        <div class="hero-subtitle">Generátor videoprezentací nemovitostí</div>
                     </div>
 
-                    <!-- 1. Návod k použití -->
-                    <div class="instruction-box">
-                        <strong>1. Návod k použití a pravidla pro vložení fotografií:</strong>
-                        <ul>
-                            <li>Fotografie připravte do jedné složky.</li>
-                            <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
-                            <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
-                            <li>Podporovány jsou klasické formáty i fotografie typu HEIC / HEIF z iPhonu.</li>
-                            <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
-                            <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
-                        </ul>
-                    </div>
+                    <!-- PRAVÝ SLOUPEC: Rychlé přístupy -->
+                    <div class="action-panel">
+                        <div>
+                            <h2>Rychlé přístupy</h2>
+                            <p class="action-subtitle">Vyberte požadovanou sekci pro přímý přechod</p>
+                        </div>
 
-                    <!-- 2. Nápověda -->
-                    <div class="warning-box">
-                        <strong>2. Nápověda:</strong>
-                        Formát videa je generován dle formátu první fotografie. Optimální je fotografovat v širokoúhlém režimu 16:9.
-                    </div>
+                        <div class="quick-grid-equal">
+                            <a onclick="showVideoFrame()" class="quick-card-equal">
+                                <span class="quick-icon-equal">🎬</span>
+                                <span>Generátor videí</span>
+                            </a>
 
-                    <!-- 3. Tip dne (Statický výchozí kód pro okamžité načtení bez čekání) -->
-                    <div class="tip-box" id="tipBox">
-                        <div class="tip-box-header">3. Tip dne</div>
-                        <div class="tip-namitka" id="tipNamitka">Námitka: Nechci RK</div>
-                        <div class="tip-reakce" id="tipReakce">Reakce: Chápu vaše obavy z RK. Naši nabídku lze nastavit i tak, že provizi hradí kupující k vaší ceně. Výsledek? Prodáte bez starostí, kompletní právní servis i inzerci hradíme my a na účtu vám zůstane minimálně o 50 000 Kč více, než při prodeji na vlastní pěst. Rád/a vám to nezávazně vysvětlím osobně. (Uvedená suma zahrnuje přibližnou cenu za právní servis s notářskou úschovou a inzerci, kterou prodávající hradí i při samostatném prodeji)</div>
+                            <a href="https://docs.google.com/spreadsheets/d/169G2ZBV1z4oAbq956Brbby8kaYqNFGdXlIxemXjMbCU/edit?gid=0#gid=0" target="_blank" class="quick-card-equal">
+                                <span class="quick-icon-equal">📊</span>
+                                <span>Evidence zakázek</span>
+                            </a>
+
+                            <a href="https://web.telegram.org/k/#-5465557150" target="_blank" class="quick-card-equal">
+                                <span class="quick-icon-equal">💬</span>
+                                <span>HVB Poptávky</span>
+                            </a>
+
+                            <a href="https://nahlizenidokn.cuzk.gov.cz/default.aspx" target="_blank" class="quick-card-equal">
+                                <span class="quick-icon-equal">🏛️</span>
+                                <span>Katastr nemovitostí</span>
+                            </a>
+
+                            <a href="https://webmail.hvbreal.cz/?_task=mail&_mbox=INBOX" target="_blank" class="quick-card-equal">
+                                <span class="quick-icon-equal">✉️</span>
+                                <span>Služební e-mail</span>
+                            </a>
+
+                            <a href="https://makleri.hvbreal.cz/" target="_blank" class="quick-card-equal">
+                                <span class="quick-icon-equal">👥</span>
+                                <span>Seznam makléřů</span>
+                            </a>
+
+                            <a href="https://floorplanner.com/login" target="_blank" class="quick-card-equal">
+                                <span class="quick-icon-equal">📐</span>
+                                <span>Floorplanner 3D</span>
+                            </a>
+
+                            <a href="https://hvbreal.cz/kontakty/makleri" target="_blank" class="quick-card-equal">
+                                <span class="quick-icon-equal">🌐</span>
+                                <span>Web RK</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Form Panel (Pravé sloupce) -->
-                <div class="form-panel">
-                    <h2>Vytvořit prezentaci</h2>
-                    <form id="videoForm" onsubmit="sendData(event)">
-                        <div class="form-grid">
-                            <div class="input-group">
-                                <label for="MAKLER_JMENO">Jméno makléře</label>
-                                <input type="text" id="MAKLER_JMENO" name="MAKLER_JMENO" placeholder="František Procházka" required>
+                <!-- 2. FORMULÁŘOVÝ FRAME PRO TVORBU VIDEA -->
+                <div class="default-frame-grid" id="defaultFrameContent" style="display: none;">
+                    <!-- Levé sloupce (1. Návod k použití, 2. Nápověda, 3. Tip dne) -->
+                    <div class="hero-left-column">
+                        <div>
+                            <div class="hero-title-container">
+                                <h1 class="hero-title"><span style="color: var(--purple-light);">HVB</span> REAL ESTATE</h1>
+                                <div class="hero-title-subline">
+                                    <span class="vime">VÍME</span>&nbsp;<span class="jak">JAK.</span>
+                                </div>
                             </div>
-                            <div class="input-group">
-                                <label for="MAKLER_EMAIL">E-mail pro doručení</label>
-                                <input type="email" id="MAKLER_EMAIL" name="MAKLER_EMAIL" readonly required>
-                            </div>
-                            <div class="input-group">
-                                <label for="TEXT_TOP">Název nemovitosti</label>
-                                <input type="text" id="TEXT_TOP" name="TEXT_TOP" placeholder="RD 5+kk 100 m², pozemek 400 m²" required>
-                            </div>
-                            <div class="input-group">
-                                <label for="MAKLER_TELEFON">Telefon</label>
-                                <input type="tel" id="MAKLER_TELEFON" name="MAKLER_TELEFON" placeholder="123 456 789" required>
-                            </div>
-                            <div class="input-group full-width">
-                                <label for="TEXT_BOTTOM">Lokalita</label>
-                                <input type="text" id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder="Český Brod, okr. Kolín" required>
-                            </div>
-                            <div class="input-group full-width">
-                                <label for="TEXT_KOMENTAR">Doplňující informace o nemovitosti (komentář)</label>
-                                <textarea id="TEXT_KOMENTAR" name="TEXT_KOMENTAR" rows="3" placeholder="Zde můžete uvést doplňující informace ke komentáři..."></textarea>
-                            </div>
+                            <div class="hero-subtitle">Generátor videoprezentací nemovitostí</div>
                         </div>
 
-                        <div class="file-input-container">
-                            <input type="file" id="images" name="images" multiple accept="image/*,.heic,.heif" required>
+                        <!-- 1. Návod k použití -->
+                        <div class="instruction-box">
+                            <strong>1. Návod k použití a pravidla pro vložení fotografií:</strong>
+                            <ul>
+                                <li>Fotografie připravte do jedné složky.</li>
+                                <li>Vyplňte údaje a vložte maximálně 15 fotografií.</li>
+                                <li>Fotografie musí být orientovány na šířku, jiný formát bude vyřazen.</li>
+                                <li>Podporovány jsou klasické formáty i fotografie typu HEIC / HEIF z iPhonu.</li>
+                                <li>Očíslované fotografie se zobrazí ve videu vzestupně, ostatní náhodně.</li>
+                                <li>Odkaz ke stažení videa obdržíte do e-mailu v rozmezí 60 minut.</li>
+                            </ul>
                         </div>
 
-                        <button type="submit" id="submitBtn" class="submit-btn">VYTVOŘIT VIDEO</button>
-                    </form>
+                        <!-- 2. Nápověda -->
+                        <div class="warning-box">
+                            <strong>2. Nápověda:</strong>
+                            Formát videa je generován dle formátu první fotografie. Optimální je fotografovat v širokoúhlém režimu 16:9.
+                        </div>
+
+                        <!-- 3. Tip dne -->
+                        <div class="tip-box" id="tipBox">
+                            <div class="tip-box-header">3. Tip dne</div>
+                            <div class="tip-namitka" id="tipNamitka">Námitka: Nechci RK</div>
+                            <div class="tip-reakce" id="tipReakce">Reakce: Chápu vaše obavy z RK. Naši nabídku lze nastavit i tak, že provizi hradí kupující k vaší ceně. Výsledek? Prodáte bez starostí, kompletní právní servis i inzerci hradíme my a na účtu vám zůstane minimálně o 50 000 Kč více, než při prodeji na vlastní pěst. Rád/a vám to nezávazně vysvětlím osobně. (Uvedená suma zahrnuje přibližnou cenu za právní servis s notářskou úschovou a inzerci, kterou prodávající hradí i při samostatném prodeji)</div>
+                        </div>
+                    </div>
+
+                    <!-- Form Panel (Pravý sloupec) -->
+                    <div class="form-panel">
+                        <h2>Vytvořit prezentaci</h2>
+                        <form id="videoForm" onsubmit="sendData(event)">
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label for="MAKLER_JMENO">Jméno makléře</label>
+                                    <input type="text" id="MAKLER_JMENO" name="MAKLER_JMENO" placeholder="František Procházka" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="MAKLER_EMAIL">E-mail pro doručení</label>
+                                    <input type="email" id="MAKLER_EMAIL" name="MAKLER_EMAIL" readonly required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="TEXT_TOP">Název nemovitosti</label>
+                                    <input type="text" id="TEXT_TOP" name="TEXT_TOP" placeholder="RD 5+kk 100 m², pozemek 400 m²" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="MAKLER_TELEFON">Telefon</label>
+                                    <input type="tel" id="MAKLER_TELEFON" name="MAKLER_TELEFON" placeholder="123 456 789" required>
+                                </div>
+                                <div class="input-group full-width">
+                                    <label for="TEXT_BOTTOM">Lokalita</label>
+                                    <input type="text" id="TEXT_BOTTOM" name="TEXT_BOTTOM" placeholder="Český Brod, okr. Kolín" required>
+                                </div>
+                                <div class="input-group full-width">
+                                    <label for="TEXT_KOMENTAR">Doplňující informace o nemovitosti (komentář)</label>
+                                    <textarea id="TEXT_KOMENTAR" name="TEXT_KOMENTAR" rows="3" placeholder="Zde můžete uvést doplňující informace ke komentáři..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="file-input-container">
+                                <input type="file" id="images" name="images" multiple accept="image/*,.heic,.heif" required>
+                            </div>
+
+                            <button type="submit" id="submitBtn" class="submit-btn">VYTVOŘIT VIDEO</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 3. Dynamické iFrame rozhraní pro fotoodkazy -->
+                <div class="iframe-container" id="iframeContainer">
+                    <iframe id="frameIframe" src="about:blank"></iframe>
                 </div>
             </section>
 
@@ -921,7 +1186,7 @@
             <section class="cards-section">
                 <div class="cards-section-title">Nápověda a užitečné návody</div>
                 <div class="cards-grid">
-                    <a href="Realmin.html" target="_blank" class="help-card">
+                    <a onclick="loadInFrame('Realmin.html')" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" alt="Realitní minimum" loading="lazy">
                         </div>
@@ -931,7 +1196,7 @@
                         </div>
                     </a>
 
-                    <a href="Fotohelp.html" target="_blank" class="help-card">
+                    <a onclick="loadInFrame('Fotohelp.html')" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=600&q=80" alt="Fotografické minimum" loading="lazy">
                         </div>
@@ -941,7 +1206,7 @@
                         </div>
                     </a>
                     
-                    <a href="Upravafoto.html" target="_blank" class="help-card">
+                    <a onclick="loadInFrame('Upravafoto.html')" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" alt="Úprava fotografie" loading="lazy">
                         </div>
@@ -951,7 +1216,7 @@
                         </div>
                     </a>
 
-                    <a href="Popisnem.html" target="_blank" class="help-card">
+                    <a onclick="loadInFrame('Popisnem.html')" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" alt="Popis nemovitosti" loading="lazy">
                         </div>
@@ -961,7 +1226,7 @@
                         </div>
                     </a>
 
-                    <a href="Ocennem.html" target="_blank" class="help-card">
+                    <a onclick="loadInFrame('Ocennem.html')" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=600&q=80" alt="Ocenění nemovitosti" loading="lazy">
                         </div>
@@ -971,7 +1236,7 @@
                         </div>
                     </a>
 
-                    <a href="Signhelp.html" target="_blank" class="help-card">
+                    <a onclick="loadInFrame('Signhelp.html')" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80" alt="Digitální podpis" loading="lazy">
                         </div>
@@ -981,7 +1246,7 @@
                         </div>
                     </a>
 
-                    <a href="Poskihelp.html" target="_blank" class="help-card">
+                    <a onclick="loadInFrame('Poskihelp.html')" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80" alt="Poski" loading="lazy">
                         </div>
@@ -991,7 +1256,7 @@
                         </div>
                     </a>
 
-                    <a href="Floorplanner.html" target="_blank" class="help-card">
+                    <a onclick="loadInFrame('Floorplanner.html')" class="help-card">
                         <div class="help-card-img-wrapper">
                             <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=600&q=80" alt="Floorplanner 3D půdorys" loading="lazy">
                         </div>
@@ -1004,7 +1269,7 @@
             </section>
 
             <footer>
-                <span style="color: #F0E6FF;">© 2026 LM HVB VIDEO | HVB REAL ESTATE</span>
+                <span style="color: #F0E6FF;">© 2026 | HVB REAL ESTATE</span>
             </footer>
         </div>
     </div>
@@ -1013,7 +1278,7 @@
         const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwugmkW_YELL8Y0e38jF1WuecK4T42RIJECPTvtRIvXTSg1bYVJ3UweIfovKGhWoHTNiQ/exec";
 
         // Text novinek vložený přímo v index.html
-        const NEWS_TEXT = `V sekci Oblíbené doplněny Územní plány ČR`;
+        const NEWS_TEXT = `Aktualizace vstupu do portálu, v sekci Oblíbené doplněny Územní plány ČR, Strážce katastru.`;
 
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
@@ -1021,6 +1286,38 @@
         hamburgerBtn.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
+
+        // Funkce pro zobrazení Úvodního frame
+        function showIntroFrame() {
+            document.getElementById('introFrameContent').style.display = 'grid';
+            document.getElementById('defaultFrameContent').style.display = 'none';
+            document.getElementById('iframeContainer').style.display = 'none';
+            document.getElementById('frameIframe').src = 'about:blank';
+            document.getElementById('topNavbar').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Funkce pro zobrazení Video generátoru
+        function showVideoFrame() {
+            document.getElementById('introFrameContent').style.display = 'none';
+            document.getElementById('defaultFrameContent').style.display = 'grid';
+            document.getElementById('iframeContainer').style.display = 'none';
+            document.getElementById('frameIframe').src = 'about:blank';
+            document.getElementById('topNavbar').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Funkce pro načtení spodních fotoodkazů do frame
+        function loadInFrame(url) {
+            document.getElementById('introFrameContent').style.display = 'none';
+            document.getElementById('defaultFrameContent').style.display = 'none';
+            const iframeContainer = document.getElementById('iframeContainer');
+            const iframe = document.getElementById('frameIframe');
+            
+            iframe.src = url;
+            iframeContainer.style.display = 'block';
+            
+            // Plynulý posun na horní lištu, aby zůstaly horní odkazy stále viditelné
+            document.getElementById('topNavbar').scrollIntoView({ behavior: 'smooth' });
+        }
 
         // Funkce pro přepínání rozbalovací nabídky Oblíbené
         function toggleDropdown(event) {
