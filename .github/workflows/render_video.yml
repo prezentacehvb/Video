@@ -29,11 +29,22 @@ jobs:
           pip install -r requirements.txt
           pip install --upgrade edge-tts  # <--- Aktualizace edge-tts na nejnovější verzi kvůli chybě 403
 
-      - name: Install system dependencies
+      - name: Install system dependencies (Fast & Reliable)
         run: |
+          # 1. Oprava pomalého Azure zrcadla Ubuntu
+          sudo sed -i 's/azure.archive.ubuntu.com/archive.ubuntu.com/g' /etc/apt/sources.list.d/ubuntu.sources || true
+          sudo sed -i 's/azure.archive.ubuntu.com/archive.ubuntu.com/g' /etc/apt/sources.list || true
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ffmpeg fonts-liberation imagemagick
+          
+          # 2. Instalace fontů a ImageMagicku bez zbytečného balastu
+          sudo apt-get install -y --no-install-recommends fonts-liberation imagemagick
           sudo sed -i 's/domain="path" rights="none" pattern="@\*"/domain="path" rights="read|write" pattern="@*"/g' /etc/ImageMagick-6/policy.xml
+
+          # 3. Stažení hotového statického FFmpeg (místo pomalého apt-get install ffmpeg)
+          wget -q https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+          tar -xf ffmpeg-release-amd64-static.tar.xz
+          sudo mv ffmpeg-*-amd64-static/ffmpeg /usr/local/bin/
+          sudo mv ffmpeg-*-amd64-static/ffprobe /usr/local/bin/
 
       - name: Write job payload
         env:
@@ -52,4 +63,5 @@ jobs:
         if: failure()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python notify.py --status failed --job job.json
         run: python notify.py --status failed --job job.json
