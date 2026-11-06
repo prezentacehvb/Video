@@ -63,5 +63,4 @@ jobs:
         if: failure()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python notify.py --status failed --job job.json
-        run: python notify.py --status failed --job job.json
+        run: python notify.py --status failed --job job.json 
