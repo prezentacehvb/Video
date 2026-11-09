@@ -48,8 +48,18 @@ jobs:
 
       - name: Write job payload
         env:
-          JOB_PAYLOAD: ${{ toJson(github.event.client_payload) }}
-        run: printf '%s' "$JOB_PAYLOAD" > job.json
+          CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
+        run: |
+          python -c "
+          import os, json
+          payload_str = os.environ.get('CLIENT_PAYLOAD', '{}')
+          try:
+              data = json.loads(payload_str) if payload_str and payload_str != 'null' else {}
+          except Exception:
+              data = {}
+          with open('job.json', 'w', encoding='utf-8') as f:
+              json.dump(data, f, ensure_ascii=False, indent=2)
+          "
 
       - name: Validate job payload
         run: python -c "import json; json.load(open('job.json', encoding='utf-8')); print('job.json OK')"
@@ -63,4 +73,9 @@ jobs:
         if: failure()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python notify.py --status failed --job job.json 
+        run: |
+          if [ -f "job.json" ]; then
+            python notify.py --status failed --job job.json
+          else
+            python notify.py --status failed
+          fi
