@@ -27,7 +27,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install --upgrade edge-tts  # <--- Aktualizace edge-tts na nejnovější verzi kvůli chybě 403
+          pip install --upgrade edge-tts
 
       - name: Install system dependencies (Fast & Reliable)
         run: |
@@ -36,11 +36,13 @@ jobs:
           sudo sed -i 's/azure.archive.ubuntu.com/archive.ubuntu.com/g' /etc/apt/sources.list || true
           sudo apt-get update
           
-          # 2. Instalace fontů a ImageMagicku bez zbytečného balastu
+          # 2. Instalace fontů a ImageMagicku
           sudo apt-get install -y --no-install-recommends fonts-liberation imagemagick
-          sudo sed -i 's/domain="path" rights="none" pattern="@\*"/domain="path" rights="read|write" pattern="@*"/g' /etc/ImageMagick-6/policy.xml
+          
+          # Dynamická oprava policy.xml pro jakoukoliv verzi ImageMagicku (ImageMagick-6 i ImageMagick-7)
+          sudo sed -i 's/domain="path" rights="none" pattern="@\*"/domain="path" rights="read|write" pattern="@*"/g' /etc/ImageMagick-*/policy.xml || true
 
-          # 3. Stažení hotového statického FFmpeg (místo pomalého apt-get install ffmpeg)
+          # 3. Stažení hotového statického FFmpeg
           wget -q https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
           tar -xf ffmpeg-release-amd64-static.tar.xz
           sudo mv ffmpeg-*-amd64-static/ffmpeg /usr/local/bin/
@@ -74,8 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ -f "job.json" ]; then
-            python notify.py --status failed --job job.json
-          else
-            python notify.py --status failed
+          if [ ! -f "job.json" ]; then
+            echo "{}" > job.json
           fi
+          python notify.py --status failed --job job.json
