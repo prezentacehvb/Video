@@ -23,6 +23,56 @@
             --text-dark: #1f1f1f;
             --text-muted: #666666;
             --border-radius: 16px;
+
+            /* Proměnné pro 3D Rozcestník (výchozí tmavý HVB režim) */
+            --orb-panel-bg: radial-gradient(circle at 50% 50%, rgba(74, 20, 140, 0.38) 0%, rgba(18, 0, 36, 0.94) 72%, rgba(8, 2, 15, 0.98) 100%);
+            --orb-panel-border: rgba(179, 136, 255, 0.28);
+            --orb-panel-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), inset 0 0 40px rgba(142, 36, 170, 0.16);
+            --orb-header-title: #ffffff;
+            --orb-header-sub: rgba(255, 255, 255, 0.65);
+            --orb-btn-bg: rgba(255, 255, 255, 0.08);
+            --orb-btn-border: rgba(179, 136, 255, 0.35);
+            --orb-btn-text: #e1bee7;
+            --orb-btn-hover-bg: rgba(179, 136, 255, 0.24);
+            --orb-btn-hover-text: #ffffff;
+            --orb-btn-active-bg: #8e24aa;
+            --orb-line-color: rgba(179, 136, 255, 0.24);
+            --orb-line-active: rgba(216, 180, 254, 0.9);
+            --orb-line-glow: rgba(179, 136, 255, 0.65);
+            --orb-fallback-card-bg: rgba(255, 255, 255, 0.05);
+            --orb-fallback-card-border: rgba(179, 136, 255, 0.2);
+            --orb-fallback-group-title: #b388ff;
+            --orb-fallback-link-bg: rgba(255, 255, 255, 0.04);
+            --orb-fallback-link-text: #ffffff;
+            --orb-fallback-link-hover: rgba(179, 136, 255, 0.24);
+            --orb-modal-bg: rgba(22, 6, 42, 0.97);
+            --orb-modal-text: #ffffff;
+        }
+
+        /* Světlý režim 3D rozcestníku */
+        .hvb-orb-panel.light-theme {
+            --orb-panel-bg: radial-gradient(circle at 50% 50%, #ffffff 0%, #faf6ff 68%, #f1e8fc 100%);
+            --orb-panel-border: rgba(123, 31, 162, 0.22);
+            --orb-panel-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 0 30px rgba(179, 136, 255, 0.12);
+            --orb-header-title: #120024;
+            --orb-header-sub: #5e4b73;
+            --orb-btn-bg: #f3e5f5;
+            --orb-btn-border: rgba(123, 31, 162, 0.28);
+            --orb-btn-text: #4a148c;
+            --orb-btn-hover-bg: #e1bee7;
+            --orb-btn-hover-text: #120024;
+            --orb-btn-active-bg: #6a1b9a;
+            --orb-line-color: rgba(106, 27, 154, 0.22);
+            --orb-line-active: rgba(123, 31, 162, 0.85);
+            --orb-line-glow: rgba(142, 36, 170, 0.35);
+            --orb-fallback-card-bg: #ffffff;
+            --orb-fallback-card-border: rgba(123, 31, 162, 0.18);
+            --orb-fallback-group-title: #6a1b9a;
+            --orb-fallback-link-bg: #f7f3fc;
+            --orb-fallback-link-text: #1f1f1f;
+            --orb-fallback-link-hover: #ede7f6;
+            --orb-modal-bg: #ffffff;
+            --orb-modal-text: #120024;
         }
 
         * {
@@ -420,7 +470,7 @@
             text-align: left;
         }
 
-        /* SEZNÁMENÍ S PORTÁLEM (EDITOVATELNÝ BLOK DLE FRAME 02) */
+        /* SEZNÁMENÍ S PORTÁLEM */
         .guide-box {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -475,71 +525,439 @@
             margin-bottom: 3px;
         }
 
-        /* Pravé okno: Rychlé přístupy */
-        .action-panel {
-            background: #ffffff;
-            color: var(--text-dark);
+        /* ==========================================================================
+           PRAVÉ OKNO: INTERAKTIVNÍ 3D ROZCESTNÍK
+           ========================================================================== */
+        .hvb-orb-panel {
+            width: 100%;
+            height: 100%;
+            background: var(--orb-panel-bg);
+            border: 1px solid var(--orb-panel-border);
             border-radius: 24px;
-            padding: 25px 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: var(--orb-panel-shadow);
+            position: relative;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            user-select: none;
+            transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .orb-panel-header {
+            display: flex;
             justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 16px 22px 6px 22px;
+            z-index: 30;
+            pointer-events: none;
+            text-align: left;
+        }
+
+        .orb-panel-title h2 {
+            font-size: 1.02rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: var(--orb-header-title);
+            transition: color 0.3s ease;
+        }
+
+        .orb-panel-title p {
+            font-size: 0.76rem;
+            color: var(--orb-header-sub);
+            margin-top: 2px;
+            transition: color 0.3s ease;
+        }
+
+        .orb-controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            pointer-events: auto;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-btn {
+            background: var(--orb-btn-bg);
+            border: 1px solid var(--orb-btn-border);
+            color: var(--orb-btn-text);
+            font-family: inherit;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            padding: 6px 11px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.22s ease;
+        }
+
+        .ctrl-btn:hover {
+            background: var(--orb-btn-hover-bg);
+            color: var(--orb-btn-hover-text);
+            transform: translateY(-1px);
+        }
+
+        .ctrl-btn.is-active {
+            background: var(--orb-btn-active-bg);
+            color: #ffffff;
+            border-color: #ce93d8;
+            box-shadow: 0 4px 12px rgba(142, 36, 170, 0.4);
+        }
+
+        .orb-stage {
+            position: relative;
+            flex-grow: 1;
+            width: 100%;
             height: 100%;
         }
 
-        .action-panel h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--bg-purple);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-align: left;
+        .orb-connections {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .action-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-            text-align: left;
+        .orb-line {
+            fill: none;
+            stroke: var(--orb-line-color);
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            transition: stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease;
         }
 
-        /* Rovnoměrná mřížka rychlých přístupů */
-        .quick-grid-equal {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 15px;
-            flex-grow: 1;
-            align-content: center;
+        .orb-line.active {
+            stroke: var(--orb-line-active);
+            stroke-width: 2.3;
+            filter: drop-shadow(0 0 5px var(--orb-line-glow));
         }
 
-        .quick-card-equal {
-            background: #f4f4f6;
-            border: 1px solid #e0e0e0;
-            border-radius: 14px;
-            padding: 16px 14px;
+        .orb-line.dimmed {
+            opacity: 0.14;
+        }
+
+        .orb-node {
+            position: absolute;
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             text-decoration: none;
-            color: var(--text-dark);
+            color: #ffffff;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition:
+                left 0.52s cubic-bezier(0.34, 1.56, 0.64, 1),
+                top 0.52s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.3s ease,
+                box-shadow 0.28s ease;
+            z-index: 5;
+        }
+
+        .orb-node::before {
+            content: '';
+            position: absolute;
+            top: 8%;
+            left: 16%;
+            width: 46%;
+            height: 28%;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0) 76%);
+            transform: rotate(-22deg);
+            pointer-events: none;
+        }
+
+        .orb-node::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            box-shadow: inset 0 -8px 15px rgba(0, 0, 0, 0.45), inset 0 2px 5px rgba(255, 255, 255, 0.38);
+            pointer-events: none;
+        }
+
+        .orb-node.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .orb-node.dimmed {
+            opacity: 0.3;
+            transform: translate(-50%, -50%) scale(0.92);
+        }
+
+        /* Úroveň 0: Středová hlavní koule */
+        .orb-root {
+            width: 108px;
+            height: 108px;
+            background: radial-gradient(circle at 32% 28%, #ab47bc 0%, #4a148c 58%, #1a0033 100%);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55), 0 0 28px rgba(142, 36, 170, 0.55);
+            border: 1px solid rgba(225, 190, 231, 0.5);
+            z-index: 15;
+            animation: floatRoot 4.8s ease-in-out infinite;
+        }
+
+        .orb-root:hover, .orb-root.expanded {
+            transform: translate(-50%, -50%) scale(1.06);
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.65), 0 0 38px rgba(179, 136, 255, 0.8);
+        }
+
+        .orb-root .orb-icon {
+            font-size: 1.3rem;
+            margin-bottom: 3px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+        }
+
+        .orb-root .orb-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            line-height: 1.12;
+            padding: 0 8px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Úroveň 1: 6 Hlavních kategorií */
+        .orb-category {
+            width: 80px;
+            height: 80px;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .orb-category:hover, .orb-category.active {
+            transform: translate(-50%, -50%) scale(1.12);
+            z-index: 16;
+        }
+
+        .orb-category .orb-icon {
+            font-size: 1.05rem;
+            margin-bottom: 2px;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+        }
+
+        .orb-category .orb-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            line-height: 1.1;
+            padding: 0 5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.55);
+        }
+
+        .cat-1 { background: radial-gradient(circle at 30% 25%, #ce93d8 0%, #8e24aa 62%, #38006b 100%); box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 18px rgba(206, 147, 216, 0.35); }
+        .cat-2 { background: radial-gradient(circle at 30% 25%, #9575cd 0%, #512da8 62%, #1a0052 100%); box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 18px rgba(149, 117, 205, 0.35); }
+        .cat-3 { background: radial-gradient(circle at 30% 25%, #7986cb 0%, #303f9f 62%, #0d134a 100%); box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 18px rgba(121, 134, 203, 0.35); }
+        .cat-4 { background: radial-gradient(circle at 30% 25%, #4fc3f7 0%, #0277bd 62%, #002f6c 100%); box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 18px rgba(79, 195, 247, 0.35); }
+        .cat-5 { background: radial-gradient(circle at 30% 25%, #f48fb1 0%, #ad1457 62%, #4a0024 100%); box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 18px rgba(244, 143, 177, 0.35); }
+        .cat-6 { background: radial-gradient(circle at 30% 25%, #ba68c8 0%, #6a1b9a 62%, #290042 100%); box-shadow: 0 8px 20px rgba(0,0,0,0.45), 0 0 18px rgba(186, 104, 200, 0.35); }
+
+        /* Úroveň 2: Koncové akční odkazy */
+        .orb-leaf {
+            width: 58px;
+            height: 58px;
+            z-index: 12;
+            border: 1px solid rgba(255, 255, 255, 0.42);
+        }
+
+        .orb-leaf:hover {
+            transform: translate(-50%, -50%) scale(1.22);
+            z-index: 25;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.65), 0 0 22px rgba(255, 255, 255, 0.55);
+        }
+
+        .orb-leaf .orb-icon {
+            font-size: 0.88rem;
+            margin-bottom: 1px;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+        }
+
+        .orb-leaf .orb-label {
+            font-size: 0.53rem;
+            font-weight: 600;
+            line-height: 1.05;
+            padding: 0 4px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.65);
+        }
+
+        .leaf-1 { background: radial-gradient(circle at 30% 25%, #e1bee7 0%, #7b1fa2 65%, #31004a 100%); }
+        .leaf-2 { background: radial-gradient(circle at 30% 25%, #b39ddb 0%, #4527a0 65%, #160042 100%); }
+        .leaf-3 { background: radial-gradient(circle at 30% 25%, #9fa8da 0%, #283593 65%, #0a0f3d 100%); }
+        .leaf-4 { background: radial-gradient(circle at 30% 25%, #81d4fa 0%, #01579b 65%, #00214d 100%); }
+        .leaf-5 { background: radial-gradient(circle at 30% 25%, #f8bbd0 0%, #880e4f 65%, #38001b 100%); }
+        .leaf-6 { background: radial-gradient(circle at 30% 25%, #ce93d8 0%, #4a148c 65%, #1d0036 100%); }
+
+        /* Přehledový seznam (mřížka pro rychlý přehled nebo mobil) */
+        .fallback-grid {
+            display: none;
+            padding: 12px 20px 18px 20px;
+            gap: 10px;
+            overflow-y: auto;
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .fallback-grid.active {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .fallback-group {
+            background: var(--orb-fallback-card-bg);
+            border: 1px solid var(--orb-fallback-card-border);
+            border-radius: 14px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fallback-group-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--orb-fallback-group-title);
+            margin-bottom: 7px;
+            letter-spacing: 0.4px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            gap: 5px;
+        }
+
+        .fallback-links {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .fallback-link {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.74rem;
+            font-weight: 500;
+            color: var(--orb-fallback-link-text);
+            text-decoration: none;
+            padding: 5px 8px;
+            border-radius: 8px;
+            background: var(--orb-fallback-link-bg);
+            transition: background 0.2s, transform 0.15s;
             cursor: pointer;
         }
 
-        .quick-card-equal:hover {
-            background: #ede7f6;
-            border-color: var(--purple-accent);
-            color: var(--bg-purple);
-            transform: translateY(-2px);
+        .fallback-link:hover {
+            background: var(--orb-fallback-link-hover);
+            transform: translateX(2px);
         }
 
-        .quick-icon-equal {
-            font-size: 1.3rem;
+        /* Vnořené modální okno pro vícenásobné odkazy (15 krajů ÚP, Sítě, Návody, Tým) */
+        .sub-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 2, 18, 0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            z-index: 60;
+        }
+
+        .sub-modal-overlay.open {
+            display: flex;
+        }
+
+        .sub-modal-box {
+            background: var(--orb-modal-bg);
+            color: var(--orb-modal-text);
+            border: 1px solid var(--orb-panel-border);
+            border-radius: 20px;
+            padding: 18px 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 88%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+            text-align: left;
+        }
+
+        .sub-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 9px;
+            border-bottom: 1px solid var(--orb-panel-border);
+        }
+
+        .sub-modal-header h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--orb-fallback-group-title);
+        }
+
+        .sub-modal-close {
+            background: none;
+            border: none;
+            color: var(--orb-modal-text);
+            font-size: 1.4rem;
             line-height: 1;
+            cursor: pointer;
+            opacity: 0.75;
+        }
+
+        .sub-modal-close:hover {
+            opacity: 1;
+        }
+
+        .sub-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .sub-modal-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 11px;
+            border-radius: 10px;
+            background: var(--orb-fallback-link-bg);
+            border: 1px solid var(--orb-fallback-card-border);
+            color: var(--orb-modal-text);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sub-modal-item:hover {
+            background: var(--orb-btn-active-bg);
+            color: #ffffff;
+            border-color: transparent;
+        }
+
+        @keyframes floatRoot {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+            50% { transform: translate(-50%, -50%) translateY(-4px); }
         }
 
         /* Section 1: Návod k použití */
@@ -893,7 +1311,11 @@
             }
             .hero-section { height: auto; padding: 25px 20px; gap: 25px; }
             .intro-frame-grid, .default-frame-grid { grid-template-columns: 1fr; gap: 20px; }
-            .quick-grid-equal { grid-template-columns: 1fr; }
+            .hvb-orb-panel { height: auto; min-height: 480px; }
+            .orb-stage { display: none !important; }
+            .fallback-grid { display: grid !important; grid-template-columns: 1fr; }
+            #btnToggleView, #btnExpandAll { display: none !important; }
+            .sub-modal-grid { grid-template-columns: 1fr; }
             .cards-section { padding: 25px 20px; }
             .form-panel { padding: 20px; }
             .iframe-container { height: 550px; }
@@ -950,7 +1372,7 @@
 
                 <ul class="nav-links" id="navLinks">
                     <li><a href="javascript:void(0)" onclick="showIntroFrame()">Úvod</a></li>
-					<li><a href="https://rs.hvbreal.cz/poskireal/index.php?logout=1" target="_blank">POSKI</a></li>
+                    <li><a href="https://rs.hvbreal.cz/poskireal/index.php?logout=1" target="_blank">POSKI</a></li>
                     <li><a href="javascript:void(0)" onclick="showVideoFrame()">Video</a></li>
                     <li><a href="https://makleri.hvbreal.cz/" target="_blank">Makléři</a></li>
                     <li><a href="https://hvbreal.cz/kontakty/makleri" target="_blank">WEB RK</a></li>
@@ -965,12 +1387,12 @@
                                 <div class="dropdown-submenu" id="knSubmenu">
                                     <a href="https://nahlizenidokn.cuzk.gov.cz/default.aspx" target="_blank">Nahlížení</a>
                                     <a href="https://katastr.cuzk.gov.cz/LoginDPWEB/login/Login.do?PAR_DestinateApplication=DalkovyPristup&PAR_RequestedPage=" target="_blank">Dálkový přístup</a>
-									<a href="https://n.strazcekatastru.cz/prihlaseni?backlink=xfn0a" target="_blank">Strážce katastru</a>
+                                    <a href="https://n.strazcekatastru.cz/prihlaseni?backlink=xfn0a" target="_blank">Strážce katastru</a>
                                 </div>
                             </li>
                             <li><a href="https://floorplanner.com/login" target="_blank">Floorplanner</a></li>
                             <li><a href="https://mapy.cz" target="_blank">Mapy</a></li>
-							<li><a href="https://www.pdf24.org/cs/" target="_blank">Úprava PDF</a></li>
+                            <li><a href="https://www.pdf24.org/cs/" target="_blank">Úprava PDF</a></li>
                             <li>
                                 <button class="dropdown-item-btn" onclick="toggleSubmenu(event, 'isSubmenu')">Inženýrské sítě ▾</button>
                                 <div class="dropdown-submenu" id="isSubmenu">
@@ -1006,7 +1428,7 @@
             <!-- Hero Section (FRAME Container) -->
             <section class="hero-section" id="mainFrame">
                 
-                <!-- 1. ÚVODNÍ FRAME (OBSAH DLE FRAME 02 - VÝCHOZÍ STAV) -->
+                <!-- 1. ÚVODNÍ FRAME -->
                 <div class="intro-frame-grid" id="introFrameContent">
                     <!-- LEVÝ SLOUPEC: Název & Průvodce portálem -->
                     <div class="intro-left-column">
@@ -1020,7 +1442,7 @@
                             <div class="hero-subtitle">Vítejte v interním portálu RK</div>
                         </div>
 
-                        <!-- SEZNÁMENÍ S PORTÁLEM (EDITOVATELNÝ TEXT) -->
+                        <!-- SEZNÁMENÍ S PORTÁLEM -->
                         <div class="guide-box">
                             <div class="guide-header">
                                 🧭 Průvodce portálem
@@ -1053,53 +1475,43 @@
                         </div>
                     </div>
 
-                    <!-- PRAVÝ SLOUPEC: Rychlé přístupy -->
-                    <div class="action-panel">
-                        <div>
-                            <h2>Rychlé přístupy</h2>
-                            <p class="action-subtitle">Vyberte požadovanou sekci pro přímý přechod</p>
+                    <!-- PRAVÝ SLOUPEC: Interaktivní 3D rozcestník -->
+                    <div class="hvb-orb-panel" id="hvbOrbPanel">
+                        <div class="orb-panel-header">
+                            <div class="orb-panel-title">
+                                <h2>Interaktivní 3D rozcestník</h2>
+                                <p id="panelSubtitle">Najeďte na středovou kouli nebo rozbalte všechny větve</p>
+                            </div>
+                            <div class="orb-controls-bar">
+                                <button type="button" class="ctrl-btn" id="btnExpandAll" onclick="toggleExpandAll()">
+                                    🌐 Rozbal vše
+                                </button>
+                                <button type="button" class="ctrl-btn" id="btnThemeToggle" onclick="toggleColorTheme()">
+                                    ☀️ Světlý režim
+                                </button>
+                                <button type="button" class="ctrl-btn" id="btnToggleView" onclick="toggleOrbView()">
+                                    📋 Seznam
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="quick-grid-equal">
-                            <a onclick="showVideoFrame()" class="quick-card-equal">
-                                <span class="quick-icon-equal">🎬</span>
-                                <span>Generátor videí</span>
-                            </a>
+                        <!-- 3D Plátno se šestiúhelníkovým stromem -->
+                        <div class="orb-stage" id="orbStage">
+                            <svg class="orb-connections" id="orbSvg"></svg>
+                        </div>
 
-                            <a href="https://docs.google.com/spreadsheets/d/169G2ZBV1z4oAbq956Brbby8kaYqNFGdXlIxemXjMbCU/edit?gid=0#gid=0" target="_blank" class="quick-card-equal">
-                                <span class="quick-icon-equal">📊</span>
-                                <span>Evidence zakázek</span>
-                            </a>
+                        <!-- Přehledový seznam všech 6 větví (a výchozí zobrazení na mobilu) -->
+                        <div class="fallback-grid" id="fallbackGrid"></div>
 
-                            <a href="https://web.telegram.org/k/#-5465557150" target="_blank" class="quick-card-equal">
-                                <span class="quick-icon-equal">💬</span>
-                                <span>Poptávky Telegram</span>
-                            </a>
-
-                            <a href="https://nahlizenidokn.cuzk.gov.cz/default.aspx" target="_blank" class="quick-card-equal">
-                                <span class="quick-icon-equal">🏛️</span>
-                                <span>Katastr nemovitostí</span>
-                            </a>
-
-                            <a href="https://webmail.hvbreal.cz/?_task=mail&_mbox=INBOX" target="_blank" class="quick-card-equal">
-                                <span class="quick-icon-equal">✉️</span>
-                                <span>E-mail</span>
-                            </a>
-
-                            <a href="https://makleri.hvbreal.cz/" target="_blank" class="quick-card-equal">
-                                <span class="quick-icon-equal">👥</span>
-                                <span>Makléři</span>
-                            </a>
-
-                            <a href="https://floorplanner.com/login" target="_blank" class="quick-card-equal">
-                                <span class="quick-icon-equal">📐</span>
-                                <span>Floorplanner 3D</span>
-                            </a>
-
-                            <a href="https://hvbreal.cz" target="_blank" class="quick-card-equal">
-                                <span class="quick-icon-equal">🌐</span>
-                                <span>Web HVB</span>
-                            </a>
+                        <!-- Vnořené modální okno pro vícenásobné odkazy (15 krajů ÚP, Sítě, Návody, Tým) -->
+                        <div class="sub-modal-overlay" id="subModalOverlay" onclick="closeSubModal(event)">
+                            <div class="sub-modal-box" onclick="event.stopPropagation()">
+                                <div class="sub-modal-header">
+                                    <h3 id="subModalTitle">Výběr položky</h3>
+                                    <button type="button" class="sub-modal-close" onclick="closeSubModal()">&times;</button>
+                                </div>
+                                <div class="sub-modal-grid" id="subModalGrid"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1141,7 +1553,7 @@
                         <div class="tip-box" id="tipBox">
                             <div class="tip-box-header">3. Tip dne</div>
                             <div class="tip-namitka" id="tipNamitka">Námitka: Nechci RK</div>
-                            <div class="tip-reakce" id="tipReakce">Reakce: Chápu vaše obavy z RK. Naši nabídku lze nastavit i tak, že provizi hradí kupující k vaší ceně. Výsledek? Prodáte bez starostí, kompletní právní servis i inzerci hradíme my a na účtu vám zůstane minimálně o 50 000 Kč více, než při prodeji na vlastní pěst. Rád/a vám to nezávazně vysvětlím osobně. (Uvedená suma zahrnuje přibližnou cenu za právní servis s notářskou úschovou a inzerci, kterou prodávající hradí i při samostatném prodeji)</div>
+                            <div class="tip-reakce" id="tipReakce">Reakce: Chápu vaše obavy z RK. Naši nabídku lze nastavit i tak, že provizi hradí kupující k vaší ceně. Výsledek? Prodáte bez starostí, kompletní právní servis i inzerci hradíme my a na účtu vám zůstane minimálně o 50 000 Kč více, než při prodeji na vlastní pěst. Rád/a vám to nezávazně vysvětlím osobně. (Uvedená suma zahrje přibližnou cenu za právní servis s notářskou úschovou a inzerci, kterou prodávající hradí i při samostatném prodeji)</div>
                         </div>
                     </div>
 
@@ -1287,7 +1699,7 @@
         const AUTH_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwugmkW_YELL8Y0e38jF1WuecK4T42RIJECPTvtRIvXTSg1bYVJ3UweIfovKGhWoHTNiQ/exec";
 
         // Text novinek vložený přímo v index.html
-        const NEWS_TEXT = `Doplněna "Úprava PDF souborů" v sekci Oblíbené`;
+        const NEWS_TEXT = `Přidán interaktivní 3D rozcestník`;
 
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
@@ -1303,6 +1715,9 @@
             document.getElementById('iframeContainer').style.display = 'none';
             document.getElementById('frameIframe').src = 'about:blank';
             document.getElementById('topNavbar').scrollIntoView({ behavior: 'smooth' });
+            if (!isOrbFallbackMode) {
+                setTimeout(initOrbNavigator, 50);
+            }
         }
 
         // Funkce pro zobrazení Video generátoru
@@ -1340,7 +1755,6 @@
             event.stopPropagation();
             const targetSubmenu = document.getElementById(submenuId);
             
-            // Zavřít ostatní podnabídky v menu
             const allSubmenus = document.querySelectorAll('.dropdown-submenu');
             allSubmenus.forEach(sub => {
                 if (sub.id !== submenuId) {
@@ -1460,6 +1874,11 @@
                         const telInput = document.getElementById('MAKLER_TELEFON');
                         telInput.value = res.phone;
                         telInput.readOnly = true;
+                    }
+
+                    // Přepočet 3D rozcestníku po odkrytí hlavního kontejneru
+                    if (!isOrbFallbackMode) {
+                        initOrbNavigator();
                     }
 
                     // Načtení tipu a zobrazení okna novinek na pozadí, bez blokování UI
@@ -1660,6 +2079,597 @@
                 submitBtn.innerText = "VYTVOŘIT VIDEO";
             }
         }
+
+        /**
+         * ==========================================================================
+         * INTERAKTIVNÍ 3D ROZCESTNÍK HVB REAL ESTATE (PLATNÉ ODKAZY PORTÁLU)
+         * ==========================================================================
+         */
+        const HVB_NAV_DATA = {
+            root: {
+                label: "Co bys rád?",
+                icon: "✨"
+            },
+            categories: [
+                {
+                    id: "cat1",
+                    label: "Tvořit &\nPrezentovat",
+                    icon: "🎬",
+                    themeClass: "cat-1",
+                    leafClass: "leaf-1",
+                    angleDeg: -150,
+                    items: [
+                        { label: "Generátor videí", icon: "🎥", actionType: "internal_video" },
+                        { label: "Floorplanner 3D", icon: "📐", actionType: "external", target: "https://floorplanner.com/login" },
+                        { label: "Úprava PDF", icon: "📄", actionType: "external", target: "https://www.pdf24.org/cs/" },
+                        { label: "Web HVB RK", icon: "🌐", actionType: "external", target: "https://hvbreal.cz" }
+                    ]
+                },
+                {
+                    id: "cat2",
+                    label: "Zakázky &\nSystémy",
+                    icon: "📊",
+                    themeClass: "cat-2",
+                    leafClass: "leaf-2",
+                    angleDeg: -90,
+                    items: [
+                        { label: "Evidence zakázek", icon: "📋", actionType: "external", target: "https://docs.google.com/spreadsheets/d/169G2ZBV1z4oAbq956Brbby8kaYqNFGdXlIxemXjMbCU/edit?gid=0#gid=0" },
+                        { label: "POSKI Real", icon: "🏢", actionType: "external", target: "https://rs.hvbreal.cz/poskireal/index.php?logout=1" },
+                        { label: "HVB Poptávky", icon: "💬", actionType: "external", target: "https://web.telegram.org/k/#-5465557150" },
+                        { label: "Služební E-mail", icon: "✉️", actionType: "external", target: "https://webmail.hvbreal.cz/?_task=mail&_mbox=INBOX" }
+                    ]
+                },
+                {
+                    id: "cat3",
+                    label: "Katastr &\nSítě",
+                    icon: "🏛️",
+                    themeClass: "cat-3",
+                    leafClass: "leaf-3",
+                    angleDeg: -30,
+                    items: [
+                        { label: "Nahlížení KN", icon: "🔍", actionType: "external", target: "https://nahlizenidokn.cuzk.gov.cz/default.aspx" },
+                        { label: "Dálkový přístup", icon: "🔑", actionType: "external", target: "https://katastr.cuzk.gov.cz/LoginDPWEB/login/Login.do?PAR_DestinateApplication=DalkovyPristup&PAR_RequestedPage=" },
+                        { label: "Strážce katastru", icon: "🛡️", actionType: "external", target: "https://n.strazcekatastru.cz/prihlaseni?backlink=xfn0a" },
+                        {
+                            label: "Inženýrské sítě",
+                            icon: "⚡",
+                            actionType: "submodal",
+                            modalTitle: "Inženýrské sítě – vyberte oblast",
+                            subItems: [
+                                { label: "Inženýrské sítě – Praha", icon: "🏙️", actionType: "external", target: "https://map.dtm-praha-sck.cz/" },
+                                { label: "Inženýrské sítě – Celá ČR", icon: "🇨🇿", actionType: "external", target: "https://app.gisonline.cz/chytre-mapy/" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "cat4",
+                    label: "Mapy &\nÚzemní plány",
+                    icon: "🗺️",
+                    themeClass: "cat-4",
+                    leafClass: "leaf-4",
+                    angleDeg: 30,
+                    items: [
+                        { label: "Mapy.cz", icon: "🧭", actionType: "external", target: "https://mapy.cz" },
+                        { label: "Národní geoportál", icon: "🌐", actionType: "external", target: "https://uzemniplanovani.gov.cz/" },
+                        { label: "ÚP Praha", icon: "🏰", actionType: "external", target: "https://plan.praha.eu/" },
+                        {
+                            label: "Všechny kraje ČR",
+                            icon: "🇨🇿",
+                            actionType: "submodal",
+                            modalTitle: "Územní plány – všechny kraje ČR (15)",
+                            subItems: [
+                                { label: "Národní geoportál ÚP", icon: "🌐", actionType: "external", target: "https://uzemniplanovani.gov.cz/" },
+                                { label: "Hlavní město Praha", icon: "🏰", actionType: "external", target: "https://plan.praha.eu/" },
+                                { label: "Středočeský kraj", icon: "📍", actionType: "external", target: "https://gis.kr-stredocesky.cz/js/reg_up/" },
+                                { label: "Jihočeský kraj", icon: "📍", actionType: "external", target: "https://geoportal.kraj-jihocesky.gov.cz/portal/up/obce" },
+                                { label: "Plzeňský kraj", icon: "📍", actionType: "external", target: "https://www.plzensky-kraj.cz/uzemni-planovani" },
+                                { label: "Karlovarský kraj", icon: "📍", actionType: "external", target: "https://dtm.kr-karlovarsky.cz/-/public#z=10&x=-854604&y=-1015607" },
+                                { label: "Ústecký kraj", icon: "📍", actionType: "external", target: "https://geoportal.kr-ustecky.cz/portal/up/obce" },
+                                { label: "Liberecký kraj", icon: "📍", actionType: "external", target: "https://maparcgis.kraj-lbc.cz/portal/apps/experiencebuilder/experience/?id=447246bc061e40cc9d891a93caba5993" },
+                                { label: "Královéhradecký kraj", icon: "📍", actionType: "external", target: "https://uap.kr-kralovehradecky.cz/" },
+                                { label: "Pardubický kraj", icon: "📍", actionType: "external", target: "https://www.pardubickykraj.cz/uzemni-plany-mest-a-obci" },
+                                { label: "Kraj Vysočina", icon: "📍", actionType: "external", target: "https://maps.kr-vysocina.cz/pupo_pfa/apps/experiencebuilder/experience/?id=5fdc126f04c749c5b2a7a8f892c6a93e" },
+                                { label: "Jihomoravský kraj", icon: "📍", actionType: "external", target: "https://mapy.jmk.cz/geoportal/home/Dotacni_UP_ukonceni_provozu.aspx" },
+                                { label: "Olomoucký kraj", icon: "📍", actionType: "external", target: "https://uap.olkraj.cz/dmvs-gateway/" },
+                                { label: "Moravskoslezský kraj", icon: "📍", actionType: "external", target: "https://www.msk.cz/temata/uzemni_plan/index.html" },
+                                { label: "Zlínský kraj", icon: "📍", actionType: "external", target: "https://juapzk.geostore.cz/portal/Default.aspx" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "cat5",
+                    label: "Metodika &\nNávody",
+                    icon: "📘",
+                    themeClass: "cat-5",
+                    leafClass: "leaf-5",
+                    angleDeg: 90,
+                    items: [
+                        { label: "Realitní min.", icon: "📚", actionType: "internal_frame", target: "Realmin.html" },
+                        { label: "Popis nemov.", icon: "📝", actionType: "internal_frame", target: "Popisnem.html" },
+                        { label: "Ocenění nem.", icon: "💰", actionType: "internal_frame", target: "Ocennem.html" },
+                        { label: "DigiSign návod", icon: "✍️", actionType: "internal_frame", target: "Signhelp.html" }
+                    ]
+                },
+                {
+                    id: "cat6",
+                    label: "Foto, SW &\nTým HVB",
+                    icon: "👥",
+                    themeClass: "cat-6",
+                    leafClass: "leaf-6",
+                    angleDeg: 150,
+                    items: [
+                        { label: "Foto minimum", icon: "📸", actionType: "internal_frame", target: "Fotohelp.html" },
+                        { label: "Úprava foto", icon: "🎨", actionType: "internal_frame", target: "Upravafoto.html" },
+                        {
+                            label: "Návody Poski/FP",
+                            icon: "💻",
+                            actionType: "submodal",
+                            modalTitle: "Softwarové návody (Poski & Floorplanner)",
+                            subItems: [
+                                { label: "Návod k systému Poski Real", icon: "🏢", actionType: "internal_frame", target: "Poskihelp.html" },
+                                { label: "Návod k Floorplanner 3D", icon: "📐", actionType: "internal_frame", target: "Floorplanner.html" }
+                            ]
+                        },
+                        {
+                            label: "Makléři & Web",
+                            icon: "🌐",
+                            actionType: "submodal",
+                            modalTitle: "Tým makléřů a veřejný web HVB",
+                            subItems: [
+                                { label: "Interní sekce Makléři", icon: "👥", actionType: "external", target: "https://makleri.hvbreal.cz/" },
+                                { label: "Kontakty makléřů (WEB RK)", icon: "📞", actionType: "external", target: "https://hvbreal.cz/kontakty/makleri" },
+                                { label: "Hlavní web hvbreal.cz", icon: "🌐", actionType: "external", target: "https://hvbreal.cz" }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        const orbStage = document.getElementById('orbStage');
+        const orbSvg = document.getElementById('orbSvg');
+        const orbFallbackGrid = document.getElementById('fallbackGrid');
+
+        let isOrbRootExpanded = false;
+        let isOrbAllExpanded = false;
+        let activeOrbCategoryId = null;
+        let lockedOrbCategoryId = null;
+        let isOrbLightTheme = false;
+        let isOrbFallbackMode = false;
+        let orbCollapseTimer = null;
+
+        function degToRad(deg) {
+            return (deg * Math.PI) / 180;
+        }
+
+        function computeHexGeometry() {
+            const width = orbStage.clientWidth || 720;
+            const height = orbStage.clientHeight || 480;
+            const cx = width / 2;
+            const cy = height / 2;
+
+            const leafRadius = 29;
+            const safeMargin = 10;
+
+            const maxReachX = cx - leafRadius - safeMargin;
+            const maxReachY = cy - leafRadius - safeMargin;
+
+            const r1X = maxReachX * 0.54;
+            const r2X = maxReachX * 0.46;
+            const r1Y = maxReachY * 0.54;
+            const r2Y = maxReachY * 0.46;
+
+            return { cx, cy, r1X, r2X, r1Y, r2Y };
+        }
+
+        function initOrbNavigator() {
+            if (!orbStage || !orbSvg) return;
+            const geo = computeHexGeometry();
+
+            orbStage.querySelectorAll('.orb-node').forEach(el => el.remove());
+            orbSvg.innerHTML = '';
+
+            // 1. Středová koule
+            const rootEl = document.createElement('div');
+            rootEl.className = 'orb-node orb-root visible';
+            rootEl.style.left = `${geo.cx}px`;
+            rootEl.style.top = `${geo.cy}px`;
+            rootEl.innerHTML = `
+                <span class="orb-icon">${HVB_NAV_DATA.root.icon}</span>
+                <span class="orb-label">${HVB_NAV_DATA.root.label}</span>
+            `;
+
+            rootEl.addEventListener('mouseenter', () => {
+                clearTimeout(orbCollapseTimer);
+                if (!isOrbAllExpanded) {
+                    isOrbRootExpanded = true;
+                    updateOrbVisualState();
+                }
+            });
+
+            rootEl.addEventListener('click', () => {
+                if (isOrbAllExpanded) {
+                    toggleExpandAll();
+                    return;
+                }
+                if (isOrbRootExpanded && !lockedOrbCategoryId) {
+                    collapseAllOrbs();
+                } else {
+                    lockedOrbCategoryId = null;
+                    activeOrbCategoryId = null;
+                    isOrbRootExpanded = true;
+                    updateOrbVisualState();
+                }
+            });
+
+            orbStage.appendChild(rootEl);
+
+            // 2. Šest symetrických kategorií a jejich 4 listy
+            HVB_NAV_DATA.categories.forEach((cat) => {
+                const radCat = degToRad(cat.angleDeg);
+                const catX = geo.cx + Math.cos(radCat) * geo.r1X;
+                const catY = geo.cy + Math.sin(radCat) * geo.r1Y;
+
+                const catLine = createOrbSvgLine(geo.cx, geo.cy, geo.cx, geo.cy, `line-cat-${cat.id}`);
+                orbSvg.appendChild(catLine);
+
+                const catEl = document.createElement('div');
+                catEl.className = `orb-node orb-category ${cat.themeClass}`;
+                catEl.dataset.catId = cat.id;
+                catEl.style.left = `${geo.cx}px`;
+                catEl.style.top = `${geo.cy}px`;
+                catEl.dataset.startX = geo.cx;
+                catEl.dataset.startY = geo.cy;
+                catEl.dataset.targetX = catX;
+                catEl.dataset.targetY = catY;
+                catEl.innerHTML = `
+                    <span class="orb-icon">${cat.icon}</span>
+                    <span class="orb-label">${cat.label.replace('\n', '<br>')}</span>
+                `;
+
+                catEl.addEventListener('mouseenter', () => {
+                    clearTimeout(orbCollapseTimer);
+                    if (!isOrbAllExpanded && !lockedOrbCategoryId) {
+                        activeOrbCategoryId = cat.id;
+                        updateOrbVisualState();
+                    }
+                });
+
+                catEl.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (isOrbAllExpanded) return;
+                    if (lockedOrbCategoryId === cat.id) {
+                        lockedOrbCategoryId = null;
+                    } else {
+                        lockedOrbCategoryId = cat.id;
+                        activeOrbCategoryId = cat.id;
+                    }
+                    updateOrbVisualState();
+                });
+
+                orbStage.appendChild(catEl);
+
+                const spreadDeg = 66;
+                const count = cat.items.length;
+                const stepDeg = count > 1 ? spreadDeg / (count - 1) : 0;
+                const startDeg = cat.angleDeg - spreadDeg / 2;
+
+                cat.items.forEach((item, idx) => {
+                    const leafAngle = startDeg + idx * stepDeg;
+                    const radLeaf = degToRad(leafAngle);
+                    const leafX = catX + Math.cos(radLeaf) * geo.r2X;
+                    const leafY = catY + Math.sin(radLeaf) * geo.r2Y;
+
+                    const leafLine = createOrbSvgLine(catX, catY, catX, catY, `line-leaf-${cat.id}-${idx}`);
+                    orbSvg.appendChild(leafLine);
+
+                    const leafEl = document.createElement('a');
+                    leafEl.className = `orb-node orb-leaf ${cat.leafClass}`;
+                    leafEl.dataset.parentCat = cat.id;
+                    leafEl.dataset.leafIdx = idx;
+                    leafEl.style.left = `${catX}px`;
+                    leafEl.style.top = `${catY}px`;
+                    leafEl.dataset.startX = catX;
+                    leafEl.dataset.startY = catY;
+                    leafEl.dataset.targetX = leafX;
+                    leafEl.dataset.targetY = leafY;
+                    leafEl.href = item.actionType === 'external' ? item.target : 'javascript:void(0)';
+                    if (item.actionType === 'external') {
+                        leafEl.target = '_blank';
+                        leafEl.rel = 'noopener noreferrer';
+                    }
+
+                    leafEl.innerHTML = `
+                        <span class="orb-icon">${item.icon}</span>
+                        <span class="orb-label">${item.label}</span>
+                    `;
+
+                    leafEl.addEventListener('mouseenter', () => {
+                        clearTimeout(orbCollapseTimer);
+                    });
+
+                    leafEl.addEventListener('click', (e) => {
+                        if (item.actionType !== 'external') {
+                            e.preventDefault();
+                        }
+                        e.stopPropagation();
+                        executeOrbItemAction(item);
+                    });
+
+                    orbStage.appendChild(leafEl);
+                });
+            });
+
+            updateOrbVisualState();
+        }
+
+        if (orbStage) {
+            orbStage.addEventListener('mouseleave', () => {
+                if (!isOrbAllExpanded && !lockedOrbCategoryId) {
+                    orbCollapseTimer = setTimeout(() => {
+                        collapseAllOrbs();
+                    }, 480);
+                }
+            });
+
+            orbStage.addEventListener('click', (e) => {
+                if (!isOrbAllExpanded && (e.target === orbStage || e.target === orbSvg)) {
+                    lockedOrbCategoryId = null;
+                    activeOrbCategoryId = null;
+                    updateOrbVisualState();
+                }
+            });
+        }
+
+        function createOrbSvgLine(x1, y1, x2, y2, id) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            line.setAttribute('class', 'orb-line');
+            line.id = id;
+            return line;
+        }
+
+        function collapseAllOrbs() {
+            isOrbRootExpanded = false;
+            isOrbAllExpanded = false;
+            activeOrbCategoryId = null;
+            lockedOrbCategoryId = null;
+            syncExpandAllButton();
+            updateOrbVisualState();
+        }
+
+        function toggleExpandAll() {
+            isOrbAllExpanded = !isOrbAllExpanded;
+            if (isOrbAllExpanded) {
+                isOrbRootExpanded = true;
+                activeOrbCategoryId = null;
+                lockedOrbCategoryId = null;
+            } else {
+                isOrbRootExpanded = false;
+            }
+            syncExpandAllButton();
+            updateOrbVisualState();
+        }
+
+        function syncExpandAllButton() {
+            const btn = document.getElementById('btnExpandAll');
+            if (!btn) return;
+            if (isOrbAllExpanded) {
+                btn.classList.add('is-active');
+                btn.innerHTML = '🔽 Sbalit vše';
+            } else {
+                btn.classList.remove('is-active');
+                btn.innerHTML = '🌐 Rozbal vše';
+            }
+        }
+
+        function toggleColorTheme() {
+            isOrbLightTheme = !isOrbLightTheme;
+            const panel = document.getElementById('hvbOrbPanel');
+            if (panel) {
+                panel.classList.toggle('light-theme', isOrbLightTheme);
+            }
+            const btn = document.getElementById('btnThemeToggle');
+            if (btn) {
+                btn.innerHTML = isOrbLightTheme ? '🌙 Tmavý režim' : '☀️ Světlý režim';
+            }
+        }
+
+        function toggleOrbView() {
+            isOrbFallbackMode = !isOrbFallbackMode;
+            const btnView = document.getElementById('btnToggleView');
+            const btnExpand = document.getElementById('btnExpandAll');
+
+            if (isOrbFallbackMode) {
+                orbStage.style.display = 'none';
+                orbFallbackGrid.classList.add('active');
+                btnView.innerHTML = '🔮 3D koule';
+                btnExpand.style.display = 'none';
+            } else {
+                orbStage.style.display = 'block';
+                orbFallbackGrid.classList.remove('active');
+                btnView.innerHTML = '📋 Seznam';
+                btnExpand.style.display = 'inline-flex';
+                initOrbNavigator();
+            }
+        }
+
+        function updateOrbVisualState() {
+            const rootEl = orbStage.querySelector('.orb-root');
+            if (rootEl) {
+                rootEl.classList.toggle('expanded', isOrbRootExpanded || isOrbAllExpanded);
+            }
+
+            const focusedCat = isOrbAllExpanded ? null : (lockedOrbCategoryId || activeOrbCategoryId);
+
+            orbStage.querySelectorAll('.orb-category').forEach((catEl) => {
+                const id = catEl.dataset.catId;
+                const line = document.getElementById(`line-cat-${id}`);
+
+                if (isOrbRootExpanded || isOrbAllExpanded) {
+                    catEl.classList.add('visible');
+                    catEl.style.left = `${catEl.dataset.targetX}px`;
+                    catEl.style.top = `${catEl.dataset.targetY}px`;
+                    if (line) {
+                        line.setAttribute('x2', catEl.dataset.targetX);
+                        line.setAttribute('y2', catEl.dataset.targetY);
+                    }
+
+                    if (isOrbAllExpanded) {
+                        catEl.classList.remove('active', 'dimmed');
+                        if (line) {
+                            line.classList.add('active');
+                            line.classList.remove('dimmed');
+                        }
+                    } else if (focusedCat) {
+                        if (focusedCat === id) {
+                            catEl.classList.add('active');
+                            catEl.classList.remove('dimmed');
+                            if (line) { line.classList.add('active'); line.classList.remove('dimmed'); }
+                        } else {
+                            catEl.classList.remove('active');
+                            catEl.classList.add('dimmed');
+                            if (line) { line.classList.remove('active'); line.classList.add('dimmed'); }
+                        }
+                    } else {
+                        catEl.classList.remove('active', 'dimmed');
+                        if (line) line.classList.remove('active', 'dimmed');
+                    }
+                } else {
+                    catEl.classList.remove('visible', 'active', 'dimmed');
+                    catEl.style.left = `${catEl.dataset.startX}px`;
+                    catEl.style.top = `${catEl.dataset.startY}px`;
+                    if (line) {
+                        line.setAttribute('x2', catEl.dataset.startX);
+                        line.setAttribute('y2', catEl.dataset.startY);
+                        line.classList.remove('active', 'dimmed');
+                    }
+                }
+            });
+
+            orbStage.querySelectorAll('.orb-leaf').forEach((leafEl) => {
+                const parentCat = leafEl.dataset.parentCat;
+                const idx = leafEl.dataset.leafIdx;
+                const line = document.getElementById(`line-leaf-${parentCat}-${idx}`);
+
+                const showLeaf = isOrbAllExpanded || (isOrbRootExpanded && focusedCat === parentCat);
+
+                if (showLeaf) {
+                    leafEl.classList.add('visible');
+                    leafEl.style.left = `${leafEl.dataset.targetX}px`;
+                    leafEl.style.top = `${leafEl.dataset.targetY}px`;
+                    if (line) {
+                        line.setAttribute('x2', leafEl.dataset.targetX);
+                        line.setAttribute('y2', leafEl.dataset.targetY);
+                        line.classList.add('active');
+                    }
+                } else {
+                    leafEl.classList.remove('visible');
+                    leafEl.style.left = `${leafEl.dataset.startX}px`;
+                    leafEl.style.top = `${leafEl.dataset.startY}px`;
+                    if (line) {
+                        line.setAttribute('x2', leafEl.dataset.startX);
+                        line.setAttribute('y2', leafEl.dataset.startY);
+                        line.classList.remove('active');
+                    }
+                }
+            });
+        }
+
+        function buildOrbFallbackGrid() {
+            if (!orbFallbackGrid) return;
+            orbFallbackGrid.innerHTML = '';
+            HVB_NAV_DATA.categories.forEach(cat => {
+                const group = document.createElement('div');
+                group.className = 'fallback-group';
+                group.innerHTML = `<div class="fallback-group-title">${cat.icon} ${cat.label.replace('\n', ' ')}</div>`;
+
+                const list = document.createElement('div');
+                list.className = 'fallback-links';
+
+                cat.items.forEach(item => {
+                    const a = document.createElement('a');
+                    a.className = 'fallback-link';
+                    a.href = item.actionType === 'external' ? item.target : 'javascript:void(0)';
+                    if (item.actionType === 'external') {
+                        a.target = '_blank';
+                        a.rel = 'noopener noreferrer';
+                    }
+                    a.innerHTML = `<span>${item.icon}</span><span>${item.label}</span>`;
+                    a.addEventListener('click', (e) => {
+                        if (item.actionType !== 'external') {
+                            e.preventDefault();
+                        }
+                        executeOrbItemAction(item);
+                    });
+                    list.appendChild(a);
+                });
+
+                group.appendChild(list);
+                orbFallbackGrid.appendChild(group);
+            });
+        }
+
+        function executeOrbItemAction(item) {
+            if (item.actionType === 'submodal') {
+                openSubModal(item.modalTitle || item.label, item.subItems || []);
+            } else if (item.actionType === 'internal_video') {
+                showVideoFrame();
+            } else if (item.actionType === 'internal_intro') {
+                showIntroFrame();
+            } else if (item.actionType === 'internal_frame') {
+                loadInFrame(item.target);
+            }
+        }
+
+        function openSubModal(title, subItems) {
+            const overlay = document.getElementById('subModalOverlay');
+            const titleEl = document.getElementById('subModalTitle');
+            const gridEl = document.getElementById('subModalGrid');
+
+            titleEl.innerText = title;
+            gridEl.innerHTML = '';
+
+            subItems.forEach(sub => {
+                const btn = document.createElement('a');
+                btn.className = 'sub-modal-item';
+                btn.href = sub.actionType === 'external' ? sub.target : 'javascript:void(0)';
+                if (sub.actionType === 'external') {
+                    btn.target = '_blank';
+                    btn.rel = 'noopener noreferrer';
+                }
+                btn.innerHTML = `<span>${sub.icon}</span><span>${sub.label}</span>`;
+                btn.addEventListener('click', (e) => {
+                    if (sub.actionType !== 'external') {
+                        e.preventDefault();
+                    }
+                    closeSubModal();
+                    executeOrbItemAction(sub);
+                });
+                gridEl.appendChild(btn);
+            });
+
+            overlay.classList.add('open');
+        }
+
+        function closeSubModal(event) {
+            if (event && event.target !== document.getElementById('subModalOverlay')) return;
+            document.getElementById('subModalOverlay').classList.remove('open');
+        }
+
+        window.addEventListener('resize', () => {
+            if (!isOrbFallbackMode && document.getElementById('introFrameContent').style.display !== 'none') {
+                initOrbNavigator();
+            }
+        });
+
+        buildOrbFallbackGrid();
+        initOrbNavigator();
     </script>
 </body>
 </html>
